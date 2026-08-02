@@ -1,114 +1,62 @@
-#!/usr/bin/env node
-/**
- * Fetches the next upcoming events of the Historischer Verein Winterthur
- * (Museum Schaffen / Museum Lindengut) from the Eventfrog Public API and
- * writes a small static JSON file that the homepage loads client-side.
- *
- * This avoids two problems of embedding the Eventfrog iFrame widget
- * directly on the homepage:
- *   1. The iFrame widget has no parameter to hard-limit the number of
- *      displayed events — the only reliable way to show exactly N events
- *      is to fetch the data ourselves and render it.
- *   2. The Eventfrog Public API (api.eventfrog.net) does not send CORS
- *      headers, so it cannot be called directly from browser JavaScript.
- *      Fetching it here (server-side / in CI) and writing the result to a
- *      same-origin static file sidesteps that restriction and keeps the
- *      API key out of the client entirely.
- *
- * Usage:
- *   EVENTFROG_API_KEY=<key> node scripts/fetch-eventfrog-events.mjs
- *
- * In production this is run on a schedule by
- * .github/workflows/update-eventfrog-events.yml, which reads the API key
- * from the repository secret EVENTFROG_API_KEY.
- */
+# Historischer Verein Winterthur — Website-Prototyp
 
-import { writeFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+Moderne HTML/CSS-Website aus den vorhandenen Wireframes/Mood-Referenzen, mit **Tailwind CSS Event-Karten** (Mobile First).
 
-const API_BASE = 'https://api.eventfrog.net';
-const ORG_IDS = ['4936116', '5116588'];
-const EVENT_LIMIT = 3;
-const OUTPUT_PATH = fileURLToPath(new URL('../data/home-events.json', import.meta.url));
+## Design-Richtung
 
-const apiKey = process.env.EVENTFROG_API_KEY;
-if (!apiKey) {
-  console.error('Error: EVENTFROG_API_KEY environment variable is not set.');
-  process.exit(1);
-}
+- Visuell verwandt mit [museumschaffen.ch](https://www.museumschaffen.ch/) (gleicher Trägerverein)
+- Klarere UX: grosse Touch-Ziele (min. 48px), hohe Kontraste, ruhige Navigation
+- Typografie: Outfit (geometrisch, gut lesbar — nicht Inter)
+- Schwarz/Weiss wie Museum Schaffen, mit klaren CTAs
 
-async function fetchJson(path, params) {
-  const url = new URL(path, API_BASE);
-  for (const [key, value] of Object.entries(params)) {
-    if (Array.isArray(value)) {
-      value.forEach((v) => url.searchParams.append(key, v));
-    } else if (value !== undefined && value !== null) {
-      url.searchParams.set(key, value);
-    }
-  }
+## Event-Karten (Tailwind)
 
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${apiKey}` },
-  });
+Raster **Mobile First**:
 
-  if (!res.ok) {
-    const body = await res.text().catch(() => '');
-    throw new Error(`Eventfrog API request failed (${res.status} ${res.statusText}) for ${url}\n${body}`);
-  }
+| Breakpoint | Spalten | Tailwind |
+|---|---|---|
+| Smartphone | 1 | `grid-cols-1` |
+| Tablet (`md`) | 2 | `md:grid-cols-2` |
+| Desktop (`lg`) | 3 | `lg:grid-cols-3` |
 
-  return res.json();
-}
+Platzhalterbilder tragen den Wasserzeichen-Vermerk **«finales Bild fehlt»**.
 
-function pickLang(field) {
-  if (!field) return '';
-  return field.de || field.en || field.fr || '';
-}
+Datenquelle: `data/home-events.json` (Eventfrog Public API via `scripts/fetch-eventfrog-events.mjs` / GitHub Action).
 
-async function main() {
-  const today = new Date().toISOString().slice(0, 10);
+## SEO & GEO
 
-  const { events = [] } = await fetchJson('/public/v1/events', {
-    orgId: ORG_IDS,
-    perPage: EVENT_LIMIT,
-    country: 'CH',
-    from: today,
-  });
+- `lang="de-CH"`, Canonical, Open Graph
+- Geo-Meta (`geo.region`, `geo.placename`, Position Winterthur)
+- JSON-LD: `NonprofitOrganization`, `WebSite`, `Event`, `FAQPage`, `Museum`
+- `sameAs` zu museumschaffen.ch
+- Semantische Event-Karten (`itemscope` Event / Place / `time`)
 
-  const nextEvents = events.slice(0, EVENT_LIMIT);
+## Lokal ansehen
 
-  const locationIds = [...new Set(nextEvents.flatMap((event) => event.locationIds || []))];
-  let locationsById = {};
-  if (locationIds.length) {
-    const { locations = [] } = await fetchJson('/public/v1/locations', { id: locationIds });
-    locationsById = Object.fromEntries(locations.map((loc) => [loc.id, loc]));
-  }
+```bash
+python3 -m http.server 8080
+# → http://localhost:8080
+```
 
-  const result = nextEvents.map((event) => {
-    const location = locationsById[event.locationIds?.[0]];
-    const locationLabel = location
-      ? [pickLang(location.title), location.city].filter(Boolean).join(', ')
-      : event.organizerName || '';
+## Struktur
 
-    return {
-      id: event.id,
-      title: pickLang(event.title),
-      begin: event.begin,
-      url: event.url,
-      organizerName: event.organizerName || '',
-      location: locationLabel,
-    };
-  });
+```
+index.html          Startseite mit Event-Karten
+agenda.html         Agenda (Karten + Eventfrog-Embed)
+museen.html         Museum Schaffen / Lindengut / Mörsburg
+ueber-uns.html      Verein + FAQ (GEO)
+mitmachen.html      Mitgliedschaft
+css/site.css        Motion & Placeholder-Styles
+js/main.js          Event-Karten-Rendering
+js/tailwind-config.js
+data/home-events.json
+images/             Logo, Foto, SVG-Platzhalter
+reference/wireframes/  Mood-Referenzen aus dem Upload
+scripts/            Eventfrog-Fetch
+```
 
-  const payload = {
-    generatedAt: new Date().toISOString(),
-    events: result,
-  };
+## Eventfrog aktualisieren
 
-  await writeFile(OUTPUT_PATH, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
-  console.log(`Wrote ${result.length} event(s) to ${OUTPUT_PATH}`);
-}
-
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+```bash
+EVENTFROG_API_KEY=<key> node scripts/fetch-eventfrog-events.mjs
+```
