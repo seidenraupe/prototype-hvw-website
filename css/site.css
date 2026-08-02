@@ -1,0 +1,172 @@
+/* HVW — Ergänzungen zu Tailwind (Motion, Accessibility, Placeholder) */
+
+:root {
+  --hvw-ink: #1a1a1a;
+  --hvw-charcoal: #3d3d3d;
+  --hvw-mute: #4a4a4a;
+  --hvw-paper: #ffffff;
+  --hvw-fog: #f3f3f3;
+  --hvw-line: #1a1a1a;
+  --hvw-accent: #c8102e;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Ticker — wie museumschaffen.ch, aber ruhiger */
+.hvw-ticker {
+  overflow: hidden;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--hvw-ink);
+}
+
+.hvw-ticker__track {
+  display: inline-flex;
+  gap: 2.5rem;
+  padding: 0.55rem 0;
+  animation: hvw-ticker 36s linear infinite;
+}
+
+@keyframes hvw-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Hero: Vollflächiges Bild als Bildfläche */
+.hvw-hero {
+  position: relative;
+  min-height: min(88vh, 820px);
+  display: grid;
+  align-items: end;
+  color: #fff;
+  background: #2a2a2a;
+}
+
+.hvw-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hvw-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hvw-hero__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.72) 100%);
+}
+
+.hvw-hero__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+@media (min-width: 768px) {
+  .hvw-hero__content {
+    padding: 3rem 2rem 4rem;
+  }
+}
+
+/* Event-Karten: Einstieg / Hover */
+.event-card {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: event-card-in 0.55s ease forwards;
+}
+
+.event-card:nth-child(1) { animation-delay: 0.05s; }
+.event-card:nth-child(2) { animation-delay: 0.12s; }
+.event-card:nth-child(3) { animation-delay: 0.19s; }
+.event-card:nth-child(4) { animation-delay: 0.26s; }
+.event-card:nth-child(5) { animation-delay: 0.33s; }
+.event-card:nth-child(6) { animation-delay: 0.4s; }
+
+@keyframes event-card-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.event-card__media {
+  position: relative;
+  overflow: hidden;
+  background: #2f2f2f;
+}
+
+.event-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.event-card:hover .event-card__media img,
+.event-card:focus-within .event-card__media img {
+  transform: scale(1.04);
+}
+
+.event-card__watermark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(26,26,26,0.15), rgba(26,26,26,0.35));
+}
+
+.event-card__watermark span {
+  display: inline-block;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid rgba(255,255,255,0.55);
+  color: #fff;
+  background: rgba(0,0,0,0.45);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Focus sichtbar für Tastatur & ältere Nutzer */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #47a1fb;
+  outline-offset: 3px;
+}
+
+/* Sticky Mobile-Bar */
+.hvw-mobile-bar {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+@media (max-width: 1023px) {
+  body {
+    padding-bottom: 4.5rem;
+  }
+}
