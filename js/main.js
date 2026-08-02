@@ -15,18 +15,20 @@ function initNav() {
   const mobileNav = document.querySelector('[data-nav-mobile]');
   if (!toggle || !mobileNav) return;
 
-  toggle.addEventListener('click', () => {
-    const isOpen = mobileNav.classList.toggle('hidden') === false;
+  const setOpen = (isOpen) => {
+    mobileNav.classList.toggle('hidden', !isOpen);
+    mobileNav.classList.toggle('block', isOpen);
     toggle.setAttribute('aria-expanded', String(isOpen));
     toggle.textContent = isOpen ? 'Schliessen' : 'Menü';
+  };
+
+  toggle.addEventListener('click', () => {
+    const willOpen = mobileNav.classList.contains('hidden');
+    setOpen(willOpen);
   });
 
   mobileNav.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => {
-      mobileNav.classList.add('hidden');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.textContent = 'Menü';
-    });
+    link.addEventListener('click', () => setOpen(false));
   });
 }
 
