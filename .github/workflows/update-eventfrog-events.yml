@@ -23,6 +23,8 @@ jobs:
         with:
           node-version: 22
 
+      # EVENTFROG_API_KEY is optional. If missing or deactivated, the script
+      # falls back to the public Eventfrog embed (same key as agenda.html).
       - name: Fetch latest events from Eventfrog
         env:
           EVENTFROG_API_KEY: ${{ secrets.EVENTFROG_API_KEY }}

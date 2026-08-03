@@ -61,5 +61,13 @@ scripts/            Eventfrog-Fetch
 ## Eventfrog aktualisieren
 
 ```bash
+# Optional: Public API key. Ohne Key (oder bei deaktiviertem Key) nutzt das Skript
+# automatisch den öffentlichen Eventfrog-Embed als Fallback.
 EVENTFROG_API_KEY=<key> node scripts/fetch-eventfrog-events.mjs
+# oder:
+node scripts/fetch-eventfrog-events.mjs
 ```
+
+GitHub Action: `.github/workflows/update-eventfrog-events.yml`  
+Secret `EVENTFROG_API_KEY` ist optional. Für die API-Variante im Eventfrog-Cockpit
+einen **Public API**-Key anlegen und unter Repo → Settings → Secrets speichern.
