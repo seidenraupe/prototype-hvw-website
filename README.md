@@ -42,8 +42,11 @@ python3 -m http.server 8080
 
 ```
 index.html          Startseite mit Event-Karten
-agenda.html         Agenda (Karten + Eventfrog-Embed)
+agenda.html         Agenda (nur Eventfrog-Embed)
 museen.html         Museum Schaffen / Lindengut / Mörsburg
+publikationen.html  Neujahrsblatt & Schriften
+sammlung.html       Ausgewählte Objekte
+zitate.html         Stimmen aus Winterthur
 ueber-uns.html      Verein + FAQ (GEO)
 mitmachen.html      Mitgliedschaft
 css/site.css        Motion & Placeholder-Styles

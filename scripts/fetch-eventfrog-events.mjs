@@ -64,6 +64,31 @@ function pickLang(field) {
   return field.de || field.en || field.fr || '';
 }
 
+/** Extrahiert eine Bild-URL aus dem Eventfrog-Event-Objekt (Feldnamen variieren). */
+function pickImage(event) {
+  if (!event || typeof event !== 'object') return '';
+
+  const candidates = [
+    event.imageUrl,
+    event.imageURL,
+    event.flyerUrl,
+    event.flyerURL,
+    event.thumbnailUrl,
+    event.thumbnailURL,
+    typeof event.image === 'string' ? event.image : event.image?.url,
+    Array.isArray(event.images) ? event.images[0]?.url || event.images[0] : '',
+    event.flyer?.url,
+    event.media?.imageUrl,
+  ];
+
+  for (const value of candidates) {
+    if (typeof value === 'string' && /^https?:\/\//.test(value)) {
+      return value.split('?')[0];
+    }
+  }
+  return '';
+}
+
 async function main() {
   const today = new Date().toISOString().slice(0, 10);
 
@@ -89,6 +114,8 @@ async function main() {
       ? [pickLang(location.title), location.city].filter(Boolean).join(', ')
       : event.organizerName || '';
 
+    const image = pickImage(event);
+
     return {
       id: event.id,
       title: pickLang(event.title),
@@ -96,6 +123,7 @@ async function main() {
       url: event.url,
       organizerName: event.organizerName || '',
       location: locationLabel,
+      ...(image ? { image } : {}),
     };
   });
 

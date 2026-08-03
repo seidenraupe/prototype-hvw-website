@@ -110,10 +110,12 @@
         <img src="images/hvw-logo.png" alt="historischer verein winterthur" width="715" height="163" class="h-10 w-auto md:h-12">
       </a>
 
-      <nav class="hidden items-center gap-6 lg:flex" aria-label="Hauptnavigation">
+      <nav class="hidden items-center gap-5 xl:gap-6 lg:flex" aria-label="Hauptnavigation">
         <a href="index.html" class="font-medium underline decoration-2 underline-offset-4" aria-current="page">Start</a>
         <a href="agenda.html" class="font-medium no-underline hover:underline hover:underline-offset-4">Agenda</a>
         <a href="museen.html" class="font-medium no-underline hover:underline hover:underline-offset-4">Museen</a>
+        <a href="publikationen.html" class="font-medium no-underline hover:underline hover:underline-offset-4">Publikationen</a>
+        <a href="sammlung.html" class="font-medium no-underline hover:underline hover:underline-offset-4">Sammlung</a>
         <a href="ueber-uns.html" class="font-medium no-underline hover:underline hover:underline-offset-4">Über uns</a>
         <a href="mitmachen.html" class="inline-flex min-h-12 items-center bg-hvw-ink px-5 font-semibold text-white no-underline hover:bg-hvw-charcoal">Mitmachen</a>
       </nav>
@@ -132,7 +134,10 @@
       <a href="index.html" class="block border-b border-hvw-fog py-3 font-medium no-underline" aria-current="page">Start</a>
       <a href="agenda.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Agenda</a>
       <a href="museen.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Museen</a>
+      <a href="publikationen.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Publikationen</a>
+      <a href="sammlung.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Sammlung</a>
       <a href="ueber-uns.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Über uns</a>
+      <a href="zitate.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Stimmen aus Winterthur</a>
       <a href="mitmachen.html" class="mt-3 flex min-h-12 items-center justify-center bg-hvw-ink font-semibold text-white no-underline">Mitmachen</a>
     </nav>
   </header>
@@ -249,24 +254,40 @@
       </div>
     </section>
 
-    <section class="border-b border-hvw-ink bg-hvw-fog py-12 md:py-16" aria-labelledby="verband-heading">
+    <section class="border-b border-hvw-ink bg-hvw-fog py-12 md:py-16" aria-labelledby="stimmen-heading">
       <div class="mx-auto max-w-site px-5 md:px-8">
-        <p class="mb-2 text-sm font-semibold uppercase tracking-[0.08em] text-hvw-mute">Gemeinsamer Träger</p>
-        <h2 id="verband-heading" class="mb-4 max-w-3xl text-2xl font-semibold md:text-3xl">
-          Hinter museumschaffen.ch steht derselbe Verein.
+        <p class="mb-2 text-sm font-semibold uppercase tracking-[0.08em] text-hvw-mute">Perspektiven</p>
+        <h2 id="stimmen-heading" class="mb-8 text-2xl font-semibold uppercase tracking-wide md:text-3xl">
+          Stimmen aus Winterthur
         </h2>
-        <p class="max-w-2xl text-lg text-hvw-mute">
-          Museum Schaffen ist eine Initiative des Historischen Vereins Winterthur.
-          Diese Website hält die Vereinsangebote klar und grosszügig bedienbar —
-          für langjährige Mitglieder und für alle, die neu dazukommen.
-        </p>
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href="https://www.museumschaffen.ch/" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center bg-hvw-ink px-6 font-semibold text-white no-underline hover:bg-hvw-charcoal">
-            museumschaffen.ch
-          </a>
-          <a href="ueber-uns.html" class="inline-flex min-h-12 items-center border border-hvw-ink px-6 font-semibold no-underline hover:bg-white">
-            Über den Verein
-          </a>
+
+        <div class="grid gap-8 border border-hvw-ink bg-white p-5 sm:p-8 md:grid-cols-[220px_1fr] md:gap-10">
+          <div class="event-card__media aspect-square border border-hvw-ink/10 md:aspect-auto md:min-h-[220px]">
+            <img src="images/placeholder-quote.svg" alt="" width="800" height="800" loading="lazy">
+            <div class="event-card__watermark" aria-hidden="true"><span>finales Bild fehlt</span></div>
+          </div>
+          <div>
+            <p class="text-xl leading-relaxed text-hvw-ink md:text-2xl" data-quote-panel="hirschi-1">
+              «Winterthur ist das Rütli der modernen Schweiz: Hier hat die demokratische Bewegung,
+              die der Schweiz das Initiativ- und Referendumsrecht bescherte, ihren stärksten Impuls erhalten.»
+            </p>
+            <p class="text-xl leading-relaxed text-hvw-ink md:text-2xl" data-quote-panel="hirschi-2" hidden>
+              «Geschichte ist das Meer, auf dem der Schaum der Gegenwart reitet. Wenn wir nicht in sie eintauchen,
+              sind wir blosses Treibgut an der Oberfläche des Weltgeschehens.»
+            </p>
+            <p class="text-xl leading-relaxed text-hvw-ink md:text-2xl" data-quote-panel="hirschi-3" hidden>
+              «Ich wünsche dem Verein, dass er die nie abgeschlossene Geschichte der Demokratisierung
+              mit jenem Blick zurück begleitet, den es für jede tragfähige Zukunftsgestaltung braucht.»
+            </p>
+            <p class="mt-5 text-base font-semibold">Caspar Hirschi</p>
+            <p class="text-sm text-hvw-mute">Historiker, Universität St. Gallen</p>
+            <div class="mt-6 flex flex-wrap gap-2" role="group" aria-label="Zitat wählen">
+              <a href="#" class="quote-chip is-active inline-flex min-h-11 items-center border border-hvw-ink bg-hvw-ink px-4 text-sm font-semibold text-white no-underline" data-quote-target="hirschi-1" aria-pressed="true">Winterthur</a>
+              <a href="#" class="quote-chip inline-flex min-h-11 items-center border border-hvw-ink bg-white px-4 text-sm font-semibold text-hvw-ink no-underline hover:bg-hvw-fog" data-quote-target="hirschi-2" aria-pressed="false">Geschichte</a>
+              <a href="#" class="quote-chip inline-flex min-h-11 items-center border border-hvw-ink bg-white px-4 text-sm font-semibold text-hvw-ink no-underline hover:bg-hvw-fog" data-quote-target="hirschi-3" aria-pressed="false">Zukunft</a>
+              <a href="zitate.html" class="inline-flex min-h-11 items-center border border-hvw-ink bg-white px-4 text-sm font-semibold text-hvw-ink no-underline hover:bg-hvw-fog">Alle Stimmen →</a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -361,7 +382,9 @@
         <nav class="mt-3 flex flex-col gap-2" aria-label="Footer">
           <a href="agenda.html" class="no-underline hover:underline">Agenda</a>
           <a href="museen.html" class="no-underline hover:underline">Museen</a>
-          <a href="ueber-uns.html" class="no-underline hover:underline">Über uns</a>
+          <a href="publikationen.html" class="no-underline hover:underline">Publikationen</a>
+          <a href="sammlung.html" class="no-underline hover:underline">Sammlung</a>
+          <a href="zitate.html" class="no-underline hover:underline">Stimmen</a>
           <a href="mitmachen.html" class="no-underline hover:underline">Mitmachen</a>
           <a href="https://www.museumschaffen.ch/" target="_blank" rel="noopener noreferrer" class="no-underline hover:underline">Museum Schaffen</a>
         </nav>
