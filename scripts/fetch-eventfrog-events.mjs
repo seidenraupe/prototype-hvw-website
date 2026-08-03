@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * Fetches the next upcoming events of the Historischer Verein Winterthur
- * (Museum Schaffen / Museum Lindengut) and writes data/home-events.json
- * for the homepage.
+ * (orgIds 4936116, 5116588, 5137433 — Museum Schaffen / Lindengut / weitere)
+ * and writes data/home-events.json for the homepage.
  *
  * Primary source: Eventfrog Public API (needs EVENTFROG_API_KEY).
  * Fallback: public Eventfrog embed HTML (same embed key as agenda.html),
@@ -19,15 +19,17 @@ import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const API_BASE = 'https://api.eventfrog.net';
-const ORG_IDS = ['4936116', '5116588'];
+// Eventfrog Organisations-IDs (Museum Schaffen / Lindengut / weitere HVW-Org)
+const ORG_IDS = ['4936116', '5116588', '5137433'];
 const EVENT_LIMIT = 3;
 const OUTPUT_PATH = fileURLToPath(new URL('../data/home-events.json', import.meta.url));
 
 const EMBED_KEY = '78E8E1DA-CCC2-41C9-8C7C-85B14403FAF4';
+const EMBED_ORG_QUERY = ORG_IDS.map((id) => `orgId=${id}`).join('&');
 const EMBED_URL =
   `https://embed.eventfrog.ch/de/events.html?key=${EMBED_KEY}` +
   `&showSearch=false&disableAddEntry=true&excludeOrgs=false` +
-  `&orgId=${ORG_IDS[0]}&orgId=${ORG_IDS[1]}&geoRadius=10`;
+  `&${EMBED_ORG_QUERY}&geoRadius=10`;
 
 const MONTHS_DE = {
   januar: 1,
@@ -195,14 +197,18 @@ function extractIdFromUrl(url) {
 async function fetchEventsFromApi() {
   const today = new Date().toISOString().slice(0, 10);
 
+  // perPage bewusst höher als EVENT_LIMIT: über mehrere Orgs hinweg
+  // genügend Kandidaten holen, dann die nächsten N nehmen.
   const { events = [] } = await fetchJson('/public/v1/events', {
     orgId: ORG_IDS,
-    perPage: EVENT_LIMIT,
+    perPage: Math.max(EVENT_LIMIT * 10, 30),
     country: 'CH',
     from: today,
   });
 
-  const nextEvents = events.slice(0, EVENT_LIMIT);
+  const nextEvents = [...events]
+    .sort((a, b) => String(a.begin || '').localeCompare(String(b.begin || '')))
+    .slice(0, EVENT_LIMIT);
 
   const locationIds = [...new Set(nextEvents.flatMap((event) => event.locationIds || []))];
   let locationsById = {};
