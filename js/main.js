@@ -6,8 +6,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initNewsletter();
+  initQuoteChips();
   loadHomeEvents();
-  loadAgendaEvents();
 });
 
 function initNav() {
@@ -41,55 +41,57 @@ function initNewsletter() {
   });
 }
 
+function initQuoteChips() {
+  const quoteChips = document.querySelectorAll('[data-quote-target]');
+  const quotePanels = document.querySelectorAll('[data-quote-panel]');
+  if (!quoteChips.length || !quotePanels.length) return;
+
+  quoteChips.forEach((chip) => {
+    chip.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = chip.dataset.quoteTarget;
+
+      quoteChips.forEach((c) => {
+        c.classList.remove('is-active', 'bg-hvw-ink', 'text-white');
+        c.classList.add('bg-white', 'text-hvw-ink');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      chip.classList.add('is-active', 'bg-hvw-ink', 'text-white');
+      chip.classList.remove('bg-white', 'text-hvw-ink');
+      chip.setAttribute('aria-pressed', 'true');
+
+      quotePanels.forEach((panel) => {
+        panel.hidden = panel.dataset.quotePanel !== id;
+      });
+    });
+  });
+}
+
 async function loadHomeEvents() {
   const container = document.getElementById('home-events');
   if (!container) return;
-  await renderEvents(container, { limit: 3, placeholders: true });
+  await renderEvents(container, { limit: 3 });
 }
 
-async function loadAgendaEvents() {
-  const container = document.getElementById('agenda-events');
-  if (!container) return;
-  await renderEvents(container, { limit: 6, placeholders: true, fallbackDemo: true });
-}
-
-async function renderEvents(container, { limit = 3, placeholders = true, fallbackDemo = false } = {}) {
+async function renderEvents(container, { limit = 3 } = {}) {
   try {
     const response = await fetch('data/home-events.json', { cache: 'no-cache' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    let events = Array.isArray(data.events) ? data.events.slice(0, limit) : [];
-
-    if (!events.length && fallbackDemo) {
-      events = demoEvents().slice(0, limit);
-    }
+    const events = Array.isArray(data.events) ? data.events.slice(0, limit) : [];
 
     if (!events.length) {
       container.innerHTML = statusMessage('Aktuell sind keine Veranstaltungen geplant.');
       return;
     }
 
-    // Für Agenda: Demo-Events ergänzen, damit 2×3 Grid sichtbar ist
-    if (fallbackDemo && events.length < limit) {
-      const extras = demoEvents().filter((d) => !events.some((e) => e.id === d.id));
-      events = [...events, ...extras].slice(0, limit);
-    }
-
     container.innerHTML = events
-      .map((event, index) => renderEventCard(event, index, placeholders))
+      .map((event, index) => renderEventCard(event, index))
       .join('');
 
     injectEventJsonLd(events);
   } catch (err) {
     console.error('Veranstaltungen konnten nicht geladen werden:', err);
-    if (fallbackDemo) {
-      const events = demoEvents().slice(0, limit);
-      container.innerHTML = events
-        .map((event, index) => renderEventCard(event, index, placeholders))
-        .join('');
-      injectEventJsonLd(events);
-      return;
-    }
     container.innerHTML = statusMessage(
       'Veranstaltungen konnten nicht geladen werden. Alle Termine finden Sie auf der Agenda-Seite.'
     );
@@ -103,17 +105,22 @@ function statusMessage(text) {
 /**
  * Event-Karte — Tailwind, Mobile First:
  * 1 Spalte (default) · ab md 2 · ab lg 3 (Grid am Container)
+ * Nutzt event.image aus JSON, falls vorhanden; sonst Platzhalter mit Wasserzeichen.
  */
-function renderEventCard(event, index = 0, withPlaceholder = true) {
+function renderEventCard(event, index = 0) {
   const date = formatEventDate(event.begin);
   const iso = event.begin || '';
   const href = event.url || 'agenda.html';
-  const external = Boolean(event.url);
+  const external = Boolean(event.url && /^https?:\/\//.test(event.url));
   const location = event.location || event.organizerName || 'Winterthur';
   const imageIndex = (index % 6) + 1;
-  const imageSrc = withPlaceholder
-    ? `images/placeholder-event-${imageIndex}.svg`
-    : event.image || `images/placeholder-event-${imageIndex}.svg`;
+  const hasRealImage = Boolean(event.image);
+  const imageSrc = hasRealImage
+    ? event.image
+    : `images/placeholder-event-${imageIndex}.svg`;
+  const watermark = hasRealImage
+    ? ''
+    : `<div class="event-card__watermark" aria-hidden="true"><span>finales Bild fehlt</span></div>`;
 
   const targetAttrs = external
     ? ' target="_blank" rel="noopener noreferrer"'
@@ -125,15 +132,13 @@ function renderEventCard(event, index = 0, withPlaceholder = true) {
         <div class="event-card__media aspect-[4/3]">
           <img
             src="${escapeHtml(imageSrc)}"
-            alt=""
+            alt="${escapeHtml(hasRealImage ? (event.title || '') : '')}"
             width="1200"
             height="900"
             loading="lazy"
             decoding="async"
             itemprop="image">
-          <div class="event-card__watermark" aria-hidden="true">
-            <span>finales Bild fehlt</span>
-          </div>
+          ${watermark}
         </div>
         <div class="flex flex-1 flex-col gap-3 p-5 sm:p-6">
           <time
@@ -190,6 +195,7 @@ function injectEventJsonLd(events) {
     name: event.title,
     startDate: event.begin,
     url: event.url || undefined,
+    image: event.image || undefined,
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     eventStatus: 'https://schema.org/EventScheduled',
     location: {
@@ -207,7 +213,6 @@ function injectEventJsonLd(events) {
       name: event.organizerName || 'Historischer Verein Winterthur',
       url: 'https://www.museumschaffen.ch/',
     },
-    image: undefined,
   }));
 
   const script = document.createElement('script');
@@ -218,36 +223,6 @@ function injectEventJsonLd(events) {
     '@graph': graph,
   });
   document.head.appendChild(script);
-}
-
-/** Zusätzliche Demo-Termine für das Agenda-Raster (Prototyp) */
-function demoEvents() {
-  return [
-    {
-      id: 'demo-1',
-      title: 'Vortrag: Winterthur und die Demokratie',
-      begin: '2026-09-18T19:30:00+02:00',
-      url: 'agenda.html',
-      organizerName: 'Historischer Verein Winterthur',
-      location: 'Museum Lindengut, Winterthur',
-    },
-    {
-      id: 'demo-2',
-      title: 'Führung Schloss Mörsburg',
-      begin: '2026-09-27T14:00:00+02:00',
-      url: 'agenda.html',
-      organizerName: 'Historischer Verein Winterthur',
-      location: 'Schloss Mörsburg, Winterthur',
-    },
-    {
-      id: 'demo-3',
-      title: 'Kulturnacht Winterthur',
-      begin: '2026-09-19T18:00:00+02:00',
-      url: 'https://www.museumschaffen.ch/',
-      organizerName: 'Museum Schaffen',
-      location: 'Museum Schaffen, Winterthur',
-    },
-  ];
 }
 
 function escapeHtml(value) {

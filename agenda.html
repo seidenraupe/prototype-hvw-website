@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Agenda — Veranstaltungen des Historischen Vereins Winterthur</title>
-  <meta name="description" content="Alle Veranstaltungen des Historischen Vereins Winterthur und Museum Schaffen in Winterthur: Vorträge, Führungen, Konzerte und Führungen — aktuell und übersichtlich.">
+  <meta name="description" content="Alle Veranstaltungen des Historischen Vereins Winterthur und Museum Schaffen in Winterthur: Vorträge, Führungen, Konzerte — aktuell über Eventfrog.">
   <meta name="robots" content="index,follow">
   <meta name="geo.region" content="CH-ZH">
   <meta name="geo.placename" content="Winterthur">
@@ -44,10 +44,12 @@
       <a href="index.html" class="shrink-0 no-underline" aria-label="Historischer Verein Winterthur — Startseite">
         <img src="images/hvw-logo.png" alt="historischer verein winterthur" width="715" height="163" class="h-10 w-auto md:h-12">
       </a>
-      <nav class="hidden items-center gap-6 lg:flex" aria-label="Hauptnavigation">
+      <nav class="hidden items-center gap-5 xl:gap-6 lg:flex" aria-label="Hauptnavigation">
         <a href="index.html" class="font-medium no-underline hover:underline hover:underline-offset-4">Start</a>
         <a href="agenda.html" class="font-medium underline decoration-2 underline-offset-4" aria-current="page">Agenda</a>
         <a href="museen.html" class="font-medium no-underline hover:underline hover:underline-offset-4">Museen</a>
+        <a href="publikationen.html" class="font-medium no-underline hover:underline hover:underline-offset-4">Publikationen</a>
+        <a href="sammlung.html" class="font-medium no-underline hover:underline hover:underline-offset-4">Sammlung</a>
         <a href="ueber-uns.html" class="font-medium no-underline hover:underline hover:underline-offset-4">Über uns</a>
         <a href="mitmachen.html" class="inline-flex min-h-12 items-center bg-hvw-ink px-5 font-semibold text-white no-underline hover:bg-hvw-charcoal">Mitmachen</a>
       </nav>
@@ -57,7 +59,10 @@
       <a href="index.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Start</a>
       <a href="agenda.html" class="block border-b border-hvw-fog py-3 font-medium no-underline" aria-current="page">Agenda</a>
       <a href="museen.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Museen</a>
+      <a href="publikationen.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Publikationen</a>
+      <a href="sammlung.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Sammlung</a>
       <a href="ueber-uns.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Über uns</a>
+      <a href="zitate.html" class="block border-b border-hvw-fog py-3 font-medium no-underline">Stimmen aus Winterthur</a>
       <a href="mitmachen.html" class="mt-3 flex min-h-12 items-center justify-center bg-hvw-ink font-semibold text-white no-underline">Mitmachen</a>
     </nav>
   </header>
@@ -76,31 +81,14 @@
 
     <section class="py-10 md:py-14" aria-labelledby="events-heading">
       <div class="mx-auto max-w-site px-5 md:px-8">
-        <div class="mb-6">
-          <h2 id="events-heading" class="text-xl font-semibold uppercase tracking-wide md:text-2xl">
-            Kommende Termine
-          </h2>
-        </div>
-
-        <!-- Event-Karten-Grid: mobile-first -->
-        <div
-          id="agenda-events"
-          class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3"
-          aria-live="polite">
-          <p class="col-span-full border border-hvw-ink/15 bg-hvw-fog px-5 py-8 text-center text-hvw-mute">
-            Veranstaltungen werden geladen …
-          </p>
-        </div>
-
-        <div class="mt-10 border border-hvw-ink bg-hvw-fog p-5 sm:p-6">
-          <h3 class="text-lg font-semibold">Vollständige Eventfrog-Liste</h3>
-          <p class="mt-2 text-hvw-mute">
-            In der WordPress-Umsetzung wird hier der Eventfrog-Embed eingebunden.
-            Bis dahin führen die Karten direkt zu den Eventfrog-Detailseiten.
-          </p>
-          <div class="eventfrog-wrapper mt-5 min-h-[420px] border border-hvw-ink bg-white">
+        <h2 id="events-heading" class="sr-only">Veranstaltungen</h2>
+        <div class="border border-hvw-ink bg-white">
+          <div class="border-b border-hvw-ink bg-hvw-fog px-5 py-3 text-sm text-hvw-mute">
+            Live-Daten von Eventfrog — Vorträge und Anlässe des Historischen Vereins Winterthur und Museum Schaffen.
+          </div>
+          <div class="eventfrog-wrapper min-h-[700px]">
             <iframe
-              class="block min-h-[420px] w-full border-0"
+              class="block min-h-[700px] w-full border-0"
               title="Veranstaltungen des Historischen Vereins Winterthur auf Eventfrog"
               loading="lazy"
               src="https://embed.eventfrog.ch/de/events.html?key=78E8E1DA-CCC2-41C9-8C7C-85B14403FAF4&color=1A1A1A&showSearch=false&disableAddEntry=true&excludeOrgs=false&orgId=4936116&orgId=5116588&geoRadius=10">
@@ -124,8 +112,9 @@
         <h2 class="text-sm font-semibold uppercase tracking-[0.08em]">Navigation</h2>
         <nav class="mt-3 flex flex-col gap-2" aria-label="Footer">
           <a href="index.html" class="no-underline hover:underline">Start</a>
+          <a href="publikationen.html" class="no-underline hover:underline">Publikationen</a>
+          <a href="sammlung.html" class="no-underline hover:underline">Sammlung</a>
           <a href="mitmachen.html" class="no-underline hover:underline">Mitmachen</a>
-          <a href="ueber-uns.html" class="no-underline hover:underline">Über uns</a>
         </nav>
       </div>
       <div>
