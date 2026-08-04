@@ -184,10 +184,17 @@ input:focus-visible {
   margin-top: 1.5rem;
 }
 
-/* Perspektiven: Statement-Wechsel */
-[data-stimmen-rotate] [data-stimmen-quote],
-[data-stimmen-rotate] [data-stimmen-image] {
-  transition: opacity 0.35s ease;
+/* Stimmen-Porträts: quadratisch, nicht an Texthöhe gestreckt */
+.stimmen-photo {
+  aspect-ratio: 1 / 1;
+  align-self: start;
+}
+
+.stimmen-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
 }
 
 /* Sticky Mobile-Bar */

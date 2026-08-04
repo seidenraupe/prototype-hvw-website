@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initNewsletter();
-  initStimmenRotate();
+  initStimmenRandom();
   loadHomeEvents();
 });
 
@@ -42,49 +42,32 @@ function initNewsletter() {
 }
 
 /**
- * Perspektiven: ein Statement + Foto aus data/stimmen.json, wechselnd.
+ * Perspektiven: zufällige Person mit allen drei Antworten aus data/stimmen.json.
  */
-async function initStimmenRotate() {
-  const root = document.querySelector('[data-stimmen-rotate]');
+async function initStimmenRandom() {
+  const root = document.querySelector('[data-stimmen-random]');
   if (!root) return;
 
   const imageEl = root.querySelector('[data-stimmen-image]');
-  const questionEl = root.querySelector('[data-stimmen-question]');
-  const quoteEl = root.querySelector('[data-stimmen-quote]');
   const nameEl = root.querySelector('[data-stimmen-name]');
   const roleEl = root.querySelector('[data-stimmen-role]');
-  const countEl = root.querySelector('[data-stimmen-count]');
-  const prevBtn = root.querySelector('[data-stimmen-prev]');
-  const nextBtn = root.querySelector('[data-stimmen-next]');
-  if (!imageEl || !quoteEl || !nameEl) return;
+  const answersEl = root.querySelector('[data-stimmen-answers]');
+  if (!imageEl || !nameEl || !answersEl) return;
 
-  let slides = [];
+  let people = [];
   try {
     const response = await fetch('data/stimmen.json', { cache: 'no-cache' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    const people = Array.isArray(data.people) ? data.people : [];
-    slides = people.flatMap((person) =>
-      (person.statements || []).map((statement) => ({
-        name: person.name || '',
-        role: person.role || '',
-        image: person.image || 'images/placeholder-quote.svg',
-        question: statement.question || '',
-        text: statement.text || '',
-      }))
-    );
+    people = Array.isArray(data.people) ? data.people.filter((p) => (p.statements || []).length) : [];
   } catch (err) {
     console.error('Stimmen konnten nicht geladen werden:', err);
     return;
   }
 
-  if (!slides.length) return;
+  if (!people.length) return;
 
-  let index = 0;
-  let timer = null;
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const intervalMs = 9000;
-
+  const person = people[Math.floor(Math.random() * people.length)];
   const wrapQuote = (text) => {
     const trimmed = String(text || '').trim();
     if (!trimmed) return '';
@@ -94,48 +77,21 @@ async function initStimmenRotate() {
     return `«${trimmed}»`;
   };
 
-  const render = () => {
-    const slide = slides[index];
-    imageEl.src = slide.image;
-    imageEl.alt = slide.name;
-    if (questionEl) questionEl.textContent = slide.question;
-    quoteEl.textContent = wrapQuote(slide.text);
-    nameEl.textContent = slide.name;
-    if (roleEl) roleEl.textContent = slide.role;
-    if (countEl) countEl.textContent = `${index + 1} / ${slides.length}`;
-  };
+  imageEl.src = person.image || 'images/placeholder-quote.svg';
+  imageEl.alt = person.name || '';
+  nameEl.textContent = person.name || '';
+  if (roleEl) roleEl.textContent = person.role || '';
 
-  const go = (delta) => {
-    index = (index + delta + slides.length) % slides.length;
-    render();
-    restartTimer();
-  };
-
-  const restartTimer = () => {
-    if (timer) window.clearInterval(timer);
-    if (reduceMotion || slides.length < 2) return;
-    timer = window.setInterval(() => {
-      index = (index + 1) % slides.length;
-      render();
-    }, intervalMs);
-  };
-
-  prevBtn?.addEventListener('click', () => go(-1));
-  nextBtn?.addEventListener('click', () => go(1));
-
-  root.addEventListener('mouseenter', () => {
-    if (timer) window.clearInterval(timer);
-  });
-  root.addEventListener('mouseleave', restartTimer);
-  root.addEventListener('focusin', () => {
-    if (timer) window.clearInterval(timer);
-  });
-  root.addEventListener('focusout', (event) => {
-    if (!root.contains(event.relatedTarget)) restartTimer();
-  });
-
-  render();
-  restartTimer();
+  answersEl.innerHTML = (person.statements || [])
+    .map(
+      (statement) => `
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-hvw-mute">${escapeHtml(statement.question || '')}</p>
+        <p class="mt-3 text-lg leading-relaxed text-hvw-ink md:text-xl">${escapeHtml(wrapQuote(statement.text || ''))}</p>
+      </div>
+    `
+    )
+    .join('');
 }
 
 async function loadHomeEvents() {
