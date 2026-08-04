@@ -7,6 +7,9 @@
  * Requires GitHub Actions secret / env EVENTFROG_API_KEY (Public API key).
  * The embed widget key in agenda.html is unrelated and stays in the HTML only.
  *
+ * Images: the Public API list endpoint often omits image URLs. When missing,
+ * we enrich each event from the public event page's og:image.
+ *
  * Usage:
  *   EVENTFROG_API_KEY=<key> node scripts/fetch-eventfrog-events.mjs
  *
@@ -85,6 +88,33 @@ function pickImage(event) {
   return '';
 }
 
+/** Fallback when the API list payload has no image — use the event page og:image. */
+async function fetchOgImage(eventUrl) {
+  if (!eventUrl || !/^https?:\/\//.test(eventUrl)) return '';
+
+  try {
+    const res = await fetch(eventUrl, {
+      headers: {
+        Accept: 'text/html',
+        'User-Agent': 'HVW-homepage-events-bot/1.0 (+https://github.com/seidenraupe/prototype-hvw-website)',
+      },
+      redirect: 'follow',
+    });
+    if (!res.ok) return '';
+
+    const html = await res.text();
+    const match =
+      html.match(/property=["']og:image["']\s+content=["']([^"']+)/i) ||
+      html.match(/content=["']([^"']+)["']\s+property=["']og:image["']/i);
+
+    const image = match?.[1]?.trim() || '';
+    return /^https?:\/\//.test(image) ? image.split('?')[0] : '';
+  } catch (err) {
+    console.warn(`og:image fetch failed for ${eventUrl}:`, err.message || err);
+    return '';
+  }
+}
+
 async function main() {
   const today = new Date().toISOString().slice(0, 10);
 
@@ -107,15 +137,22 @@ async function main() {
     locationsById = Object.fromEntries(locations.map((loc) => [loc.id, loc]));
   }
 
-  const result = nextEvents.map((event) => {
+  const result = [];
+  let enrichedImages = 0;
+
+  for (const event of nextEvents) {
     const location = locationsById[event.locationIds?.[0]];
     const locationLabel = location
       ? [pickLang(location.title), location.city].filter(Boolean).join(', ')
       : event.organizerName || '';
 
-    const image = pickImage(event);
+    let image = pickImage(event);
+    if (!image && event.url) {
+      image = await fetchOgImage(event.url);
+      if (image) enrichedImages += 1;
+    }
 
-    return {
+    result.push({
       id: String(event.id),
       title: pickLang(event.title),
       begin: event.begin,
@@ -123,17 +160,20 @@ async function main() {
       organizerName: event.organizerName || '',
       location: locationLabel,
       ...(image ? { image } : {}),
-    };
-  });
+    });
+  }
 
   const payload = {
     generatedAt: new Date().toISOString(),
-    source: 'eventfrog-public-api',
+    source: enrichedImages ? 'eventfrog-public-api+og-image' : 'eventfrog-public-api',
     events: result,
   };
 
   await writeFile(OUTPUT_PATH, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
-  console.log(`Wrote ${result.length} event(s) to ${OUTPUT_PATH}`);
+  console.log(
+    `Wrote ${result.length} event(s) to ${OUTPUT_PATH}` +
+      (enrichedImages ? ` (${enrichedImages} image(s) from og:image)` : '')
+  );
 }
 
 main().catch((err) => {
