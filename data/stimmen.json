@@ -1,0 +1,404 @@
+{
+  "source": "https://historymatters.ch/interviews-2-2-2/",
+  "people": [
+    {
+      "id": "caspar-hirschi",
+      "name": "Caspar Hirschi",
+      "role": "Historiker Universität St.Gallen",
+      "image": "images/stimmen/caspar-hirschi.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Winterthur ist das Rütli der modernen Schweiz: Hier hat die demokratischen Bewegung, die der Schweiz das Initiativ- und Referendumsrecht und damit den Übergang von der repräsentativen zur halb-direkten Demokratie bescherte, ihren stärksten Impuls erhalten. Die Geschichte Winterthurs ist ein ermutigendes Beispiel dafür, wie schnell sich jahrhundertelange Untertanen in selbstbewusste Bürger verwandeln können."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Geschichte ist das Meer, auf dem der Schaum der Gegenwart reitet. Wenn wir nicht in sie eintauchen, sind wir blosses Treibgut an der Oberfläche des Weltgeschehens."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Der Historische Verein wurde im gleichen Jahr gegründet, als die total revidierte Bundesverfassung vom Schweizer Stimmvolk angenommen wurde. Ich wünsche ihm für die nächsten 150 Jahre, dass er die nie abgeschlossene Geschichte der Demokratisierung in und jenseits von Winterthur mit jenem Blick zurück begleitet, den es für jede tragfähige Zukunftsgestaltung braucht."
+        }
+      ],
+      "featuredQuote": "Winterthur ist das Rütli der modernen Schweiz: Hier hat die demokratischen Bewegung, die der Schweiz das Initiativ- und Referendumsrecht und damit den Übergang von der repräsentativen zur halb-direkten Demokratie bescherte, ihren stärksten Impuls erhalten. Die Geschichte Winterthurs ist ein ermutigendes Beispiel dafür, wie schnell sich jahrhundertelange Untertanen in selbstbewusste Bürger verwandeln können."
+    },
+    {
+      "id": "hansjoerg-brunner",
+      "name": "Hansjörg Brunner",
+      "role": "Mitglied HVW, Mörsburg-Team",
+      "image": "images/stimmen/hansjoerg-brunner.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Die Auseinandersetzung mit geschichtlichen Ereignissen ermöglicht uns Erkenntnisse über bisher Unbekanntes und fördert dadurch das Verständnis für die Gegenwart."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Geschichte ist für mich eine Entdeckungsreise, welche ausgehend von aktuellen Ereignissen neue Fragen an die Vergangenheit stellt."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Die Aktivitäten des Historischen Vereins mögen dazu beitragen, dass neue Aspekte der Vergangenheit unserer Stadt entdeckt und erforscht sowie der Bevölkerung auf attraktive Weise vermittelt werden."
+        }
+      ],
+      "featuredQuote": "Die Auseinandersetzung mit geschichtlichen Ereignissen ermöglicht uns Erkenntnisse über bisher Unbekanntes und fördert dadurch das Verständnis für die Gegenwart."
+    },
+    {
+      "id": "bettina-stefanini",
+      "name": "Bettina Stefanini",
+      "role": "Direktorin Stiftung für Kunst, Kultur und Geschichte SKKG",
+      "image": "images/stimmen/bettina-stefanini.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Wir sind alle mehr oder weniger begnadete Weiterentwickler:innen unseres kulturellen Erbes. Geschichte gibt uns den Kontext dazu und zugleich die Möglichkeit die Perspektive zu wechseln. Städte in der Vergangenheit stelle ich mir vor als Innovationscluster getrieben von ihrem einflussreichen und oft privilegierten Bürgertum. Ich finde es ausserordentlich spannend Geschichte auf der Ebene von Städten wie zum Beispiel von Winterthur zu verfolgen, zumal die vernetzte Gesellschaft in Städten auch unsere Zukunft massgeblich prägen wird."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Mich interessieren die Unterschiede zwischen Erfahrungen und Rekonstruktionen, wenn sie ähnliche Themen beleuchten. In diesem Sinn ist Geschichte immer auch Interpretation. Sie steht im Kontrast zum kollektiven Erinnern auf der einen Seite und zu den Naturwissenschaften auf der anderen. Ich finde die Multiperspektive von allen gemeinsam faszinierend."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Vor allem, dass er es schafft, neue Generationen mit ganz diversen Hintergründen zu begeistern und anzuregen an der kollektiven Geschichte mitzudenken und mitzuforschen."
+        }
+      ],
+      "featuredQuote": "Wir sind alle mehr oder weniger begnadete Weiterentwickler:innen unseres kulturellen Erbes. Geschichte gibt uns den Kontext dazu und zugleich die Möglichkeit die Perspektive zu wechseln. Städte in der Vergangenheit stelle ich mir vor als Innovationscluster getrieben von ihrem einflussreichen und oft privilegierten Bürgertum. Ich finde es ausserordentlich spannend Geschichte auf der Ebene von Städten wie zum Beispiel von Winterthur zu verfolgen, zumal die vernetzte Gesellschaft in Städten auch unsere Zukunft massgeblich prägen wird."
+    },
+    {
+      "id": "verena-rothenbuehler",
+      "name": "Verena Rothenbühler",
+      "role": "Historikerin Winterthur",
+      "image": "images/stimmen/verena-rothenbuehler.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Die Geschichte gehört zur DNA Winterthurs. Sie hilft zu verstehen, wie die Stadt geworden ist, was sie heute ist und eröffnet Denkhorizonte für mögliche Zukünfte. Stadtgeschichte(n) sind wichtig, weil sie Wissen und Emotionen schaffen, damit sich die Menschen in Winterthur zuhause und zugehörig fühlen."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Ein Leben ohne Geschichte kann ich mir nicht vorstellen."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Dass er sich wie in den letzten 150 Jahren immer wieder neu erfindet und ein Ort der lebendigen und kreativen Geschichtsvermittlung bleibt."
+        }
+      ],
+      "featuredQuote": "Die Geschichte gehört zur DNA Winterthurs. Sie hilft zu verstehen, wie die Stadt geworden ist, was sie heute ist und eröffnet Denkhorizonte für mögliche Zukünfte. Stadtgeschichte(n) sind wichtig, weil sie Wissen und Emotionen schaffen, damit sich die Menschen in Winterthur zuhause und zugehörig fühlen."
+    },
+    {
+      "id": "yusuf-yesiloez",
+      "name": "Yusuf Yeşilöz",
+      "role": "Schriftsteller und Filmemacher Winterthur",
+      "image": "images/stimmen/yusuf-yesiloez.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Winterthur hat mit ihren zwei Werken Rieter und Sulzer sowohl in der Schweiz als auch in der weiten Welt die Industriegeschichte mitgeschrieben. Die hier hergestellten Maschinen haben die Modernisierung der Arbeit in vielen Ländern mitgeprägt. Die Spuren dieser Industrie sind in Winterthur in unserer Zeit auch architektonisch gut sichtbar. Dass in diesen historischen Werkhallen heute wichtige Bildungsstätte untergebracht sind, zeugt von einem Geschichtsbewusstsein dieser Stadt."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Geschichte ist für mich ein Spiegel auf die Vergangenheit. Sie ist eine Leiter zum Gedächtnis der Menschheit."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Der Historische Verein soll den nächsten Generationen erzählen, woher sie kamen. Er soll auch die Tatsache weitergeben, dass ohne den Beitrag der Migrantinnen und Migranten die Region Winterthur deutlich ärmer gewesen wäre."
+        }
+      ],
+      "featuredQuote": "Winterthur hat mit ihren zwei Werken Rieter und Sulzer sowohl in der Schweiz als auch in der weiten Welt die Industriegeschichte mitgeschrieben. Die hier hergestellten Maschinen haben die Modernisierung der Arbeit in vielen Ländern mitgeprägt. Die Spuren dieser Industrie sind in Winterthur in unserer Zeit auch architektonisch gut sichtbar. Dass in diesen historischen Werkhallen heute wichtige Bildungsstätte untergebracht sind, zeugt von einem Geschichtsbewusstsein dieser Stadt."
+    },
+    {
+      "id": "miguel-garcia",
+      "name": "Miguel Garcia",
+      "role": "freischaffender Historiker Winterthur",
+      "image": "images/stimmen/miguel-garcia.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Geschichte stiftet Identität. Aktuelle Debatten über Migration, Rassismus oder Geschlechterrollen haben ihre Wurzeln in der Geschichte. Der Blick auf die Vergangenheit soll helfen, die Wahrnehmung der Gegenwart zu schärfen."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Die Auseinandersetzung mit mir und unserer Gesellschaft. Aber auch ein Eintauchen in eine andere, vergangene Welt. Geschichte regt zum Denken an. Geschichte ist aber auch eine Spurensuche und macht Spass."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Dass er am Puls der Zeit ist, aktuelle Themen aufgreift und junge Menschen für Geschichte begeistern kann."
+        }
+      ],
+      "featuredQuote": "Geschichte stiftet Identität. Aktuelle Debatten über Migration, Rassismus oder Geschlechterrollen haben ihre Wurzeln in der Geschichte. Der Blick auf die Vergangenheit soll helfen, die Wahrnehmung der Gegenwart zu schärfen."
+    },
+    {
+      "id": "haymo-empl",
+      "name": "Haymo Empl",
+      "role": "Leserbriefschreiber Winterthur",
+      "image": "images/stimmen/haymo-empl.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Wer die Geschichte kennt, sei es diejenige der Stadt Winterthur, oder ganz generell, hat ein besseres Verständnis für «aktuelle Handlungsweisen» der Verantwortlichen. Das Geschichtsbewusstsein hilft mit, Sorge zu tragen zu dem, was Vorfahren gestaltet, erarbeitet haben."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Für mich persönlich bedeutet Geschichte auch das Kennenlernen der eigenen Familiengeschichte, der eigenen Herkunft. Da tauchen abenteuerliche Gestalten auf, biedere, selbstbewusste, gescheiterte."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Dem HVW wünsche ich, dass es gelinge, den hier Lebenden einen gewissen Stolz zu vermitteln. Den Stolz, hier leben zu dürfen, in einer Stadt, in unserer Stadt, mit einer wechselhaften, interessanten Geschichte. Ich wünsche dem HVW noch mehr Mitglieder, welche durch ihr Mitmachen dem engagierten Vorstand das anspornende Echo geben."
+        }
+      ],
+      "featuredQuote": "Wer die Geschichte kennt, sei es diejenige der Stadt Winterthur, oder ganz generell, hat ein besseres Verständnis für «aktuelle Handlungsweisen» der Verantwortlichen. Das Geschichtsbewusstsein hilft mit, Sorge zu tragen zu dem, was Vorfahren gestaltet, erarbeitet haben."
+    },
+    {
+      "id": "claudia-franziska-bruehwiler",
+      "name": "Claudia Franziska Brühwiler",
+      "role": "Politologin Universität St.Gallen",
+      "image": "images/stimmen/claudia-franziska-bruehwiler.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Der Historische Verein teilt sein Gründungsjahr mit dem Winterthurer Technikum, dem ersten seiner Art in der Schweiz, und ist damit in einer Zeit des Auf- und Umbruchs verwurzelt. Gerade dann, wenn der Blick droht, nur auf die möglichen Wege nach vorn gerichtet zu sein, braucht es jenen zurück auf die Pfade und Abwege, die hinter einem liegen. Diese geben einem erst ein Verständnis für die herrschenden Umstände, Besonderheiten, Pfadabhängigkeiten, das Gewachsene, Gewucherte, et cetera, die unseren künftigen Möglichkeitsraum prägen. Winterthur ist wieder eine Stadt in einer Umbruchphase, die sich auf dem Fundament ihres industriellen Erbes (neu) erfindet – der Kompass der Geschichte hilft dabei."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "„History is a relentless master“ – Geschichte sei ein unerbitterlicher Lehrmeister, meinte Präsident John F. Kennedy. Geschichtsbewusstsein bringt aber auch nüchterne Distanz zur Gegenwart, die in Superlativen zu ertrinken droht. Als Wissenschaftlerin und Staatsbürgerin vermittelt mir die Auseinandersetzung mit der Geschichte jene Perspektive, mit der ich im Chaos des Jetzt zumindest für einen Augenblick ein Gefühl von Ordnung erlange."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Auf dass der Historische Verein auch im nächsten spannenden Jahrhundert Winterthurer Geschichte den Wandel begleiten und die Wurzeln bewahren wird! Auf dass sich weiterhin viele engagierte Kräfte und Köpfe finden, die sich mit Energie und Freude freiwillig für diese Aufgaben engagieren!"
+        }
+      ],
+      "featuredQuote": "Der Historische Verein teilt sein Gründungsjahr mit dem Winterthurer Technikum, dem ersten seiner Art in der Schweiz, und ist damit in einer Zeit des Auf- und Umbruchs verwurzelt. Gerade dann, wenn der Blick droht, nur auf die möglichen Wege nach vorn gerichtet zu sein, braucht es jenen zurück auf die Pfade und Abwege, die hinter einem liegen. Diese geben einem erst ein Verständnis für die herrschenden Umstände, Besonderheiten, Pfadabhängigkeiten, das Gewachsene, Gewucherte, et cetera, die unseren künftigen Möglichkeitsraum prägen. Winterthur ist wieder eine Stadt in einer Umbruchphase, die sich auf dem Fundament ihres industriellen Erbes (neu) erfindet – der Kompass der Geschichte hilft dabei."
+    },
+    {
+      "id": "gioia-joehri",
+      "name": "Gioia Jöhri",
+      "role": "Geschichtsstudentin Winterthur",
+      "image": "images/stimmen/gioia-joehri.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Geschichte ist wichtig, da wir dann wissen, woher wir kommen. Geschichte verbindet uns mit dem Ort, wo wir wohnen. Und dabei gibt es immer neue und spannende Lebenswelten zu entdecken. Zudem ist Geschichte nie isoliert: sie verbindet Winterthur auch mit der Welt. Diese Spuren zu erhalten und zu vermitteln ist eine wichtige Aufgabe."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Da ich Geschichte studiere, nimmt das Thema viel Platz in meinem Leben ein. Ich entdecke immer wieder spannende Dinge und bleibe neugierig. Für mich ist Geschichte nichts, dass «nur» Vergangenheit bedeutet. Wirft man einen Blick in die Zeitung, steckt hinter fast jeder Schlagzeile Geschichte. Wir verstehen die Gegenwart besser, wenn wir auch die Vergangenheit kennen."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Dem Historischen Verein wünsche ich weiterhin viel Tatendrang, interessierte Mitglieder und spannende Geschichtsvermittlungsideen. Auf 150 weitere erfolgreiche Jahre!"
+        }
+      ],
+      "featuredQuote": "Geschichte ist wichtig, da wir dann wissen, woher wir kommen. Geschichte verbindet uns mit dem Ort, wo wir wohnen. Und dabei gibt es immer neue und spannende Lebenswelten zu entdecken. Zudem ist Geschichte nie isoliert: sie verbindet Winterthur auch mit der Welt. Diese Spuren zu erhalten und zu vermitteln ist eine wichtige Aufgabe."
+    },
+    {
+      "id": "sonja-remensberger",
+      "name": "Sonja Remensberger",
+      "role": "Kuratorin Kunstmuseum Winterthur",
+      "image": "images/stimmen/sonja-remensberger.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Geschichte ist für Winterthur essentiell, um die kulturelle Identität zu bewahren, die Wirtschaft zu fördern, Bildung und Forschung zu unterstützen, aus der Vergangenheit zu lernen und die soziale Kohäsion zu stärken."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Insgesamt verleiht mir die Geschichte als Kunsthistorikerin und Miniaturenexpertin das notwendige Wissen und die Werkzeuge, um Kunstwerke zu analysieren, zu interpretieren, zu bewahren und zu vermitteln. Sie ist das Fundament, auf dem meine Expertise aufbaut, und ermöglicht es mir, einen Beitrag zur Kunstwelt zu leisten."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Ich wünsche dem Historischen Verein für die nächsten 150 Jahre viel Erfolg, Wachstum und einen anhaltenden positiven Einfluss auf die Gemeinschaft und die Geschichtswissenschaft."
+        }
+      ],
+      "featuredQuote": "Geschichte ist für Winterthur essentiell, um die kulturelle Identität zu bewahren, die Wirtschaft zu fördern, Bildung und Forschung zu unterstützen, aus der Vergangenheit zu lernen und die soziale Kohäsion zu stärken."
+    },
+    {
+      "id": "nadia-pettannice",
+      "name": "Nadia Pettannice",
+      "role": "freischaffende Historikerin Winterthur",
+      "image": "images/stimmen/nadia-pettannice.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Geschichte ist wichtig, weil sie wirkt. Der Blick in die Vergangenheit zeigt, dass Winterthur jeden Tag neu gedacht werden kann und auch neu gedacht werden muss. Nichts wird so bleiben wie es ist. Die Auseinandersetzung mit der Geschichte fördert die Fähigkeit andere Perspektiven einzunehmen und sich in fremde Lebensrealitäten hineinzuversetzen. Geschichte prägt unsere politischen und sozialen Strukturen, zeigt sich in der städtischen Architektur und wirkt über Vermittlung und Traditionen identitätsbildend."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Verantwortung. Geschichtsschreibung ist mächtig. Sie ist menschgemacht, quellenabhängig und immer selektiv. Daraus ergibt sich eine ethische und soziale Verantwortung, und zwar nicht nur für die Historiker:innen, sondern die gesamte Gesellschaft. Wenn wir uns eine weniger diskriminierende, pluralistischere und vielfältigere Geschichtsschreibung wünschen, dann müssen wir auch über Archivierung und Überlieferungsbildung sprechen, die dafür nötigen Mittel in die Hand nehmen, Anreize schaffen und Sorge zu unseren Kulturgütern tragen. Ohne Quellen – keine Geschichte."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Ich wünsche dem HVW den Mut, die eigenen Strukturen kritisch zu hinterfragen, neue Wege zu gehen und dabei das eigene historische Erbe als Chance und nicht als Belastung anzusehen. Ich wünsche mir einen agilen, geschichtswissenschaftlichen, tiefschürfenden und engagierten HVW, der sich auch politisch für eine verantwortungsvolle Geschichtsschreibung einsetzt. Das ist zwingend notwendig, denn History Matters!"
+        }
+      ],
+      "featuredQuote": "Geschichte ist wichtig, weil sie wirkt. Der Blick in die Vergangenheit zeigt, dass Winterthur jeden Tag neu gedacht werden kann und auch neu gedacht werden muss. Nichts wird so bleiben wie es ist. Die Auseinandersetzung mit der Geschichte fördert die Fähigkeit andere Perspektiven einzunehmen und sich in fremde Lebensrealitäten hineinzuversetzen. Geschichte prägt unsere politischen und sozialen Strukturen, zeigt sich in der städtischen Architektur und wirkt über Vermittlung und Traditionen identitätsbildend."
+    },
+    {
+      "id": "ueli-stauffacher",
+      "name": "Ueli Stauffacher",
+      "role": "Leiter Museum Schloss Kyburg",
+      "image": "images/stimmen/ueli-stauffacher.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Geschichte ist natürlich für Winterthur so wichtig wie für alle anderen auch. Sie macht uns frei: Die Erkenntnis, dass alles geworden ist, führt zur Einsicht, dass alles auch anders hätte werden können, und nicht so sein muss, wie es jetzt ist. Sie zeigt uns Handlungsmöglichkeiten und -bedarf auf: Wenn wir wissen, warum etwas gerade so geworden ist, können wir daraus ableiten, wie wir die Zukunft gestalten können, wollen, aber eventuell auch müssen."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Geschichte ist überall – in der eigenen Biographie, in der Beziehungsgeschichte, aber auch in einer Packung Kaffeepulver, einem Lichtschalter oder einem Busfahrplan. Zudem ist sie zu meinem Beruf geworden. Persönlich für mich am wichtigsten: Geschichte kann Religion ersetzen. Sie bietet Erklärungen, wie aus den Hoffnungen, Ängsten, dem Handeln und Leiden von unseren Vorgänger*innen und uns selber Kultur (Dinge, Formen des Zusammenlebens und auch der Weltwahrnehmung) entstand und sich ständig verändert. Weder zufällig noch planmässig. Und sie hilft, zwischen einem extremen Ohnmachtsgefühl und einer Allmachtsphantasie einen persönlichen Weg zu finden, um das eigene Leben und die Gesellschaft mitzugestalten."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Natürlich alles Gute! Viele Mitglieder, aktive und passive. Und dass die kommunale Politik noch mehr erkennt, dass Geschichte viel mehr als Hobby und Unterhaltung bietet. Vor allem aber: vor lauter Würde und Bedeutung nicht vergessen, dass Geschichte auch unheimlich lustig sein und Spass machen kann."
+        }
+      ],
+      "featuredQuote": "Geschichte ist natürlich für Winterthur so wichtig wie für alle anderen auch. Sie macht uns frei: Die Erkenntnis, dass alles geworden ist, führt zur Einsicht, dass alles auch anders hätte werden können, und nicht so sein muss, wie es jetzt ist. Sie zeigt uns Handlungsmöglichkeiten und -bedarf auf: Wenn wir wissen, warum etwas gerade so geworden ist, können wir daraus ableiten, wie wir die Zukunft gestalten können, wollen, aber eventuell auch müssen."
+    },
+    {
+      "id": "peter-schaerer",
+      "name": "Peter Schärer",
+      "role": "Maturand",
+      "image": "images/stimmen/peter-schaerer.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "«Achtung! Geschichte kann zu Einsichten führen und verursacht Bewusstsein.» Dieses gelbe Warnschild hängt, seit ich mich erinnern mag, in unserem Geschichtszimmer. Geschichte vernetzt Vergangenes und Gegenwärtiges. Ohne sie lässt sich der Status quo von Gesellschaft, Politik und Wirtschaft nicht erklären. Geschichte dringt in die intime, private und allgemeingesellschaftliche Sphäre ein, zwingt uns zur Reflexion des eigenen Daseins und schafft so Identität."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Zunächst ist Geschichte vor allem ein Schulfach für mich. In meiner Maturitätsarbeit habe ich den schweizerisch-amerikanischen Aussenhandel im Zweiten Weltkrieg untersucht – mit Begeisterung! Mir bereiten der gemeinsame Austausch über Geschichte, historisches Denken, Recherchieren, Lesen und Schreiben also vor allem eines: grosse Freude."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Eine blühende Zukunft mit vielen jungen und begeisterten Mitgliedern, weiterhin vielfältige kreative Projekte und vor allem mehr Aufmerksamkeit in Winterthur!"
+        }
+      ],
+      "featuredQuote": "«Achtung! Geschichte kann zu Einsichten führen und verursacht Bewusstsein.» Dieses gelbe Warnschild hängt, seit ich mich erinnern mag, in unserem Geschichtszimmer. Geschichte vernetzt Vergangenes und Gegenwärtiges. Ohne sie lässt sich der Status quo von Gesellschaft, Politik und Wirtschaft nicht erklären. Geschichte dringt in die intime, private und allgemeingesellschaftliche Sphäre ein, zwingt uns zur Reflexion des eigenen Daseins und schafft so Identität."
+    },
+    {
+      "id": "roman-meier",
+      "name": "Roman Meier",
+      "role": "HVW-Mitglied, Mörsburg-Führungen",
+      "image": "images/stimmen/roman-meier.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Ohne Geschichte gäbe es Winterthur nicht, also Geschichte ist seeeehr wichtig."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Geschichte ist für mich Spannung – weil es mit Menschen zu tun hat"
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Ich wünsche für den Hist.-Verein: Wachstum."
+        }
+      ],
+      "featuredQuote": "Ohne Geschichte gäbe es Winterthur nicht, also Geschichte ist seeeehr wichtig."
+    },
+    {
+      "id": "konrad-bitterli",
+      "name": "Konrad Bitterli",
+      "role": "Direktor Kunstmuseum Winterthur",
+      "image": "images/stimmen/konrad-bitterli.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "History Matters – nicht nur in Winterthur, sondern überall. Geschichte handelt von Identitäten und wie sich diese konstituieren. Wenn wir nicht wissen, woher wir kommen und was wir sind, wie wollen wir entscheiden können, wohin wir gehen?"
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Geschichte ist wie ein Thriller, spannend, voller unerwarteter Wendungen, gelegentlich abgrundtief bösartig, manchmal überraschend hoffnungsvoll. Als Kunsthistoriker ist die Kulturgeschichte ein wichtiges Werkzeug, um zu verstehen, wie die Kunst einer bestimmten Epoche entstanden ist, an wen sie gerichtet war und wie sich ihre Rezeption über die Jahrhunderte verändert hat."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Zumindest weitere 150 Jahre."
+        }
+      ],
+      "featuredQuote": "History Matters – nicht nur in Winterthur, sondern überall. Geschichte handelt von Identitäten und wie sich diese konstituieren. Wenn wir nicht wissen, woher wir kommen und was wir sind, wie wollen wir entscheiden können, wohin wir gehen?"
+    },
+    {
+      "id": "andres-betschart",
+      "name": "Andres Betschart",
+      "role": "Leiter Sammlung Winterthur",
+      "image": "images/stimmen/andres-betschart.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Geschichte fördert das Verständnis der heutigen Welt. Das gilt sowohl im Grossen – Warum ist Europa reich und Afrika arm? – wie auch im Kleinen, Lokalen: Warum trifft man sich im Bahnhof Winterthur bei der «Milchrampe», wo es doch weit und breit keine solche gibt?"
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Geschichte ist für mich eine pralle Wundertüte voll drängender Fragen und spannender Entdeckungen. Eine Einladung, den Sachen auf den Grund zu gehen. Ein Wechselbad von Frust, wenn sich eine These einfach nicht belegen lässt, und Freude, wenn ein Dokument punktgenau die gesuchte Antwort liefert. Kurz: Die Beschäftigung mit Geschichte hält den Geist wach."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?",
+          "text": "Dass er weiterhin aktiv bleibt, ein attraktives Museum betreibt und im Winterthurer Kulturleben eine wichtige Rolle einnimmt."
+        }
+      ],
+      "featuredQuote": "Geschichte fördert das Verständnis der heutigen Welt. Das gilt sowohl im Grossen – Warum ist Europa reich und Afrika arm? – wie auch im Kleinen, Lokalen: Warum trifft man sich im Bahnhof Winterthur bei der «Milchrampe», wo es doch weit und breit keine solche gibt?"
+    },
+    {
+      "id": "peter-niederhaeuser",
+      "name": "Peter Niederhäuser",
+      "role": "Historiker",
+      "image": "images/stimmen/peter-niederhaeuser.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Ohne Vergangenheit kein Verständnis der Gegenwart und keine Orientierung für die Zukunft. Wer Zusammenhänge verstehen will, kommt um Geschichte nicht herum."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Geschichte ist ganz einfach mein Leben und meine Berufung! Ich freue mich, Geschichte einem breiten Publikum möglichst anschaulich vermitteln zu können."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein Winterthur?",
+          "text": "Ohne Verein keine Geschichtsvermittlung – deshalb freue ich mich, wenn der Historische Verein auch weiterhin attraktive Vorträge, Exkursionen und Ausstellungen anbietet und so ein breites Publikum ansprechen kann."
+        }
+      ],
+      "featuredQuote": "Ohne Vergangenheit kein Verständnis der Gegenwart und keine Orientierung für die Zukunft. Wer Zusammenhänge verstehen will, kommt um Geschichte nicht herum."
+    },
+    {
+      "id": "wanda-seiler-und-jose-caceres",
+      "name": "Wanda Seiler und Jose Cáceres",
+      "role": "Co-Kurator:innen",
+      "image": "images/stimmen/wanda-seiler-und-jose-caceres.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Geschichte verbindet. Sie bringt Orte, Personen, Themen, Erfahrungen zusammen. Daraus entsteht ein vielfältiges Bild von der Stadt Winterthur, welches Menschen innerhalb und ausserhalb der Stadt Winterthur – sogar jenseits der nationalen Grenzen miteinander vernetzt. Während unserer Recherche für die Ausstellung «Reality Check!» sind wir auf italienische, türkische oder serbische soziale Netzwerke gestossen, die das Leben der Stadt Winterthur bis heute prägen. Die Arbeit zeigte uns, wie Migrationsgeschichte für Winterthur konstitutiv ist."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Geschichte ist Erfahrung. Politische Entscheidungen, soziale Entwicklungen sowie kulturelle Bewegungen sind keine abstrakten Phänomene, sie sind von Menschen gestaltet und beeinflussen den Alltag unterschiedlicher Menschen. All das kann Geschichte aufzeigen. Dafür muss die bisherige Geschichtsschreibung aber zwingend infrage gestellt werden. Sie muss pluralisiert und aus verschiedenen Perspektiven betrachtet werden. Dieser Prozess ist nie abgeschlossen. Geschichte entwickelt sich kontinuierlich weiter."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein Winterthur?",
+          "text": "Wir wünschen dem Historischen Verein Winterthur, dass er sich für eine vielfältige Geschichtsschreibung in Winterthur engagiert. Geschichte sollte nicht nur aufbewahrt werden, sondern auch stets neu verhandelt werden. Dazu ist es unabdingbar, einen diskriminierungssensiblen, diversitätsorientierten und intersektionalen Umgang mit Geschichte zu pflegen."
+        }
+      ],
+      "featuredQuote": "Geschichte verbindet. Sie bringt Orte, Personen, Themen, Erfahrungen zusammen. Daraus entsteht ein vielfältiges Bild von der Stadt Winterthur, welches Menschen innerhalb und ausserhalb der Stadt Winterthur – sogar jenseits der nationalen Grenzen miteinander vernetzt. Während unserer Recherche für die Ausstellung «Reality Check!» sind wir auf italienische, türkische oder serbische soziale Netzwerke gestossen, die das Leben der Stadt Winterthur bis heute prägen. Die Arbeit zeigte uns, wie Migrationsgeschichte für Winterthur konstitutiv ist."
+    },
+    {
+      "id": "andrea-tiziani",
+      "name": "Andrea Tiziani",
+      "role": "Vorstandsmitglied und Kurator der Sammlung HVW",
+      "image": "images/stimmen/andrea-tiziani.jpg",
+      "statements": [
+        {
+          "question": "Warum ist Geschichte für Winterthur wichtig?",
+          "text": "Geschichte ist wichtig für Winterthur, weil die Stadt so verankert wird in Raum und Zeit. Ohne Geschichte verlieren wir uns im All der Tausend Möglichkeiten. Mit der Auseinandersetzung mit ihrer Geschichte bekommt die Stadt Winterthur eine Identität. Dafür muss man wissen, woher man kommt. Die Menschen, die in Winterthur leben, müssen sich mit ihrer Stadt identifizieren können, damit sie sich auch engagieren. Die Geschichte der Stadt zu kennen hilft dabei, sich zu Hause zu fühlen und sich zu engagieren."
+        },
+        {
+          "question": "Was bedeutet Geschichte für Sie persönlich?",
+          "text": "Als Historiker befasse ich mich beruflich mit Geschichte und bin in der privilegierten Lage, mich mit etwas zu beschäftigen, das mir gefällt. Auch privat spielt Geschichte eine wichtige Rolle für mich; als Vorstandsmitglied und Konservator kümmere ich mich um die Sammlung des Historischen Vereins Winterthur."
+        },
+        {
+          "question": "Was wünschen Sie dem Historischen Verein Winterthur?",
+          "text": "Viele neue Mitglieder, einen engagierten Vorstand und ein spannendes Museum zum Thema Geschichte. zurück"
+        }
+      ],
+      "featuredQuote": "Geschichte ist wichtig für Winterthur, weil die Stadt so verankert wird in Raum und Zeit. Ohne Geschichte verlieren wir uns im All der Tausend Möglichkeiten. Mit der Auseinandersetzung mit ihrer Geschichte bekommt die Stadt Winterthur eine Identität. Dafür muss man wissen, woher man kommt. Die Menschen, die in Winterthur leben, müssen sich mit ihrer Stadt identifizieren können, damit sie sich auch engagieren. Die Geschichte der Stadt zu kennen hilft dabei, sich zu Hause zu fühlen und sich zu engagieren."
+    }
+  ]
+}

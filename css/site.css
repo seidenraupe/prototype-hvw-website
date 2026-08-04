@@ -184,6 +184,12 @@ input:focus-visible {
   margin-top: 1.5rem;
 }
 
+/* Perspektiven: Statement-Wechsel */
+[data-stimmen-rotate] [data-stimmen-quote],
+[data-stimmen-rotate] [data-stimmen-image] {
+  transition: opacity 0.35s ease;
+}
+
 /* Sticky Mobile-Bar */
 .hvw-mobile-bar {
   padding-bottom: env(safe-area-inset-bottom, 0);
