@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initNewsletter();
-  initQuoteChips();
+  initStimmenRotate();
   loadHomeEvents();
 });
 
@@ -41,30 +41,101 @@ function initNewsletter() {
   });
 }
 
-function initQuoteChips() {
-  const quoteChips = document.querySelectorAll('[data-quote-target]');
-  const quotePanels = document.querySelectorAll('[data-quote-panel]');
-  if (!quoteChips.length || !quotePanels.length) return;
+/**
+ * Perspektiven: ein Statement + Foto aus data/stimmen.json, wechselnd.
+ */
+async function initStimmenRotate() {
+  const root = document.querySelector('[data-stimmen-rotate]');
+  if (!root) return;
 
-  quoteChips.forEach((chip) => {
-    chip.addEventListener('click', (e) => {
-      e.preventDefault();
-      const id = chip.dataset.quoteTarget;
+  const imageEl = root.querySelector('[data-stimmen-image]');
+  const questionEl = root.querySelector('[data-stimmen-question]');
+  const quoteEl = root.querySelector('[data-stimmen-quote]');
+  const nameEl = root.querySelector('[data-stimmen-name]');
+  const roleEl = root.querySelector('[data-stimmen-role]');
+  const countEl = root.querySelector('[data-stimmen-count]');
+  const prevBtn = root.querySelector('[data-stimmen-prev]');
+  const nextBtn = root.querySelector('[data-stimmen-next]');
+  if (!imageEl || !quoteEl || !nameEl) return;
 
-      quoteChips.forEach((c) => {
-        c.classList.remove('is-active', 'bg-hvw-ink', 'text-white');
-        c.classList.add('bg-white', 'text-hvw-ink');
-        c.setAttribute('aria-pressed', 'false');
-      });
-      chip.classList.add('is-active', 'bg-hvw-ink', 'text-white');
-      chip.classList.remove('bg-white', 'text-hvw-ink');
-      chip.setAttribute('aria-pressed', 'true');
+  let slides = [];
+  try {
+    const response = await fetch('data/stimmen.json', { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    const people = Array.isArray(data.people) ? data.people : [];
+    slides = people.flatMap((person) =>
+      (person.statements || []).map((statement) => ({
+        name: person.name || '',
+        role: person.role || '',
+        image: person.image || 'images/placeholder-quote.svg',
+        question: statement.question || '',
+        text: statement.text || '',
+      }))
+    );
+  } catch (err) {
+    console.error('Stimmen konnten nicht geladen werden:', err);
+    return;
+  }
 
-      quotePanels.forEach((panel) => {
-        panel.hidden = panel.dataset.quotePanel !== id;
-      });
-    });
+  if (!slides.length) return;
+
+  let index = 0;
+  let timer = null;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const intervalMs = 9000;
+
+  const wrapQuote = (text) => {
+    const trimmed = String(text || '').trim();
+    if (!trimmed) return '';
+    if (trimmed.startsWith('«') || trimmed.startsWith('"') || trimmed.startsWith('„')) {
+      return trimmed;
+    }
+    return `«${trimmed}»`;
+  };
+
+  const render = () => {
+    const slide = slides[index];
+    imageEl.src = slide.image;
+    imageEl.alt = slide.name;
+    if (questionEl) questionEl.textContent = slide.question;
+    quoteEl.textContent = wrapQuote(slide.text);
+    nameEl.textContent = slide.name;
+    if (roleEl) roleEl.textContent = slide.role;
+    if (countEl) countEl.textContent = `${index + 1} / ${slides.length}`;
+  };
+
+  const go = (delta) => {
+    index = (index + delta + slides.length) % slides.length;
+    render();
+    restartTimer();
+  };
+
+  const restartTimer = () => {
+    if (timer) window.clearInterval(timer);
+    if (reduceMotion || slides.length < 2) return;
+    timer = window.setInterval(() => {
+      index = (index + 1) % slides.length;
+      render();
+    }, intervalMs);
+  };
+
+  prevBtn?.addEventListener('click', () => go(-1));
+  nextBtn?.addEventListener('click', () => go(1));
+
+  root.addEventListener('mouseenter', () => {
+    if (timer) window.clearInterval(timer);
   });
+  root.addEventListener('mouseleave', restartTimer);
+  root.addEventListener('focusin', () => {
+    if (timer) window.clearInterval(timer);
+  });
+  root.addEventListener('focusout', (event) => {
+    if (!root.contains(event.relatedTarget)) restartTimer();
+  });
+
+  render();
+  restartTimer();
 }
 
 async function loadHomeEvents() {
