@@ -72,8 +72,10 @@ Secret `EVENTFROG_API_KEY` ist **pflichtig**. Im Eventfrog-Cockpit einen **Publi
 anlegen und unter Repo → Settings → Secrets speichern.
 
 Der API-Key liegt nicht im Repository-Code. Die Agenda-Seite (`agenda.html`) nutzt
-zusätzlich das öffentliche Eventfrog-Widget (iframe); dessen Widget-Key in der URL
+zusätzlich das öffentliche Eventfrog-Widget (iframe + `embed.js`); dessen Widget-Key in der URL
 ist kein API-Secret und muss im HTML stehen.
+
+Fehlende Event-Bilder ergänzt das Fetch-Skript über die `og:image` der Eventfrog-Eventseite.
 
 ## Webling-Anmeldung (Mitmachen)
 
