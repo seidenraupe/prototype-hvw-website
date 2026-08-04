@@ -248,15 +248,15 @@
       </div>
     </section>
 
-    <section class="border-b border-hvw-ink bg-hvw-fog py-12 md:py-16" aria-labelledby="stimmen-heading" data-stimmen-rotate>
+    <section class="border-b border-hvw-ink bg-hvw-fog py-12 md:py-16" aria-labelledby="stimmen-heading" data-stimmen-random>
       <div class="mx-auto max-w-site px-5 md:px-8">
         <p class="mb-2 text-sm font-semibold uppercase tracking-[0.08em] text-hvw-mute">Perspektiven</p>
         <h2 id="stimmen-heading" class="mb-8 text-2xl font-semibold uppercase tracking-wide md:text-3xl">
           Stimmen aus Winterthur
         </h2>
 
-        <div class="grid gap-8 border border-hvw-ink bg-white p-5 sm:p-8 md:grid-cols-[220px_1fr] md:gap-10" aria-live="polite">
-          <div class="event-card__media aspect-square border border-hvw-ink/10 md:aspect-auto md:min-h-[220px]">
+        <div class="grid gap-8 border border-hvw-ink bg-white p-5 sm:p-8 md:grid-cols-[280px_1fr] md:gap-10 lg:grid-cols-[320px_1fr]" aria-live="polite">
+          <div class="stimmen-photo event-card__media aspect-square w-full max-w-[320px] justify-self-start border border-hvw-ink/10 md:max-w-none">
             <img
               data-stimmen-image
               src="images/stimmen/caspar-hirschi.jpg"
@@ -267,22 +267,38 @@
               decoding="async">
           </div>
           <div>
-            <p class="text-sm font-semibold uppercase tracking-wide text-hvw-mute" data-stimmen-question>
-              Warum ist Geschichte für Winterthur wichtig?
-            </p>
-            <p class="mt-3 text-xl leading-relaxed text-hvw-ink md:text-2xl" data-stimmen-quote>
-              «Winterthur ist das Rütli der modernen Schweiz: Hier hat die demokratische Bewegung,
-              die der Schweiz das Initiativ- und Referendumsrecht und damit den Übergang von der
-              repräsentativen zur halb-direkten Demokratie bescherte, ihren stärksten Impuls erhalten.
-              Die Geschichte Winterthurs ist ein ermutigendes Beispiel dafür, wie schnell sich
-              jahrhundertelange Untertanen in selbstbewusste Bürger verwandeln können.»
-            </p>
-            <p class="mt-5 text-base font-semibold" data-stimmen-name>Caspar Hirschi</p>
+            <p class="text-base font-semibold" data-stimmen-name>Caspar Hirschi</p>
             <p class="text-sm text-hvw-mute" data-stimmen-role>Historiker Universität St.Gallen</p>
-            <div class="mt-6 flex flex-wrap items-center gap-2" role="group" aria-label="Statement steuern">
-              <button type="button" class="inline-flex min-h-11 min-w-11 items-center justify-center border border-hvw-ink bg-white px-4 text-sm font-semibold hover:bg-hvw-fog" data-stimmen-prev aria-label="Vorheriges Statement">←</button>
-              <button type="button" class="inline-flex min-h-11 min-w-11 items-center justify-center border border-hvw-ink bg-white px-4 text-sm font-semibold hover:bg-hvw-fog" data-stimmen-next aria-label="Nächstes Statement">→</button>
-              <span class="px-2 text-sm text-hvw-mute" data-stimmen-count aria-hidden="true">1 / 57</span>
+            <div class="mt-6 space-y-6" data-stimmen-answers>
+              <div>
+                <p class="text-sm font-semibold uppercase tracking-wide text-hvw-mute">Warum ist Geschichte für Winterthur wichtig?</p>
+                <p class="mt-3 text-lg leading-relaxed text-hvw-ink md:text-xl">
+                  «Winterthur ist das Rütli der modernen Schweiz: Hier hat die demokratische Bewegung,
+                  die der Schweiz das Initiativ- und Referendumsrecht und damit den Übergang von der
+                  repräsentativen zur halb-direkten Demokratie bescherte, ihren stärksten Impuls erhalten.
+                  Die Geschichte Winterthurs ist ein ermutigendes Beispiel dafür, wie schnell sich
+                  jahrhundertelange Untertanen in selbstbewusste Bürger verwandeln können.»
+                </p>
+              </div>
+              <div>
+                <p class="text-sm font-semibold uppercase tracking-wide text-hvw-mute">Was bedeutet Geschichte für Sie persönlich?</p>
+                <p class="mt-3 text-lg leading-relaxed text-hvw-ink md:text-xl">
+                  «Geschichte ist das Meer, auf dem der Schaum der Gegenwart reitet. Wenn wir nicht in sie eintauchen,
+                  sind wir blosses Treibgut an der Oberfläche des Weltgeschehens.»
+                </p>
+              </div>
+              <div>
+                <p class="text-sm font-semibold uppercase tracking-wide text-hvw-mute">Was wünschen Sie dem Historischen Verein für die nächsten 150 Jahre?</p>
+                <p class="mt-3 text-lg leading-relaxed text-hvw-ink md:text-xl">
+                  «Der Historische Verein wurde im gleichen Jahr gegründet, als die total revidierte
+                  Bundesverfassung vom Schweizer Stimmvolk angenommen wurde. Ich wünsche ihm für die
+                  nächsten 150 Jahre, dass er die nie abgeschlossene Geschichte der Demokratisierung
+                  in und jenseits von Winterthur mit jenem Blick zurück begleitet, den es für jede
+                  tragfähige Zukunftsgestaltung braucht.»
+                </p>
+              </div>
+            </div>
+            <div class="mt-8">
               <a href="zitate.html" class="inline-flex min-h-11 items-center border border-hvw-ink bg-white px-4 text-sm font-semibold text-hvw-ink no-underline hover:bg-hvw-fog">Alle Stimmen →</a>
             </div>
           </div>
