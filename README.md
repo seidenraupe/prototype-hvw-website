@@ -74,3 +74,13 @@ anlegen und unter Repo → Settings → Secrets speichern.
 Der API-Key liegt nicht im Repository-Code. Die Agenda-Seite (`agenda.html`) nutzt
 zusätzlich das öffentliche Eventfrog-Widget (iframe); dessen Widget-Key in der URL
 ist kein API-Secret und muss im HTML stehen.
+
+## Webling-Anmeldung (Mitmachen)
+
+Die Seite `mitmachen.html` bettet das Webling-Mitgliedschaftsformular als iframe ein
+(Anker `#anmeldeformular`), analog zu den ursprünglichen Wireframe-Styles.
+
+- Konfiguration: `data/webling-form.json` → Feld `url`
+- URL-Format: `https://hvw.webling.ch/forms/memberform/<hash>`
+- Hash holen: Webling-Admin → Mitglieder → Formulare → **Öffentlicher Link**
+- Laden: `js/main.js` (`loadWeblingForm`)
