@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-03T09:15:25.612Z",
-  "source": "eventfrog-embed-fallback",
+  "generatedAt": "2026-08-04T07:41:12.654Z",
+  "source": "eventfrog-public-api",
   "events": [
     {
       "id": "7478101541469064824",
@@ -8,8 +8,7 @@
       "begin": "2026-08-13T19:00:00+02:00",
       "url": "https://eventfrog.ch/de/p/diverses/pims-quizshow-special-edition-zum-fantasie-festival-7478101541469064824.html",
       "organizerName": "Museum Schaffen",
-      "location": "Museum Schaffen, Winterthur",
-      "image": "https://res.eventfrog.net/production_res_public/pims-AWIF2DRO.webp"
+      "location": "Museum Schaffen, Winterthur"
     },
     {
       "id": "7454450224431374322",
@@ -17,8 +16,7 @@
       "begin": "2026-08-23T17:00:00+02:00",
       "url": "https://eventfrog.ch/de/p/fuehrungen-vortraege/fuehrung/szenische-fuehrung-in-der-burg-7454450224431374322.html",
       "organizerName": "Historischer Verein Winterthur",
-      "location": "Schloss Mörsburg, Winterthur",
-      "image": "https://res.eventfrog.net/production_res_public/magd2024-4-bearbeitet-6SFWWZS1-BIK2D-VWIJ0N8T.webp"
+      "location": "Schloss Mörsburg, Winterthur"
     },
     {
       "id": "7478107357592992377",
@@ -26,8 +24,7 @@
       "begin": "2026-08-28T14:00:00+02:00",
       "url": "https://eventfrog.ch/de/p/fuehrungen-vortraege/tagungen-kolloquien/kaefele-mit-der-kuratorin-der-haldengut-ausstellung-7478107357592992377.html",
       "organizerName": "Museum Schaffen",
-      "location": "Museum Schaffen, Winterthur",
-      "image": "https://res.eventfrog.net/production_res_public/kaefele-mit-der-kuratorin-uwzt8cuh-pa-7DB53H2N.jpg"
+      "location": "Museum Schaffen, Winterthur"
     }
   ]
 }
