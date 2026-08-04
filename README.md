@@ -77,10 +77,10 @@ ist kein API-Secret und muss im HTML stehen.
 
 ## Webling-Anmeldung (Mitmachen)
 
-Die Seite `mitmachen.html` bettet das Webling-Mitgliedschaftsformular als iframe ein
-(Anker `#anmeldeformular`), analog zu den ursprünglichen Wireframe-Styles.
+Die Seite `mitmachen.html` bettet das Webling-Mitgliedschaftsformular als **iframe** ein
+(Anker `#anmeldeformular`) — technisch wie im vorherigen Prototyp
+([prototyp-hvw](https://seidenraupe.github.io/prototyp-hvw/mitmachen.html#anmeldeformular)).
 
-- Konfiguration: `data/webling-form.json` → Feld `url`
-- URL-Format: `https://hvw.webling.ch/forms/memberform/<hash>`
-- Hash holen: Webling-Admin → Mitglieder → Formulare → **Öffentlicher Link**
-- Laden: `js/main.js` (`loadWeblingForm`)
+- iframe-`src`: `https://hvwinterthur.webling.ch/forms/memberform/d9e980cf304ee928a7e5`
+- Referenz auch in `data/webling-form.json`
+- Nach dem Absenden bleibt die Besucherin/der Besucher auf der HVW-Website
