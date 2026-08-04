@@ -160,6 +160,30 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
+/* Webling-Anmeldeformular (iframe-Embed) — wie in den Wireframes */
+#anmeldeformular {
+  scroll-margin-top: 5.5rem;
+}
+
+.webling-embed {
+  border: 1px solid var(--hvw-ink);
+  min-height: 900px;
+  background: #fff;
+}
+
+.webling-embed iframe {
+  display: block;
+  width: 100%;
+  min-height: 900px;
+  border: none;
+}
+
+.webling-embed__back {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
 /* Sticky Mobile-Bar */
 .hvw-mobile-bar {
   padding-bottom: env(safe-area-inset-bottom, 0);

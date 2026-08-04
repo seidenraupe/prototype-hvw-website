@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNewsletter();
   initQuoteChips();
   loadHomeEvents();
+  loadWeblingForm();
 });
 
 function initNav() {
@@ -71,6 +72,59 @@ async function loadHomeEvents() {
   const container = document.getElementById('home-events');
   if (!container) return;
   await renderEvents(container, { limit: 3 });
+}
+
+/**
+ * Webling membership form iframe (Mitmachen).
+ * URL comes from data/webling-form.json — public form link from Webling admin
+ * (Admin → Mitglieder → Formulare → «Öffentlicher Link»).
+ */
+async function loadWeblingForm() {
+  const frame = document.querySelector('[data-webling-frame]');
+  const embed = document.querySelector('[data-webling-embed]');
+  const fallback = document.querySelector('[data-webling-fallback]');
+  if (!frame || !embed) return;
+
+  const showFallback = (message) => {
+    embed.innerHTML = `<div class="border-0 bg-hvw-fog p-6 sm:p-8">
+      <p class="text-hvw-mute">${escapeHtml(message)}</p>
+      <a href="mailto:info@hvwinterthur.ch?subject=Mitgliedschaft%20HVW" class="mt-6 inline-flex min-h-12 items-center bg-hvw-ink px-6 font-semibold text-white no-underline hover:bg-hvw-charcoal">
+        Per E-Mail anfragen
+      </a>
+    </div>`;
+    if (fallback) fallback.hidden = true;
+  };
+
+  try {
+    const response = await fetch('data/webling-form.json', { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    const url = typeof data.url === 'string' ? data.url.trim() : '';
+
+    if (!url || !/^https:\/\/[a-z0-9-]+\.webling\.(ch|eu)\/forms\/memberform\/[A-Za-z0-9_-]+\/?$/i.test(url)) {
+      showFallback(
+        'Das Webling-Anmeldeformular ist noch nicht konfiguriert. Tragen Sie den öffentlichen Formular-Link in data/webling-form.json ein (Webling-Admin → Formulare → Öffentlicher Link).'
+      );
+      return;
+    }
+
+    frame.src = url;
+    if (fallback) {
+      fallback.hidden = false;
+      const link = fallback.querySelector('a');
+      if (link) {
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'Formular in neuem Tab öffnen';
+      }
+    }
+  } catch (err) {
+    console.error('Webling-Formular konnte nicht geladen werden:', err);
+    showFallback(
+      'Das Anmeldeformular konnte nicht geladen werden. Bitte melden Sie sich per E-Mail.'
+    );
+  }
 }
 
 async function renderEvents(container, { limit = 3 } = {}) {
