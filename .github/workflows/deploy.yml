@@ -174,7 +174,11 @@ jobs:
 
 
           echo "rsync Soft-Launch → ${SSH_USER}@${host}:${target}"
+          # coucou_export.json wird vom Coucou-Cron / update-coucou-export.yml
+          # erzeugt und darf durch Soft-Launch-Deploys nicht gelöscht werden.
           rsync -avz --delete \
+            --exclude 'coucou_export.json' \
+            --exclude 'home-events.json' \
             -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
             deploy/hostpoint-soft-launch/ \
             "${SSH_USER}@${host}:${target}"

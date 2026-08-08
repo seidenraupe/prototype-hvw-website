@@ -93,6 +93,19 @@ Inhalt per FTP/SFTP oder Hostpoint-Dateimanager in den Document Root hochladen.
 Domain `www.hvwinterthur.ch` im Eventfrog-Cockpit für das Embed freischalten —
 sonst bleibt das Widget leer.
 
+### Cronjobs / Coucou-Export (Hostpoint)
+
+Der frühere Plesk-Cron auf `giger-straehl.ch`
+(`eventfrog_to_coucou.py` → Event-File für Coucou) ist nach Hostpoint migriert:
+
+- Skripte: `cronjobs/` (siehe `cronjobs/README.md`)
+- Öffentliche Datei: `https://www.hvwinterthur.ch/coucou_export.json`
+- Täglich per GitHub Action `update-coucou-export.yml` **und/oder** Hostpoint Cronjobs Manager
+- Soft-Launch-Deploy löscht `coucou_export.json` nicht (`rsync --exclude`)
+
+Homepage-Events (`data/home-events.json`) laufen weiter über
+`update-eventfrog-events.yml` — nicht über den Hostpoint-Cron.
+
 ### Newsletter-Link
 
 ```
@@ -127,6 +140,7 @@ programm.html       Redirect → /programm/
 robots.txt          Soft-Launch Indexierung
 scripts/build-hostpoint-soft-launch.sh
 deploy/hostpoint-soft-launch/   (generiertes Upload-Paket)
+cronjobs/           Coucou-Export für Hostpoint (täglich)
 index.html          Startseite mit Event-Karten (Prototyp)
 agenda.html         Agenda (Programm + Rückblick)
 museen.html         Museum Schaffen / Lindengut / Mörsburg

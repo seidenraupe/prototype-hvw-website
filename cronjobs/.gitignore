@@ -1,0 +1,14 @@
+# Geheimnisse – nie committen
+eventfrog_api_key
+.env
+.env.*
+!.env.example
+
+# Lokale Python-/Editor-Artefakte
+__pycache__/
+*.py[cod]
+.Python
+.venv/
+venv/
+.idea/
+.vscode/
