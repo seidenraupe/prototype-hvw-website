@@ -39,28 +39,35 @@ python3 -m http.server 8080
 # Soft-Launch Programm: http://localhost:8080/programm/
 ```
 
-## Soft-Launch: Programm-Seite
+## Soft-Launch: Programm auf Hostpoint
 
-Solange die Gesamtwebsite noch nicht live geht, ist die Newsletter-fähige
-Programmseite unter **`/programm`** verfügbar:
+Produktive Zielumgebung ist **Hostpoint** (`www.hvwinterthur.ch`), nicht GitHub Pages.
+GitHub bleibt nur Prototyp-/Quellrepo.
 
-- Seite: `programm/index.html` (nur Eventfrog-«Programm», ohne Rückblick/Navigation)
-- Canonical / Ziel-URL: `https://www.hvwinterthur.ch/programm`
-- `robots.txt` + `noindex` auf Prototyp-Seiten: nur `/programm` soll öffentlich indexiert werden
-- Bis zum Soft-Launch bleibt die Seite auch unter GitHub Pages erreichbar:
-  `https://seidenraupe.github.io/prototype-hvw-website/programm/`
+Solange die Gesamtwebsite noch nicht live geht:
 
-### Domain `www.hvwinterthur.ch` verbinden (einmalig)
+- Seite: `programm/index.html` → **`https://www.hvwinterthur.ch/programm`**
+- Inhalt: nur Eventfrog-«Programm» (ohne Rückblick, ohne Prototyp-Navigation)
+- Apache/Hostpoint: `.htaccess` (HTTPS, `/programm` → `/programm/`)
+- `robots.txt` + `noindex` auf Prototyp-Seiten
 
-1. DNS: `www` als **CNAME** auf `seidenraupe.github.io`
-2. Optional Apex `hvwinterthur.ch` per Redirect/ALIAS auf `www`
-3. GitHub → Repo → Settings → Pages → Custom domain: `www.hvwinterthur.ch` (HTTPS erzwingen)
-4. Root-Datei `CNAME` mit Inhalt `www.hvwinterthur.ch` im Repo anlegen (oder von Pages-UI erzeugen lassen)
+### Upload auf Hostpoint
+
+```bash
+./scripts/build-hostpoint-soft-launch.sh
+# → deploy/hostpoint-soft-launch/
+```
+
+Inhalt von `deploy/hostpoint-soft-launch/` per FTP/SFTP oder Hostpoint-Dateimanager
+in den **Document Root** von `www.hvwinterthur.ch` hochladen
+(`index.html`, `.htaccess`, `robots.txt`, `programm/`, `css/`, `js/`, `images/`).
+
+Details: `deploy/hostpoint-soft-launch/UPLOAD.txt` (nach dem Build).
 
 ### Eventfrog
 
-Die Domain `www.hvwinterthur.ch` (und ggf. die GitHub-Pages-URL) muss im
-Eventfrog-Cockpit für das Embed freigeschaltet sein — sonst bleibt das Widget leer.
+Domain `www.hvwinterthur.ch` im Eventfrog-Cockpit für das Embed freischalten —
+sonst bleibt das Widget leer.
 
 ### Newsletter-Link
 
@@ -70,15 +77,18 @@ https://www.hvwinterthur.ch/programm
 
 ### Später: volle Website live
 
-Wenn die restlichen Seiten live gehen: `noindex` in den HTML-Seiten wieder auf
-`index,follow` setzen und `robots.txt` öffnen.
+`noindex` wieder auf `index,follow` setzen, `robots.txt` öffnen und den
+kompletten Site-Build (nicht nur Soft-Launch) nach Hostpoint deployen.
 
 ## Struktur
 
 ```
-programm/           Soft-Launch Programmseite (Newsletter-URL)
+programm/           Soft-Launch Programmseite (Hostpoint-URL /programm)
 programm.html       Redirect → /programm/
+.htaccess           Apache/Hostpoint (HTTPS, Clean URLs)
 robots.txt          Soft-Launch Indexierung
+scripts/build-hostpoint-soft-launch.sh
+deploy/hostpoint-soft-launch/   (generiertes Upload-Paket)
 index.html          Startseite mit Event-Karten (Prototyp)
 agenda.html         Agenda (Programm + Rückblick)
 museen.html         Museum Schaffen / Lindengut / Mörsburg
@@ -93,7 +103,7 @@ js/tailwind-config.js
 data/home-events.json
 images/             Logo, Foto, SVG-Platzhalter
 reference/wireframes/  Mood-Referenzen aus dem Upload
-scripts/            Eventfrog-Fetch
+scripts/            Eventfrog-Fetch / Hostpoint-Build
 ```
 
 ## Eventfrog aktualisieren
