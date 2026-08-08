@@ -1,9 +1,28 @@
+# Soft-Launch: deploy/hostpoint-soft-launch → Hostpoint (www.hvwinterthur.ch)
+#
+# Benötigte Repository-Secrets (Settings → Secrets and variables → Actions):
+#   SSH_PRIVATE_KEY  – kompletter privater Key (inkl. -----BEGIN … PRIVATE KEY-----)
+#   SSH_HOST         – Hostname OHNE Protokoll, z. B. www.hvwinterthur.ch
+#                      oder der Server-Hostname aus dem Hostpoint Control Panel
+#                      (… .hostpoint.ch). Nicht: sftp://…, ftp://…, Pfade
+#   SSH_USER         – SSH-/FTP-Benutzername bei Hostpoint
+#   SSH_TARGET_DIR   – Document Root, z. B. /home/BENUTZER/www/hvwinterthur.ch/
+#                      (mit abschliessendem /)
+#
+# Hostpoint: SSH muss im Control Panel aktiviert und der öffentliche Key
+# unter authorized_keys hinterlegt sein.
+
 name: Deploy via rsync
 
 on:
   push:
     branches:
-      - main  # oder master (je nach Name deines Haupt-Branches)
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: hostpoint-soft-launch
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -12,11 +31,95 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: Per rsync auf Hostpoint übertragen
-        uses: easingthemes/ssh-deploy@v5.0.0
+      - name: Soft-Launch-Paket bauen
+        run: ./scripts/build-hostpoint-soft-launch.sh
+
+      - name: Secrets und SSH-Host prüfen
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_TARGET_DIR: ${{ secrets.SSH_TARGET_DIR }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          fail=0
+
+          if [ -z "${SSH_HOST:-}" ]; then
+            echo "::error::Secret SSH_HOST fehlt oder ist leer."
+            fail=1
+          else
+            # Häufige Fehlereinträge bereinigen (nur zur Prüfung)
+            host="${SSH_HOST}"
+            host="${host#"${host%%[![:space:]]*}"}"
+            host="${host%"${host##*[![:space:]]}"}"
+            host="${host#sftp://}"
+            host="${host#ssh://}"
+            host="${host#https://}"
+            host="${host#http://}"
+            host="${host%%/*}"
+            host="${host%%:*}"
+
+            echo "Prüfe SSH_HOST (bereinigt, ohne Secret-Wert zu loggen)…"
+            if [ -z "$host" ]; then
+              echo "::error::SSH_HOST ist nach Bereinigung leer. Erwartet z. B. www.hvwinterthur.ch oder xyz.hostpoint.ch"
+              fail=1
+            elif ! getent hosts "$host" >/dev/null 2>&1; then
+              if ! dig +short "$host" A | grep -q .; then
+                echo "::error::Hostname ist nicht auflösbar (DNS). Secret SSH_HOST prüfen: nur Hostname, kein sftp://, kein Pfad, keine Leerzeichen."
+                fail=1
+              else
+                echo "OK: SSH_HOST ist per DNS auflösbar."
+              fi
+            else
+              echo "OK: SSH_HOST ist auflösbar."
+            fi
+          fi
+
+          if [ -z "${SSH_USER:-}" ]; then
+            echo "::error::Secret SSH_USER fehlt oder ist leer."
+            fail=1
+          else
+            echo "OK: SSH_USER ist gesetzt."
+          fi
+
+          if [ -z "${SSH_TARGET_DIR:-}" ]; then
+            echo "::error::Secret SSH_TARGET_DIR fehlt oder ist leer (Document Root mit / am Ende)."
+            fail=1
+          else
+            echo "OK: SSH_TARGET_DIR ist gesetzt."
+          fi
+
+          key_len=${#SSH_PRIVATE_KEY}
+          if [ "$key_len" -lt 200 ]; then
+            echo "::error::SSH_PRIVATE_KEY scheint ungültig (nur ${key_len} Zeichen). Den kompletten privaten Key einfügen, inkl. BEGIN-/END-Zeilen. Nicht den öffentlichen Key (.pub)."
+            fail=1
+          elif ! printf '%s\n' "$SSH_PRIVATE_KEY" | grep -qE 'BEGIN .*PRIVATE KEY'; then
+            echo "::error::SSH_PRIVATE_KEY enthält keinen «BEGIN … PRIVATE KEY»-Block."
+            fail=1
+          else
+            echo "OK: SSH_PRIVATE_KEY sieht nach einem Private Key aus (${key_len} Zeichen)."
+          fi
+
+          if [ "$fail" -ne 0 ]; then
+            echo ""
+            echo "Siehe README → Abschnitt «Deploy auf Hostpoint (GitHub Actions)»."
+            exit 1
+          fi
+
+      - name: Soft-Launch per rsync auf Hostpoint übertragen
+        uses: easingthemes/ssh-deploy@v5.1.0
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          ARGS: "-rlptgoD --delete" # Synchronisiert Dateien und löscht nicht mehr vorhandene
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_PORT: "22"
+          # Nur Soft-Launch-Inhalt (abschliessender Slash = Inhalt des Ordners)
+          SOURCE: "deploy/hostpoint-soft-launch/"
           TARGET: ${{ secrets.SSH_TARGET_DIR }}
+          # -a Archiv, -v verbose, -z compress; --delete entfernt veraltete Soft-Launch-Dateien
+          ARGS: "-avz --delete"
+          SSH_CMD_ARGS: "-o StrictHostKeyChecking=no -o ServerAliveInterval=30"
+          SCRIPT_BEFORE: |
+            echo "Hostpoint Deploy vorbereiten…"
+            pwd
+            ls -la

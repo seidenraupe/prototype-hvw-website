@@ -49,6 +49,7 @@ Ziel-URL: https://www.hvwinterthur.ch/programm
 4. Eventfrog: Domain www.hvwinterthur.ch für das Embed freischalten.
 
 Hinweis: Die übrige Prototyp-Website gehört NICHT in diesen Upload.
+Bevorzugt: GitHub Action «Deploy via rsync» (siehe README).
 TXT
 
 echo "Hostpoint-Paket erstellt: ${OUT}"

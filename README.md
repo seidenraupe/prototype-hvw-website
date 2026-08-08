@@ -51,18 +51,40 @@ Solange die Gesamtwebsite noch nicht live geht:
 - Apache/Hostpoint: `.htaccess` (HTTPS, `/programm` → `/programm/`)
 - `robots.txt` + `noindex` auf Prototyp-Seiten
 
-### Upload auf Hostpoint
+### Deploy auf Hostpoint (GitHub Actions)
+
+Workflow: `.github/workflows/deploy.yml` — bei Push auf `main` (oder manuell unter Actions).
+
+Baut `deploy/hostpoint-soft-launch/` und synct **nur dieses Paket** per rsync/SSH
+in den Document Root.
+
+#### Secrets (Repo → Settings → Secrets and variables → Actions)
+
+| Secret | Inhalt |
+|---|---|
+| `SSH_PRIVATE_KEY` | Kompletter **privater** Key inkl. `-----BEGIN … PRIVATE KEY-----` / `END` (nicht `.pub`) |
+| `SSH_HOST` | Nur Hostname, z. B. `www.hvwinterthur.ch` oder `xxxx.hostpoint.ch` — **ohne** `sftp://`, `https://`, Pfad oder Leerzeichen |
+| `SSH_USER` | SSH-/FTP-Benutzername (Hostpoint Control Panel) |
+| `SSH_TARGET_DIR` | Document Root mit `/` am Ende, z. B. `/home/BENUTZER/www/hvwinterthur.ch/` |
+
+#### SSH bei Hostpoint vorbereiten
+
+1. Im Control Panel SSH aktivieren (falls nötig)
+2. Key-Paar erzeugen (ohne Passphrase): `ssh-keygen -t ed25519 -C "github-deploy-hvw" -f hvw_deploy -N ""`
+3. Inhalt von `hvw_deploy.pub` bei Hostpoint als authorized key hinterlegen
+4. Inhalt von `hvw_deploy` als Secret `SSH_PRIVATE_KEY` speichern
+
+Der letzte Workflow-Fehler war: Hostname nicht auflösbar + Private Key nur ~11 Zeichen
+(Secret `SSH_HOST` / `SSH_PRIVATE_KEY` falsch gesetzt).
+
+#### Manueller Upload (Fallback)
 
 ```bash
 ./scripts/build-hostpoint-soft-launch.sh
 # → deploy/hostpoint-soft-launch/
 ```
 
-Inhalt von `deploy/hostpoint-soft-launch/` per FTP/SFTP oder Hostpoint-Dateimanager
-in den **Document Root** von `www.hvwinterthur.ch` hochladen
-(`index.html`, `.htaccess`, `robots.txt`, `programm/`, `css/`, `js/`, `images/`).
-
-Details: `deploy/hostpoint-soft-launch/UPLOAD.txt` (nach dem Build).
+Inhalt per FTP/SFTP oder Hostpoint-Dateimanager in den Document Root hochladen.
 
 ### Eventfrog
 
