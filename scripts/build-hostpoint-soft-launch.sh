@@ -6,7 +6,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="${ROOT}/deploy/hostpoint-soft-launch"
 
 rm -rf "${OUT}"
-mkdir -p "${OUT}/programm" "${OUT}/css" "${OUT}/js" "${OUT}/images"
+mkdir -p "${OUT}/programm" "${OUT}/css" "${OUT}/js" "${OUT}/images" "${OUT}/data"
 
 # Stamm-URL: Weiterleitung zur bestehenden Vereinswebsite (nicht zum Programm)
 cat > "${OUT}/index.html" <<'HTML'
@@ -33,6 +33,8 @@ cp "${ROOT}/programm/index.html" "${OUT}/programm/index.html"
 cp "${ROOT}/programm/.htaccess" "${OUT}/programm/.htaccess"
 cp "${ROOT}/css/site.css" "${OUT}/css/site.css"
 cp "${ROOT}/js/tailwind-config.js" "${OUT}/js/tailwind-config.js"
+cp "${ROOT}/js/analytics.js" "${OUT}/js/analytics.js"
+cp "${ROOT}/data/analytics.json" "${OUT}/data/analytics.json"
 cp "${ROOT}/images/hvw-logo.png" "${OUT}/images/hvw-logo.png"
 
 cat > "${OUT}/UPLOAD.txt" <<'TXT'
@@ -45,7 +47,7 @@ Programm:   https://www.hvwinterthur.ch/programm  (Newsletter / Direktlink)
 1. Im Hostpoint Control Panel den Document Root von www.hvwinterthur.ch öffnen
    (FTP/SFTP oder Dateimanager).
 2. Den gesamten Inhalt DIESES Ordners in den Document Root hochladen
-   (index.html, .htaccess, robots.txt, programm/, css/, js/, images/).
+   (index.html, .htaccess, robots.txt, programm/, css/, js/, data/, images/).
 3. Prüfen:
    - https://www.hvwinterthur.ch/         → Weiterleitung zur Vereinswebsite
    - https://www.hvwinterthur.ch/programm → Programmseite

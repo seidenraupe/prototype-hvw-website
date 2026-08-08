@@ -99,6 +99,20 @@ sonst bleibt das Widget leer.
 https://www.hvwinterthur.ch/programm
 ```
 
+### Google Analytics 4 (Soft-Launch)
+
+Die Programmseite kann mit **GA4** im Konto `thomas.giger@cloud-7.net` gemessen werden
+(gleiche Analytics-Oberfläche wie bei Ihren anderen Websites).
+
+1. Mit diesem Konto auf [analytics.google.com](https://analytics.google.com) anmelden
+2. **Admin** → Property erstellen (oder bestehende nutzen), Name z. B. «HVW Soft-Launch»
+3. **Datenstream** → Web → URL `https://www.hvwinterthur.ch` → Stream anlegen
+4. **Measurement ID** notieren (`G-XXXXXXXXXX`)
+5. In `data/analytics.json` als `measurementId` eintragen und Soft-Launch neu deployen
+
+Technisch: `js/analytics.js` lädt gtag.js nur, wenn eine gültige ID gesetzt ist.
+Gemessen wird vor allem `/programm` (Stamm-URL leitet weiter und wird nicht als HVW-Seite getrackt).
+
 ### Später: volle Website live
 
 `noindex` wieder auf `index,follow` setzen, `robots.txt` öffnen und den
