@@ -36,13 +36,51 @@ Datenquelle: `data/home-events.json` (Eventfrog Public API via `scripts/fetch-ev
 ```bash
 python3 -m http.server 8080
 # → http://localhost:8080
+# Soft-Launch Programm: http://localhost:8080/programm/
 ```
+
+## Soft-Launch: Programm-Seite
+
+Solange die Gesamtwebsite noch nicht live geht, ist die Newsletter-fähige
+Programmseite unter **`/programm`** verfügbar:
+
+- Seite: `programm/index.html` (nur Eventfrog-«Programm», ohne Rückblick/Navigation)
+- Canonical / Ziel-URL: `https://www.hvwinterthur.ch/programm`
+- `robots.txt` + `noindex` auf Prototyp-Seiten: nur `/programm` soll öffentlich indexiert werden
+- Bis zum Soft-Launch bleibt die Seite auch unter GitHub Pages erreichbar:
+  `https://seidenraupe.github.io/prototype-hvw-website/programm/`
+
+### Domain `www.hvwinterthur.ch` verbinden (einmalig)
+
+1. DNS: `www` als **CNAME** auf `seidenraupe.github.io`
+2. Optional Apex `hvwinterthur.ch` per Redirect/ALIAS auf `www`
+3. GitHub → Repo → Settings → Pages → Custom domain: `www.hvwinterthur.ch` (HTTPS erzwingen)
+4. Root-Datei `CNAME` mit Inhalt `www.hvwinterthur.ch` im Repo anlegen (oder von Pages-UI erzeugen lassen)
+
+### Eventfrog
+
+Die Domain `www.hvwinterthur.ch` (und ggf. die GitHub-Pages-URL) muss im
+Eventfrog-Cockpit für das Embed freigeschaltet sein — sonst bleibt das Widget leer.
+
+### Newsletter-Link
+
+```
+https://www.hvwinterthur.ch/programm
+```
+
+### Später: volle Website live
+
+Wenn die restlichen Seiten live gehen: `noindex` in den HTML-Seiten wieder auf
+`index,follow` setzen und `robots.txt` öffnen.
 
 ## Struktur
 
 ```
-index.html          Startseite mit Event-Karten
-agenda.html         Agenda (nur Eventfrog-Embed)
+programm/           Soft-Launch Programmseite (Newsletter-URL)
+programm.html       Redirect → /programm/
+robots.txt          Soft-Launch Indexierung
+index.html          Startseite mit Event-Karten (Prototyp)
+agenda.html         Agenda (Programm + Rückblick)
 museen.html         Museum Schaffen / Lindengut / Mörsburg
 publikationen.html  Neujahrsblatt & Schriften
 sammlung.html       Ausgewählte Objekte
