@@ -1,0 +1,22 @@
+name: Deploy via rsync
+
+on:
+  push:
+    branches:
+      - main  # oder master (je nach Name deines Haupt-Branches)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: Per rsync auf Hostpoint übertragen
+        uses: easingthemes/ssh-deploy@v5.0.0
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rlptgoD --delete" # Synchronisiert Dateien und löscht nicht mehr vorhandene
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          TARGET: ${{ secrets.SSH_TARGET_DIR }}
