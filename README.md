@@ -46,9 +46,11 @@ GitHub bleibt nur Prototyp-/Quellrepo.
 
 Solange die Gesamtwebsite noch nicht live geht:
 
-- Seite: `programm/index.html` → **`https://www.hvwinterthur.ch/programm`**
-- Inhalt: nur Eventfrog-«Programm» (ohne Rückblick, ohne Prototyp-Navigation)
-- Apache/Hostpoint: `.htaccess` (HTTPS, `/programm` → `/programm/`)
+- Stamm-URL `https://www.hvwinterthur.ch/` → Weiterleitung nach
+  **`https://www.historischer-verein-winterthur.ch/`** (wie bisher)
+- Direktlink / Newsletter: **`https://www.hvwinterthur.ch/programm`**
+- Inhalt Programm: nur Eventfrog-«Programm» (ohne Rückblick / Prototyp-Navigation)
+- Apache/Hostpoint: `.htaccess` (Stamm-Redirect + `/programm`)
 - `robots.txt` + `noindex` auf Prototyp-Seiten
 
 ### Deploy auf Hostpoint (GitHub Actions)

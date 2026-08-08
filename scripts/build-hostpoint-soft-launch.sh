@@ -8,7 +8,7 @@ OUT="${ROOT}/deploy/hostpoint-soft-launch"
 rm -rf "${OUT}"
 mkdir -p "${OUT}/programm" "${OUT}/css" "${OUT}/js" "${OUT}/images"
 
-# Soft-Launch-Startseite: nur Redirect zum Programm
+# Stamm-URL: Weiterleitung zur bestehenden Vereinswebsite (nicht zum Programm)
 cat > "${OUT}/index.html" <<'HTML'
 <!DOCTYPE html>
 <html lang="de-CH">
@@ -16,13 +16,13 @@ cat > "${OUT}/index.html" <<'HTML'
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Historischer Verein Winterthur</title>
-  <link rel="canonical" href="https://www.hvwinterthur.ch/programm">
+  <link rel="canonical" href="https://www.historischer-verein-winterthur.ch/">
   <meta name="robots" content="noindex,follow">
-  <meta http-equiv="refresh" content="0; url=/programm/">
-  <script>location.replace('/programm/' + location.search + location.hash);</script>
+  <meta http-equiv="refresh" content="0; url=https://www.historischer-verein-winterthur.ch/">
+  <script>location.replace('https://www.historischer-verein-winterthur.ch/' + location.search + location.hash);</script>
 </head>
 <body>
-  <p><a href="/programm/">Weiter zum Programm</a></p>
+  <p><a href="https://www.historischer-verein-winterthur.ch/">Weiter zur Website des Historischen Vereins Winterthur</a></p>
 </body>
 </html>
 HTML
@@ -39,13 +39,16 @@ cat > "${OUT}/UPLOAD.txt" <<'TXT'
 Hostpoint Soft-Launch — Upload-Anleitung
 ========================================
 
-Ziel-URL: https://www.hvwinterthur.ch/programm
+Stamm-URL:  https://www.hvwinterthur.ch/  →  https://www.historischer-verein-winterthur.ch/
+Programm:   https://www.hvwinterthur.ch/programm  (Newsletter / Direktlink)
 
 1. Im Hostpoint Control Panel den Document Root von www.hvwinterthur.ch öffnen
    (FTP/SFTP oder Dateimanager).
 2. Den gesamten Inhalt DIESES Ordners in den Document Root hochladen
    (index.html, .htaccess, robots.txt, programm/, css/, js/, images/).
-3. Prüfen: https://www.hvwinterthur.ch/programm
+3. Prüfen:
+   - https://www.hvwinterthur.ch/         → Weiterleitung zur Vereinswebsite
+   - https://www.hvwinterthur.ch/programm → Programmseite
 4. Eventfrog: Domain www.hvwinterthur.ch für das Embed freischalten.
 
 Hinweis: Die übrige Prototyp-Website gehört NICHT in diesen Upload.

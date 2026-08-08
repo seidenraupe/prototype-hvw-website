@@ -1,13 +1,16 @@
 Hostpoint Soft-Launch — Upload-Anleitung
 ========================================
 
-Ziel-URL: https://www.hvwinterthur.ch/programm
+Stamm-URL:  https://www.hvwinterthur.ch/  →  https://www.historischer-verein-winterthur.ch/
+Programm:   https://www.hvwinterthur.ch/programm  (Newsletter / Direktlink)
 
 1. Im Hostpoint Control Panel den Document Root von www.hvwinterthur.ch öffnen
    (FTP/SFTP oder Dateimanager).
 2. Den gesamten Inhalt DIESES Ordners in den Document Root hochladen
    (index.html, .htaccess, robots.txt, programm/, css/, js/, images/).
-3. Prüfen: https://www.hvwinterthur.ch/programm
+3. Prüfen:
+   - https://www.hvwinterthur.ch/         → Weiterleitung zur Vereinswebsite
+   - https://www.hvwinterthur.ch/programm → Programmseite
 4. Eventfrog: Domain www.hvwinterthur.ch für das Embed freischalten.
 
 Hinweis: Die übrige Prototyp-Website gehört NICHT in diesen Upload.
