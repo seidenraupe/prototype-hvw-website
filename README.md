@@ -36,13 +36,61 @@ Datenquelle: `data/home-events.json` (Eventfrog Public API via `scripts/fetch-ev
 ```bash
 python3 -m http.server 8080
 # → http://localhost:8080
+# Soft-Launch Programm: http://localhost:8080/programm/
 ```
+
+## Soft-Launch: Programm auf Hostpoint
+
+Produktive Zielumgebung ist **Hostpoint** (`www.hvwinterthur.ch`), nicht GitHub Pages.
+GitHub bleibt nur Prototyp-/Quellrepo.
+
+Solange die Gesamtwebsite noch nicht live geht:
+
+- Seite: `programm/index.html` → **`https://www.hvwinterthur.ch/programm`**
+- Inhalt: nur Eventfrog-«Programm» (ohne Rückblick, ohne Prototyp-Navigation)
+- Apache/Hostpoint: `.htaccess` (HTTPS, `/programm` → `/programm/`)
+- `robots.txt` + `noindex` auf Prototyp-Seiten
+
+### Upload auf Hostpoint
+
+```bash
+./scripts/build-hostpoint-soft-launch.sh
+# → deploy/hostpoint-soft-launch/
+```
+
+Inhalt von `deploy/hostpoint-soft-launch/` per FTP/SFTP oder Hostpoint-Dateimanager
+in den **Document Root** von `www.hvwinterthur.ch` hochladen
+(`index.html`, `.htaccess`, `robots.txt`, `programm/`, `css/`, `js/`, `images/`).
+
+Details: `deploy/hostpoint-soft-launch/UPLOAD.txt` (nach dem Build).
+
+### Eventfrog
+
+Domain `www.hvwinterthur.ch` im Eventfrog-Cockpit für das Embed freischalten —
+sonst bleibt das Widget leer.
+
+### Newsletter-Link
+
+```
+https://www.hvwinterthur.ch/programm
+```
+
+### Später: volle Website live
+
+`noindex` wieder auf `index,follow` setzen, `robots.txt` öffnen und den
+kompletten Site-Build (nicht nur Soft-Launch) nach Hostpoint deployen.
 
 ## Struktur
 
 ```
-index.html          Startseite mit Event-Karten
-agenda.html         Agenda (nur Eventfrog-Embed)
+programm/           Soft-Launch Programmseite (Hostpoint-URL /programm)
+programm.html       Redirect → /programm/
+.htaccess           Apache/Hostpoint (HTTPS, Clean URLs)
+robots.txt          Soft-Launch Indexierung
+scripts/build-hostpoint-soft-launch.sh
+deploy/hostpoint-soft-launch/   (generiertes Upload-Paket)
+index.html          Startseite mit Event-Karten (Prototyp)
+agenda.html         Agenda (Programm + Rückblick)
 museen.html         Museum Schaffen / Lindengut / Mörsburg
 publikationen.html  Neujahrsblatt & Schriften
 sammlung.html       Ausgewählte Objekte
@@ -55,7 +103,7 @@ js/tailwind-config.js
 data/home-events.json
 images/             Logo, Foto, SVG-Platzhalter
 reference/wireframes/  Mood-Referenzen aus dem Upload
-scripts/            Eventfrog-Fetch
+scripts/            Eventfrog-Fetch / Hostpoint-Build
 ```
 
 ## Eventfrog aktualisieren

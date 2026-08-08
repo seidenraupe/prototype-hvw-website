@@ -1,0 +1,10 @@
+# Soft-Launch: öffentliche Newsletter-Seite ist /programm
+# Die übrige Prototyp-Website soll vorerst nicht indexiert werden.
+User-agent: *
+Allow: /programm
+Allow: /programm/
+Allow: /programm.html
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Disallow: /

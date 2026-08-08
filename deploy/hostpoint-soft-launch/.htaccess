@@ -1,0 +1,24 @@
+# Hostpoint / Apache — Soft-Launch Historischer Verein Winterthur
+# Document Root: Dateien so hochladen, dass /programm erreichbar ist.
+
+DirectoryIndex index.html
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # HTTPS erzwingen (Hostpoint)
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # /programm und /programm.html → /programm/
+  RewriteRule ^programm$ /programm/ [L,R=301]
+  RewriteRule ^programm\.html$ /programm/ [L,R=301]
+</IfModule>
+
+# Basis-Absicherung
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
