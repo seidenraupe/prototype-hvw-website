@@ -1,0 +1,91 @@
+# Copiert cronjobs/ nach Hostpoint ~/cronjobs/ und legt den API-Key ab.
+# Danach im Control Panel den Cron einrichten (siehe cronjobs/README.md).
+#
+# Secrets: EVENTFROG_API_KEY, SSH_PRIVATE_KEY, SSH_HOST, SSH_USER
+
+name: Deploy cronjobs to Hostpoint
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+    paths:
+      - 'cronjobs/**'
+      - '.github/workflows/deploy-cronjobs.yml'
+
+concurrency:
+  group: deploy-cronjobs-hostpoint
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync cronjobs folder and API key
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          EVENTFROG_API_KEY: ${{ secrets.EVENTFROG_API_KEY }}
+        run: |
+          set -euo pipefail
+
+          host="${SSH_HOST}"
+          host="${host#"${host%%[![:space:]]*}"}"
+          host="${host%"${host##*[![:space:]]}"}"
+          host="${host#sftp://}"; host="${host#ssh://}"
+          host="${host#https://}"; host="${host#http://}"
+          host="${host%%/*}"; host="${host%%:*}"
+
+          if [ -z "${EVENTFROG_API_KEY:-}" ]; then
+            echo "::error::Secret EVENTFROG_API_KEY fehlt."
+            exit 1
+          fi
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          keyfile=$(mktemp)
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$keyfile"
+          [ -n "$(tail -c1 "$keyfile")" ] && echo >> "$keyfile"
+          chmod 600 "$keyfile"
+          ssh-keyscan -p 22 -H "$host" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+          ssh_base=(ssh -i "$keyfile" -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no)
+
+          "${ssh_base[@]}" "${SSH_USER}@${host}" 'mkdir -p "$HOME/cronjobs" && chmod 755 "$HOME/cronjobs"'
+
+          rsync -avz --delete \
+            --exclude 'eventfrog_api_key' \
+            --exclude '__pycache__/' \
+            --exclude '.venv/' \
+            --exclude 'venv/' \
+            -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
+            cronjobs/ \
+            "${SSH_USER}@${host}:cronjobs/"
+
+          # Key nur auf dem Server, nie im Git
+          printf '%s\n' "$EVENTFROG_API_KEY" | "${ssh_base[@]}" "${SSH_USER}@${host}" \
+            'cat > "$HOME/cronjobs/eventfrog_api_key" && chmod 600 "$HOME/cronjobs/eventfrog_api_key"'
+
+          "${ssh_base[@]}" "${SSH_USER}@${host}" '
+            set -e
+            cd "$HOME/cronjobs"
+            if /usr/local/bin/python -m pip install --user -r requirements.txt; then
+              echo "pip install OK"
+            else
+              echo "::warning::pip install fehlgeschlagen – bitte manuell prüfen"
+            fi
+            echo "--- einmaliger Testlauf ---"
+            HVW_WRITE_HOME_EVENTS=0 /usr/local/bin/python eventfrog_to_coucou.py
+            ls -la "$HOME/www/hvwinterthur.ch/coucou_export.json" 2>/dev/null || \
+              ls -la ./coucou_export.json 2>/dev/null || true
+          '
+
+          rm -f "$keyfile"
+          echo "Cronjobs nach ${SSH_USER}@${host}:~/cronjobs/ deployed."
+          echo "Hostpoint Cronjobs Manager Befehl:"
+          echo "cd /home/${SSH_USER}/cronjobs && HVW_WRITE_HOME_EVENTS=0 /usr/local/bin/python eventfrog_to_coucou.py >/dev/null 2>&1"

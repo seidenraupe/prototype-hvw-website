@@ -1,0 +1,10 @@
+# Vorlage für den Eventfrog API-Key.
+# 1. Diese Datei nach "eventfrog_api_key" kopieren (gleicher Ordner wie das Skript).
+# 2. Die nächste Zeile durch den echten Key ersetzen (nur Key, eine Zeile).
+# 3. Dateirechte einschränken, z.B.: chmod 600 eventfrog_api_key
+# 4. NIEMALS in den öffentlichen Webroot legen und NIEMALS committen.
+#
+# Alternative: Umgebungsvariable EVENTFROG_API_KEY setzen.
+# Bei GitHub Actions: Repository-Secret EVENTFROG_API_KEY.
+
+REPLACE_WITH_YOUR_EVENTFROG_API_KEY
