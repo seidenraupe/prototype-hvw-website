@@ -107,19 +107,52 @@ jobs:
           fi
 
       - name: Soft-Launch per rsync auf Hostpoint übertragen
-        uses: easingthemes/ssh-deploy@v5.1.0
-        with:
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_TARGET_DIR: ${{ secrets.SSH_TARGET_DIR }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.SSH_HOST }}
-          REMOTE_USER: ${{ secrets.SSH_USER }}
-          REMOTE_PORT: "22"
-          # Nur Soft-Launch-Inhalt (abschliessender Slash = Inhalt des Ordners)
-          SOURCE: "deploy/hostpoint-soft-launch/"
-          TARGET: ${{ secrets.SSH_TARGET_DIR }}
-          # -a Archiv, -v verbose, -z compress; --delete entfernt veraltete Soft-Launch-Dateien
-          ARGS: "-avz --delete"
-          SSH_CMD_ARGS: "-o StrictHostKeyChecking=no -o ServerAliveInterval=30"
-          SCRIPT_BEFORE: |
-            echo "Hostpoint Deploy vorbereiten…"
-            pwd
-            ls -la
+        run: |
+          set -euo pipefail
+
+          # Hostname bereinigen (falls versehentlich mit Protokoll gespeichert)
+          host="${SSH_HOST}"
+          host="${host#"${host%%[![:space:]]*}"}"
+          host="${host%"${host##*[![:space:]]}"}"
+          host="${host#sftp://}"; host="${host#ssh://}"
+          host="${host#https://}"; host="${host#http://}"
+          host="${host%%/*}"; host="${host%%:*}"
+
+          target="${SSH_TARGET_DIR}"
+          case "$target" in
+            */) ;;
+            *) target="${target}/" ;;
+          esac
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          keyfile=$(mktemp)
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$keyfile"
+          chmod 600 "$keyfile"
+          ssh-keyscan -p 22 -H "$host" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+          echo "SSH-Verbindung testen…"
+          if ! ssh -i "$keyfile" -p 22 \
+              -o BatchMode=yes \
+              -o IdentitiesOnly=yes \
+              -o StrictHostKeyChecking=no \
+              -o PreferredAuthentications=publickey \
+              "${SSH_USER}@${host}" 'echo OK'; then
+            echo "::error::SSH Permission denied. Öffentlichen Key (hvw_deploy.pub) bei Hostpoint hinterlegen und SSH für den Benutzer aktivieren. User/Host prüfen."
+            rm -f "$keyfile"
+            exit 1
+          fi
+
+          echo "rsync Soft-Launch → ${SSH_USER}@${host}:${target}"
+          rsync -avz --delete \
+            -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
+            deploy/hostpoint-soft-launch/ \
+            "${SSH_USER}@${host}:${target}"
+
+          rm -f "$keyfile"
+          echo "Deploy abgeschlossen."
