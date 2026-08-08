@@ -63,9 +63,9 @@ in den Document Root.
 | Secret | Inhalt |
 |---|---|
 | `SSH_PRIVATE_KEY` | Kompletter **privater** Key inkl. `-----BEGIN … PRIVATE KEY-----` / `END` (nicht `.pub`) |
-| `SSH_HOST` | Nur Hostname, z. B. `www.hvwinterthur.ch` oder `xxxx.hostpoint.ch` — **ohne** `sftp://`, `https://`, Pfad oder Leerzeichen |
-| `SSH_USER` | SSH-/FTP-Benutzername (Hostpoint Control Panel) |
-| `SSH_TARGET_DIR` | Document Root mit `/` am Ende, z. B. `/home/BENUTZER/www/hvwinterthur.ch/` |
+| `SSH_HOST` | Server-Hostname aus Hostpoint «Server Übersicht», z. B. `sl45.web.hostpoint.ch` |
+| `SSH_USER` | Hosting-Account exakt wie im Control Panel, z. B. `zozuhosa` |
+| `SSH_TARGET_DIR` | Document Root mit `/` am Ende, z. B. `/home/zozuhosa/www/hvwinterthur.ch/` |
 
 #### SSH bei Hostpoint vorbereiten
 

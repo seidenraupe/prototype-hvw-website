@@ -132,21 +132,46 @@ jobs:
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           keyfile=$(mktemp)
-          printf '%s\n' "$SSH_PRIVATE_KEY" > "$keyfile"
+
+          # Windows-CRLF aus dem Secret entfernen (sonst schlägt OpenSSH oft fehl)
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$keyfile"
+          # Abschliessendes Newline sicherstellen
+          [ -n "$(tail -c1 "$keyfile")" ] && echo >> "$keyfile"
           chmod 600 "$keyfile"
+
+          echo "Verbindung: ${SSH_USER}@${host}:${target}"
+          echo "Private-Key Zeilen: $(wc -l < "$keyfile")"
+          if ssh-keygen -y -f "$keyfile" >/tmp/deploy.pub 2>/tmp/deploy.pub.err; then
+            echo "Öffentlicher Key (aus Secret abgeleitet):"
+            cat /tmp/deploy.pub
+            echo "Fingerprint:"
+            ssh-keygen -lf /tmp/deploy.pub
+          else
+            echo "::error::Private Key lässt sich nicht lesen. Secret SSH_PRIVATE_KEY prüfen."
+            cat /tmp/deploy.pub.err || true
+            rm -f "$keyfile"
+            exit 1
+          fi
+
           ssh-keyscan -p 22 -H "$host" >> ~/.ssh/known_hosts 2>/dev/null || true
 
           echo "SSH-Verbindung testen…"
-          if ! ssh -i "$keyfile" -p 22 \
+          if ! ssh -vvv -i "$keyfile" -p 22 \
               -o BatchMode=yes \
               -o IdentitiesOnly=yes \
               -o StrictHostKeyChecking=no \
               -o PreferredAuthentications=publickey \
-              "${SSH_USER}@${host}" 'echo OK'; then
-            echo "::error::SSH Permission denied. Öffentlichen Key (hvw_deploy.pub) bei Hostpoint hinterlegen und SSH für den Benutzer aktivieren. User/Host prüfen."
+              "${SSH_USER}@${host}" 'echo OK' 2>/tmp/ssh-debug.log; then
+            echo "::error::SSH Permission denied für ${SSH_USER}@${host}."
+            echo "Prüfen: Secret SSH_USER = Hostpoint-Account (z. B. zozuhosa → exakt wie im Control Panel),"
+            echo "SSH_HOST = Server-Hostname aus «Server Übersicht» (z. B. sl45.web.hostpoint.ch),"
+            echo "und dass der Fingerprint oben mit dem Key in Hostpoint übereinstimmt."
+            echo "--- ssh debug (Auszug) ---"
+            grep -E 'Offering|Authentications|Permission|identity file|Trying' /tmp/ssh-debug.log || tail -40 /tmp/ssh-debug.log
             rm -f "$keyfile"
             exit 1
           fi
+
 
           echo "rsync Soft-Launch → ${SSH_USER}@${host}:${target}"
           rsync -avz --delete \
