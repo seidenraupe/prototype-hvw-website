@@ -1,5 +1,5 @@
 {
   "provider": "ga4",
-  "measurementId": "",
-  "note": "GA4 Measurement ID hier eintragen (Format G-XXXXXXXXXX). Property unter analytics.google.com mit dem Konto thomas.giger@cloud-7.net anlegen, Datenstream für www.hvwinterthur.ch erstellen, dann diese ID setzen und Soft-Launch neu deployen."
+  "measurementId": "G-7C20PSV7SW",
+  "note": "GA4 Soft-Launch / Website www.hvwinterthur.ch — Konto thomas.giger@cloud-7.net"
 }
