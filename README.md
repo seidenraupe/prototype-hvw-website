@@ -100,8 +100,9 @@ Der frühere Plesk-Cron auf `giger-straehl.ch`
 
 - Skripte: `cronjobs/` (siehe `cronjobs/README.md`)
 - Öffentliche Datei: `https://www.hvwinterthur.ch/coucou_export.json`
-- Täglich per GitHub Action `update-coucou-export.yml` **und/oder** Hostpoint Cronjobs Manager
+- Täglich nur auf Hostpoint (Cronjobs Manager), nicht über GitHub Actions
 - Soft-Launch-Deploy löscht `coucou_export.json` nicht (`rsync --exclude`)
+- Skript-Updates nach Hostpoint: Action `deploy-cronjobs.yml` (bei Änderungen an `cronjobs/`)
 
 Homepage-Events (`data/home-events.json`) laufen weiter über
 `update-eventfrog-events.yml` — nicht über den Hostpoint-Cron.

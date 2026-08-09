@@ -44,7 +44,7 @@ Hostpoint → Server-Übersicht → **Advanced** → **Cronjobs Manager**
 
 | Feld | Wert |
 |---|---|
-| Minute | `15` |
+| Minute | `0` |
 | Hour | `3` |
 | Day / Month / Weekday | `*` |
 
@@ -77,16 +77,19 @@ cd ~/cronjobs && HVW_WRITE_HOME_EVENTS=0 /usr/local/bin/python eventfrog_to_couc
 curl -sI https://www.hvwinterthur.ch/coucou_export.json
 ```
 
-## Automatik ohne Hostpoint-Cron
+## Hinweis
 
-Workflow `.github/workflows/update-coucou-export.yml` erzeugt die Datei
-täglich in GitHub Actions und synct nur `coucou_export.json` nach Hostpoint.
-Soft-Launch-Deploy (`Deploy via rsync`) löscht diese Datei nicht
-(`--exclude`).
+Der Coucou-Export läuft **nur** über den Hostpoint-Cronjobs Manager, nicht
+über GitHub Actions. Soft-Launch-Deploy (`Deploy via rsync`) löscht
+`coucou_export.json` nicht (`rsync --exclude`).
+
+Skript-Änderungen im Repo werden mit der Action
+`deploy-cronjobs.yml` nach `~/cronjobs/` synchronisiert (bei Push auf `main`
+unter `cronjobs/` oder manuell per `workflow_dispatch`).
 
 ## Secrets
 
 | Secret | Verwendung |
 |---|---|
-| `EVENTFROG_API_KEY` | Eventfrog Public API |
-| `SSH_*` | Deploy nach Hostpoint (wie Soft-Launch) |
+| `EVENTFROG_API_KEY` | Eventfrog Public API (für Deploy der Key-Datei auf Hostpoint) |
+| `SSH_*` | Deploy der Cron-Skripte nach Hostpoint (wie Soft-Launch) |
