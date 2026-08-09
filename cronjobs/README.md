@@ -44,7 +44,7 @@ Hostpoint → Server-Übersicht → **Advanced** → **Cronjobs Manager**
 
 | Feld | Wert |
 |---|---|
-| Minute | `15` |
+| Minute | `0` |
 | Hour | `3` |
 | Day / Month / Weekday | `*` |
 
