@@ -5,8 +5,11 @@ Eventfrog → mus_export.json (Museum Schaffen / museumschaffen.ch)
 
 Gleiches Record-Layout wie coucou_export.json (Coucou-Schnittstelle 1.4),
 aber nur Events der Eventfrog-Organisation 5116588 (Museum Schaffen).
-Zusätzlich: volle Eventbeschreibung in description / description_html
-(Coucou-Export bleibt unverändert bei der Kurzbeschreibung).
+
+Beschreibung (wie coucou_export.json):
+    description       Kurzbeschreibung
+    description_long  Lange Eventbeschreibung (Klartext)
+    description_html  Lange Eventbeschreibung (HTML)
 
 Öffentliche URL für die Agentur von museumschaffen.ch:
     https://www.hvwinterthur.ch/mus_export.json
@@ -23,7 +26,6 @@ import os
 os.environ["HVW_ORG_IDS"] = "5116588"
 os.environ["HVW_EXPORT_FILENAME"] = "mus_export.json"
 os.environ["HVW_WRITE_HOME_EVENTS"] = "0"
-os.environ["HVW_FULL_DESCRIPTION"] = "1"
 
 from eventfrog_to_coucou import main  # noqa: E402
 
