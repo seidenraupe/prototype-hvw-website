@@ -7,7 +7,7 @@ Migriert von Kreativ Media (`giger-straehl.ch` / Plesk).
 | Job | Skript | Ergebnis |
 |---|---|---|
 | Coucou-Export | `eventfrog_to_coucou.py` | `https://www.hvwinterthur.ch/coucou_export.json` (alle Org-IDs) |
-| Museum Schaffen | `eventfrog_to_mus.py` | `https://www.hvwinterthur.ch/mus_export.json` (nur OrgID `5116588`) |
+| Museum Schaffen | `eventfrog_to_mus.py` | `https://www.hvwinterthur.ch/mus_export.json` (nur OrgID `5116588`, inkl. voller Eventbeschreibung) |
 | Homepage-Events | *(nicht hier)* | GitHub Action `update-eventfrog-events.yml` → `data/home-events.json` |
 
 Beide JSON-Exports nutzen **dasselbe Coucou-Record-Layout**.  
