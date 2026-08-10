@@ -3,8 +3,11 @@
 Halbjahresprogramm-PDF aus Eventfrog (alle HVW-Org-IDs)
 =======================================================
 
-Erzeugt ein A5-PDF nach dem Muster «Halbjahresprogramm 2026_2.pdf»:
-tabellarische / blockweise Aufstellung mit Datum, Titel, Kurztext, Ort.
+A4-Hochformat mit:
+  - HVW-Logo (Website-Header)
+  - Teaser-Bild pro Anlass (Eventfrog emblemToShow)
+  - Datum/Zeit als Kalenderblatt
+  - Titel, Kurztext, Ort
 
 Org-IDs (Default): 4936116, 5116588, 5137433
 
@@ -14,45 +17,55 @@ API-Key:
 Usage:
   EVENTFROG_API_KEY=… python3 scripts/generate-halbjahresprogramm-pdf.py
   python3 scripts/generate-halbjahresprogramm-pdf.py -o programm/HalbJahresprogramm.pdf
-
-Ausgabe-Default: programm/HalbJahresprogramm.pdf
 """
 
 from __future__ import print_function
 
 import argparse
+import hashlib
+import io
 import json
 import os
 import re
 import sys
-from datetime import date, datetime, time, timezone
-
-try:
-    from datetime import timezone as _tz
-except ImportError:
-    _tz = None
+import tempfile
+from datetime import date, datetime, timezone
 
 import requests
-from reportlab.lib.pagesizes import A5
+from PIL import Image as PILImage
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
+from reportlab.pdfgen import canvas as pdfcanvas
 from reportlab.platypus import (
+    BaseDocTemplate,
     Frame,
     PageTemplate,
-    BaseDocTemplate,
     Paragraph,
     Spacer,
+    Table,
+    TableStyle,
+    Image,
     KeepTogether,
+    Flowable,
     HRFlowable,
 )
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 DEFAULT_OUTPUT = os.path.join(ROOT_DIR, "programm", "HalbJahresprogramm.pdf")
+DEFAULT_LOGO = os.path.join(ROOT_DIR, "images", "hvw-logo.png")
 DEFAULT_ORG_IDS = ["4936116", "5116588", "5137433"]
 API_BASE = "https://api.eventfrog.net"
 API_KEY_ENV = "EVENTFROG_API_KEY"
 PREFERRED_LANGUAGES = ["de", "de_CH", "en", "fr", "it"]
+
+HVW_INK = colors.HexColor("#1a1a1a")
+HVW_MUTE = colors.HexColor("#4a4a4a")
+HVW_FOG = colors.HexColor("#f3f3f3")
+HVW_ACCENT = colors.HexColor("#c8102e")
+HVW_LINE = colors.HexColor("#1a1a1a")
 
 WEEKDAYS_DE = [
     "Montag",
@@ -63,6 +76,7 @@ WEEKDAYS_DE = [
     "Samstag",
     "Sonntag",
 ]
+WEEKDAYS_SHORT = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 MONTHS_DE = [
     "",
     "Januar",
@@ -77,6 +91,21 @@ MONTHS_DE = [
     "Oktober",
     "November",
     "Dezember",
+]
+MONTHS_SHORT = [
+    "",
+    "JAN",
+    "FEB",
+    "MÄR",
+    "APR",
+    "MAI",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OKT",
+    "NOV",
+    "DEZ",
 ]
 
 
@@ -101,6 +130,17 @@ def strip_html(html_text):
         return None
     text = re.sub(r"<[^>]+>", " ", html_text)
     return re.sub(r"\s+", " ", text).strip() or None
+
+
+def escape_xml(text):
+    if not text:
+        return ""
+    return (
+        str(text)
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+    )
 
 
 def load_api_key():
@@ -131,7 +171,6 @@ def load_api_key():
 
 def api_get(path, params, api_key, timeout=60):
     url = "{0}{1}".format(API_BASE, path)
-    # Public API akzeptiert apiKey als Query-Parameter
     query = dict(params)
     query["apiKey"] = api_key
     response = requests.get(url, params=query, timeout=timeout)
@@ -149,11 +188,7 @@ def get_all_events(org_ids, api_key, date_from=None):
     page = 1
     per_page = 100
     while True:
-        params = {
-            "orgId": org_ids,
-            "page": page,
-            "perPage": per_page,
-        }
+        params = {"orgId": org_ids, "page": page, "perPage": per_page}
         if date_from:
             params["from"] = date_from
         data = api_get("/public/v1/events", params, api_key)
@@ -186,16 +221,11 @@ def parse_iso(iso_string):
     raw = str(iso_string).strip()
     if raw.endswith("Z"):
         raw = raw[:-1] + "+00:00"
-    # Python 3.6: fromisoformat may miss offsets with colon on older versions
     try:
         return datetime.fromisoformat(raw)
     except Exception:
         pass
-    for fmt in (
-        "%Y-%m-%dT%H:%M:%S%z",
-        "%Y-%m-%dT%H:%M:%S",
-        "%Y-%m-%d",
-    ):
+    for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
         try:
             candidate = raw.replace("+02:00", "+0200").replace("+01:00", "+0100")
             return datetime.strptime(candidate, fmt)
@@ -205,7 +235,6 @@ def parse_iso(iso_string):
 
 
 def half_year_bounds(today=None):
-    """Aktuelles Halbjahr: Jan–Jun oder Jul–Dez."""
     today = today or date.today()
     year = today.year
     if today.month <= 6:
@@ -221,175 +250,7 @@ def half_year_bounds(today=None):
     return start, end, label, year, slug
 
 
-def format_date_line(begin_dt, end_dt):
-    """z.B. «Sonntag, 23. August 2026, 17:00 Uhr» bzw. mit Endzeit."""
-    if not begin_dt:
-        return ""
-    weekday = WEEKDAYS_DE[begin_dt.weekday()]
-    month = MONTHS_DE[begin_dt.month]
-    date_part = "{0}, {1}. {2} {3}".format(
-        weekday, begin_dt.day, month, begin_dt.year
-    )
-    start_t = begin_dt.strftime("%H:%M")
-    if end_dt and end_dt.date() == begin_dt.date():
-        end_t = end_dt.strftime("%H:%M")
-        if end_t != start_t:
-            # Muster: «10:30 bis 11:30 Uhr» / «11:00 bis 12.30 Uhr»
-            end_disp = end_t.replace(":", ".")
-            return "{0}, {1} bis {2} Uhr".format(date_part, start_t, end_disp)
-    return "{0}, {1} Uhr".format(date_part, start_t)
-
-
-def format_location(location):
-    if not location:
-        return ""
-    parts = []
-    title = pick_lang(location.get("title"))
-    street = location.get("addressLine") or ""
-    zip_code = location.get("zip") or ""
-    city = location.get("city") or ""
-    if title:
-        parts.append(title)
-    addr = ", ".join([p for p in [street, "{0} {1}".format(zip_code, city).strip()] if p])
-    if addr:
-        if parts:
-            return "{0}, {1}".format(parts[0], addr)
-        return addr
-    return parts[0] if parts else ""
-
-
-def escape_xml(text):
-    if not text:
-        return ""
-    return (
-        str(text)
-        .replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-    )
-
-
-def build_story(events, locations_by_id, year, period_label):
-    styles = getSampleStyleSheet()
-    style_title = ParagraphStyle(
-        "ProgTitle",
-        parent=styles["Normal"],
-        fontName="Helvetica-Bold",
-        fontSize=14,
-        leading=18,
-        alignment=1,  # center
-        spaceAfter=2,
-    )
-    style_period = ParagraphStyle(
-        "ProgPeriod",
-        parent=styles["Normal"],
-        fontName="Helvetica",
-        fontSize=10,
-        leading=13,
-        alignment=1,
-        spaceAfter=10,
-    )
-    style_date = ParagraphStyle(
-        "EventDate",
-        parent=styles["Normal"],
-        fontName="Helvetica-Bold",
-        fontSize=9,
-        leading=12,
-        spaceBefore=6,
-        spaceAfter=1,
-    )
-    style_event_title = ParagraphStyle(
-        "EventTitle",
-        parent=styles["Normal"],
-        fontName="Helvetica-Bold",
-        fontSize=9,
-        leading=12,
-        spaceAfter=1,
-    )
-    style_body = ParagraphStyle(
-        "EventBody",
-        parent=styles["Normal"],
-        fontName="Helvetica",
-        fontSize=8.5,
-        leading=11,
-        spaceAfter=0,
-    )
-    style_loc = ParagraphStyle(
-        "EventLoc",
-        parent=styles["Normal"],
-        fontName="Helvetica",
-        fontSize=8.5,
-        leading=11,
-        spaceAfter=4,
-    )
-
-    story = []
-    story.append(Paragraph("PROGRAMM {0}".format(year), style_title))
-    story.append(Paragraph(period_label, style_period))
-    story.append(
-        HRFlowable(width="100%", thickness=0.6, color="#1a1a1a", spaceAfter=4)
-    )
-
-    for event in events:
-        begin_dt = parse_iso(event.get("begin"))
-        end_dt = parse_iso(event.get("end"))
-        title = pick_lang(event.get("title")) or "Ohne Titel"
-        short = pick_lang(event.get("shortDescription"))
-        long_plain = strip_html(pick_lang(event.get("descriptionAsHTML")))
-        # Muster: kurze Zusatzzeilen unter dem Titel — Kurzbeschreibung, sonst gekürzte Langfassung
-        detail = short or (long_plain[:220] + ("…" if long_plain and len(long_plain) > 220 else "") if long_plain else None)
-
-        loc_label = ""
-        loc_ids = event.get("locationIds") or []
-        if loc_ids:
-            loc_label = format_location(locations_by_id.get(loc_ids[0]))
-
-        block = []
-        block.append(Paragraph(escape_xml(format_date_line(begin_dt, end_dt)), style_date))
-        block.append(Paragraph(escape_xml(title), style_event_title))
-        if detail:
-            block.append(Paragraph(escape_xml(detail), style_body))
-        if loc_label:
-            block.append(Paragraph(escape_xml(loc_label), style_loc))
-        else:
-            block.append(Spacer(1, 4))
-        story.append(KeepTogether(block))
-
-    return story
-
-
-def draw_footer(canvas, doc):
-    canvas.saveState()
-    canvas.setFont("Helvetica", 7)
-    canvas.setFillColorRGB(0.15, 0.15, 0.15)
-    y = 12 * mm
-    left = doc.leftMargin
-    right = A5[0] - doc.rightMargin
-    canvas.drawString(left, y + 8, "Historischer Verein Winterthur")
-    canvas.drawRightString(right, y + 8, "info@hvwinterthur.ch")
-    canvas.drawString(left, y, "Römerstrasse 8, 8400 Winterthur")
-    canvas.drawRightString(right, y, "www.hvwinterthur.ch")
-    canvas.restoreState()
-
-
-def write_pdf(path, events, locations_by_id, year, period_label):
-    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
-    doc = BaseDocTemplate(
-        path,
-        pagesize=A5,
-        leftMargin=14 * mm,
-        rightMargin=14 * mm,
-        topMargin=14 * mm,
-        bottomMargin=22 * mm,
-    )
-    frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="normal")
-    doc.addPageTemplates([PageTemplate(id="main", frames=frame, onPage=draw_footer)])
-    story = build_story(events, locations_by_id, year, period_label)
-    doc.build(story)
-
-
 def period_label_from_events(events, fallback_label):
-    """z.B. «AUGUST BIS DEZEMBER» anhand der enthaltenen Events."""
     months = []
     for event in events:
         begin_dt = parse_iso(event.get("begin"))
@@ -419,19 +280,352 @@ def select_half_year_events(events, start, end):
     return selected
 
 
+def format_location(location):
+    if not location:
+        return ""
+    title = pick_lang(location.get("title"))
+    street = location.get("addressLine") or ""
+    zip_code = location.get("zip") or ""
+    city = location.get("city") or ""
+    addr = ", ".join(
+        [p for p in [street, "{0} {1}".format(zip_code, city).strip()] if p]
+    )
+    if title and addr:
+        return "{0}, {1}".format(title, addr)
+    return title or addr
+
+
+def pick_image_url(event):
+    emblem = event.get("emblemToShow")
+    if isinstance(emblem, dict) and emblem.get("url"):
+        return emblem["url"]
+    for key in ("image", "flyer"):
+        val = event.get(key)
+        if isinstance(val, dict) and val.get("url"):
+            return val["url"]
+        if isinstance(val, str) and val.startswith("http"):
+            return val
+    return None
+
+
+def download_image_as_jpeg(url, cache_dir, max_edge=900):
+    """Lädt Teaser (auch WebP) und speichert als JPEG für ReportLab."""
+    if not url:
+        return None
+    digest = hashlib.sha1(url.encode("utf-8")).hexdigest()[:16]
+    out_path = os.path.join(cache_dir, "{0}.jpg".format(digest))
+    if os.path.isfile(out_path) and os.path.getsize(out_path) > 0:
+        return out_path
+    try:
+        response = requests.get(
+            url,
+            timeout=45,
+            headers={"User-Agent": "HVW-halbjahresprogramm-pdf/1.0"},
+        )
+        response.raise_for_status()
+        im = PILImage.open(io.BytesIO(response.content))
+        if im.mode not in ("RGB", "L"):
+            im = im.convert("RGB")
+        elif im.mode == "L":
+            im = im.convert("RGB")
+        try:
+            resample = PILImage.Resampling.LANCZOS
+        except AttributeError:
+            resample = PILImage.LANCZOS
+        im.thumbnail((max_edge, max_edge), resample)
+        im.save(out_path, "JPEG", quality=85, optimize=True)
+        return out_path
+    except Exception as exc:
+        print("Warnung: Bild nicht ladbar ({0}): {1}".format(url[:80], exc))
+        return None
+
+
+class CalendarLeaf(Flowable):
+    """Kalenderblatt mit Monat, Tag, Wochentag und Uhrzeit."""
+
+    def __init__(self, begin_dt, end_dt=None, width=28 * mm, height=36 * mm):
+        Flowable.__init__(self)
+        self.begin_dt = begin_dt
+        self.end_dt = end_dt
+        self.width = width
+        self.height = height
+
+    def wrap(self, availWidth, availHeight):
+        return (self.width, self.height)
+
+    def draw(self):
+        c = self.canv
+        w, h = self.width, self.height
+        header_h = 7.5 * mm
+        # Blatt-Schatten
+        c.setFillColor(colors.Color(0, 0, 0, alpha=0.08))
+        c.rect(1.2, -1.2, w, h, fill=1, stroke=0)
+        # Blattkörper
+        c.setFillColor(colors.white)
+        c.setStrokeColor(HVW_INK)
+        c.setLineWidth(1)
+        c.roundRect(0, 0, w, h, 2.5, fill=1, stroke=1)
+        # Monatskopf (Akzent)
+        c.setFillColor(HVW_ACCENT)
+        c.rect(0, h - header_h, w, header_h, fill=1, stroke=0)
+        c.setFillColor(colors.white)
+        c.setFont("Helvetica-Bold", 8)
+        month = MONTHS_SHORT[self.begin_dt.month] if self.begin_dt else "—"
+        c.drawCentredString(w / 2, h - header_h + 2.4 * mm, month)
+        # Binderinge / Kalenderperforation
+        c.setFillColor(colors.white)
+        for x in (w * 0.28, w * 0.72):
+            c.circle(x, h - 1.4 * mm, 1.3, fill=1, stroke=0)
+            c.setStrokeColor(HVW_INK)
+            c.setLineWidth(0.6)
+            c.circle(x, h - 1.4 * mm, 1.3, fill=0, stroke=1)
+            c.setFillColor(colors.white)
+        # Tageszahl
+        c.setFillColor(HVW_INK)
+        c.setFont("Helvetica-Bold", 22)
+        day = "{0}".format(self.begin_dt.day) if self.begin_dt else "–"
+        c.drawCentredString(w / 2, h - header_h - 11 * mm, day)
+        # Wochentag
+        c.setFont("Helvetica", 7.5)
+        c.setFillColor(HVW_MUTE)
+        wd = WEEKDAYS_DE[self.begin_dt.weekday()] if self.begin_dt else ""
+        c.drawCentredString(w / 2, 9.5 * mm, wd)
+        # Trennlinie
+        c.setStrokeColor(colors.Color(0.8, 0.8, 0.8))
+        c.setLineWidth(0.5)
+        c.line(3 * mm, 8 * mm, w - 3 * mm, 8 * mm)
+        # Zeit
+        c.setFillColor(HVW_INK)
+        c.setFont("Helvetica-Bold", 8)
+        time_label = self._time_label()
+        c.drawCentredString(w / 2, 3.2 * mm, time_label)
+
+    def _time_label(self):
+        if not self.begin_dt:
+            return ""
+        start = self.begin_dt.strftime("%H:%M")
+        if (
+            self.end_dt
+            and self.end_dt.date() == self.begin_dt.date()
+            and self.end_dt.strftime("%H:%M") != start
+        ):
+            return "{0}–{1}".format(start, self.end_dt.strftime("%H:%M"))
+        return "{0} Uhr".format(start)
+
+
+class ImageOrPlaceholder(Flowable):
+    """Teaserbild oder neutrale Platzhalterfläche."""
+
+    def __init__(self, path, width, height):
+        Flowable.__init__(self)
+        self.path = path
+        self.width = width
+        self.height = height
+
+    def wrap(self, availWidth, availHeight):
+        return (self.width, self.height)
+
+    def draw(self):
+        c = self.canv
+        c.setStrokeColor(HVW_INK)
+        c.setLineWidth(0.6)
+        if self.path and os.path.isfile(self.path):
+            try:
+                c.drawImage(
+                    self.path,
+                    0,
+                    0,
+                    width=self.width,
+                    height=self.height,
+                    preserveAspectRatio=True,
+                    anchor="c",
+                    mask="auto",
+                )
+                c.rect(0, 0, self.width, self.height, fill=0, stroke=1)
+                return
+            except Exception:
+                pass
+        c.setFillColor(HVW_FOG)
+        c.rect(0, 0, self.width, self.height, fill=1, stroke=1)
+        c.setFillColor(HVW_MUTE)
+        c.setFont("Helvetica", 8)
+        c.drawCentredString(self.width / 2, self.height / 2 - 3, "Bild folgt")
+
+
+def build_styles():
+    styles = getSampleStyleSheet()
+    return {
+        "period": ParagraphStyle(
+            "Period",
+            parent=styles["Normal"],
+            fontName="Helvetica",
+            fontSize=11,
+            leading=14,
+            textColor=HVW_MUTE,
+            alignment=1,
+            spaceAfter=2,
+        ),
+        "prog": ParagraphStyle(
+            "ProgTitle",
+            parent=styles["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=16,
+            leading=20,
+            textColor=HVW_INK,
+            alignment=1,
+            spaceBefore=2,
+            spaceAfter=2,
+        ),
+        "title": ParagraphStyle(
+            "EventTitle",
+            parent=styles["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=11,
+            leading=14,
+            textColor=HVW_INK,
+            spaceAfter=3,
+        ),
+        "body": ParagraphStyle(
+            "EventBody",
+            parent=styles["Normal"],
+            fontName="Helvetica",
+            fontSize=9,
+            leading=12,
+            textColor=HVW_MUTE,
+            spaceAfter=3,
+        ),
+        "loc": ParagraphStyle(
+            "EventLoc",
+            parent=styles["Normal"],
+            fontName="Helvetica",
+            fontSize=8.5,
+            leading=11,
+            textColor=HVW_INK,
+        ),
+    }
+
+
+def make_header(styles, logo_path, year, period_label):
+    parts = []
+    if logo_path and os.path.isfile(logo_path):
+        # Website-Header-Proportion: Logo breit, eher flach
+        logo_w = 72 * mm
+        logo_h = logo_w * (163 / 715.0)
+        parts.append(Image(logo_path, width=logo_w, height=logo_h))
+        parts.append(Spacer(1, 4 * mm))
+    parts.append(Paragraph("PROGRAMM {0}".format(year), styles["prog"]))
+    parts.append(Paragraph(escape_xml(period_label), styles["period"]))
+    parts.append(Spacer(1, 2 * mm))
+    parts.append(
+        HRFlowable(width="100%", thickness=1, color=HVW_INK, spaceAfter=6 * mm)
+    )
+    return parts
+
+
+def make_event_block(event, locations_by_id, image_path, styles):
+    begin_dt = parse_iso(event.get("begin"))
+    end_dt = parse_iso(event.get("end"))
+    title = pick_lang(event.get("title")) or "Ohne Titel"
+    short = pick_lang(event.get("shortDescription"))
+    long_plain = strip_html(pick_lang(event.get("descriptionAsHTML")))
+    detail = short or (
+        (long_plain[:260] + "…") if long_plain and len(long_plain) > 260 else long_plain
+    )
+    loc_label = ""
+    loc_ids = event.get("locationIds") or []
+    if loc_ids:
+        loc_label = format_location(locations_by_id.get(loc_ids[0]))
+
+    cal = CalendarLeaf(begin_dt, end_dt, width=26 * mm, height=34 * mm)
+    img = ImageOrPlaceholder(image_path, width=48 * mm, height=34 * mm)
+
+    text_bits = [
+        Paragraph(escape_xml(title), styles["title"]),
+    ]
+    if detail:
+        text_bits.append(Paragraph(escape_xml(detail), styles["body"]))
+    if loc_label:
+        text_bits.append(Paragraph(escape_xml(loc_label), styles["loc"]))
+    text_cell = text_bits
+
+    # [Kalender | Bild | Text]
+    table = Table(
+        [[cal, img, text_cell]],
+        colWidths=[28 * mm, 50 * mm, None],
+        hAlign="LEFT",
+    )
+    table.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (0, 0), 3 * mm),
+                ("RIGHTPADDING", (1, 0), (1, 0), 3.5 * mm),
+                ("RIGHTPADDING", (2, 0), (2, 0), 0),
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+                ("BACKGROUND", (0, 0), (-1, -1), colors.white),
+            ]
+        )
+    )
+    return KeepTogether(
+        [
+            table,
+            Spacer(1, 2.5 * mm),
+            HRFlowable(
+                width="100%",
+                thickness=0.4,
+                color=colors.Color(0.85, 0.85, 0.85),
+                spaceAfter=3.5 * mm,
+            ),
+        ]
+    )
+
+
+def draw_footer(canvas, doc):
+    canvas.saveState()
+    canvas.setStrokeColor(HVW_INK)
+    canvas.setLineWidth(0.6)
+    y_line = 16 * mm
+    canvas.line(doc.leftMargin, y_line + 6 * mm, A4[0] - doc.rightMargin, y_line + 6 * mm)
+    canvas.setFont("Helvetica", 8)
+    canvas.setFillColor(HVW_MUTE)
+    canvas.drawString(doc.leftMargin, y_line, "Historischer Verein Winterthur")
+    canvas.drawRightString(A4[0] - doc.rightMargin, y_line, "www.hvwinterthur.ch")
+    canvas.drawString(doc.leftMargin, y_line - 4 * mm, "Römerstrasse 8, 8400 Winterthur")
+    canvas.drawRightString(A4[0] - doc.rightMargin, y_line - 4 * mm, "info@hvwinterthur.ch")
+    page_num = canvas.getPageNumber()
+    canvas.setFont("Helvetica", 8)
+    canvas.drawCentredString(A4[0] / 2, 8 * mm, str(page_num))
+    canvas.restoreState()
+
+
+def write_pdf(path, events, locations_by_id, image_paths, year, period_label, logo_path):
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    doc = BaseDocTemplate(
+        path,
+        pagesize=A4,
+        leftMargin=16 * mm,
+        rightMargin=16 * mm,
+        topMargin=14 * mm,
+        bottomMargin=22 * mm,
+    )
+    frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="normal")
+    doc.addPageTemplates([PageTemplate(id="main", frames=frame, onPage=draw_footer)])
+
+    styles = build_styles()
+    story = make_header(styles, logo_path, year, period_label)
+    for event in events:
+        img_path = image_paths.get(str(event.get("id")))
+        story.append(make_event_block(event, locations_by_id, img_path, styles))
+    doc.build(story)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Halbjahresprogramm-PDF aus Eventfrog")
-    parser.add_argument(
-        "-o",
-        "--output",
-        default=DEFAULT_OUTPUT,
-        help="Ziel-PDF (Default: programm/HalbJahresprogramm.pdf)",
-    )
-    parser.add_argument(
-        "--org-ids",
-        default=",".join(DEFAULT_ORG_IDS),
-        help="Kommagetrennte Eventfrog-Org-IDs",
-    )
+    parser.add_argument("-o", "--output", default=DEFAULT_OUTPUT)
+    parser.add_argument("--org-ids", default=",".join(DEFAULT_ORG_IDS))
+    parser.add_argument("--logo", default=DEFAULT_LOGO)
     args = parser.parse_args(argv)
 
     api_key = load_api_key()
@@ -453,9 +647,7 @@ def main(argv=None):
     events = get_all_events(org_ids, api_key, date_from=start.isoformat())
     events = select_half_year_events(events, start, end)
     period_label = period_label_from_events(events, period_fallback)
-    print(
-        "{0} Veranstaltung(en), Periode «{1}».".format(len(events), period_label)
-    )
+    print("{0} Veranstaltung(en), Periode «{1}».".format(len(events), period_label))
 
     loc_ids = set()
     for event in events:
@@ -463,9 +655,28 @@ def main(argv=None):
             loc_ids.add(lid)
     locations_by_id = get_locations(api_key, list(loc_ids))
 
+    cache_dir = tempfile.mkdtemp(prefix="hvw-pdf-img-")
+    image_paths = {}
+    print("Lade Teaser-Bilder …")
+    for event in events:
+        url = pick_image_url(event)
+        path = download_image_as_jpeg(url, cache_dir) if url else None
+        image_paths[str(event.get("id"))] = path
+        status = "ok" if path else "fehlt"
+        print("  [{0}] {1}".format(status, pick_lang(event.get("title")) or event.get("id")))
+
     out_path = os.path.abspath(args.output)
-    write_pdf(out_path, events, locations_by_id, year, period_label)
+    write_pdf(
+        out_path,
+        events,
+        locations_by_id,
+        image_paths,
+        year,
+        period_label,
+        args.logo,
+    )
     print("PDF geschrieben: {0} ({1} Bytes)".format(out_path, os.path.getsize(out_path)))
+
     meta_path = os.path.splitext(out_path)[0] + ".json"
     with open(meta_path, "w", encoding="utf-8") as f:
         json.dump(
@@ -475,6 +686,7 @@ def main(argv=None):
                 "periodLabel": period_label,
                 "slug": slug,
                 "eventCount": len(events),
+                "format": "A4",
                 "file": os.path.basename(out_path),
             },
             f,
