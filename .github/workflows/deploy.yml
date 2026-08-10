@@ -174,10 +174,12 @@ jobs:
 
 
           echo "rsync Soft-Launch → ${SSH_USER}@${host}:${target}"
-          # coucou_export.json wird vom Hostpoint-Cron (cronjobs/) erzeugt
-          # und darf durch Soft-Launch-Deploys nicht gelöscht werden.
+          # coucou_export.json / mus_export.json werden vom Hostpoint-Cron
+          # (cronjobs/) erzeugt und dürfen durch Soft-Launch-Deploys nicht
+          # gelöscht werden.
           rsync -avz --delete \
             --exclude 'coucou_export.json' \
+            --exclude 'mus_export.json' \
             --exclude 'home-events.json' \
             -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
             deploy/hostpoint-soft-launch/ \
