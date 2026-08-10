@@ -115,6 +115,25 @@ Homepage-Events (`data/home-events.json`) laufen weiter über
 https://www.hvwinterthur.ch/programm
 ```
 
+### Halbjahresprogramm (PDF)
+
+Auf der Soft-Launch-Programmseite gibt es einen Download des aktuellen
+Halbjahresprogramms (A5, druckbar):
+
+```
+https://www.hvwinterthur.ch/programm/HalbJahresprogramm.pdf
+```
+
+Erzeugung aus Eventfrog (alle drei Org-IDs):
+
+```bash
+pip install -r scripts/requirements-pdf.txt
+EVENTFROG_API_KEY=… python3 scripts/generate-halbjahresprogramm-pdf.py
+```
+
+Beim Soft-Launch-Deploy wird das PDF in GitHub Actions frisch erzeugt.
+Die Integration auf der finalen `agenda.html` folgt nach Freigabe der Soft-Launch-Version.
+
 ### Google Analytics 4 (Soft-Launch)
 
 Die Programmseite kann mit **GA4** im Konto `thomas.giger@cloud-7.net` gemessen werden

@@ -31,6 +31,22 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
+      - name: Halbjahresprogramm-PDF erzeugen
+        env:
+          EVENTFROG_API_KEY: ${{ secrets.EVENTFROG_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${EVENTFROG_API_KEY:-}" ]; then
+            echo "::warning::EVENTFROG_API_KEY fehlt — vorhandenes PDF im Repo wird verwendet (falls vorhanden)."
+          else
+            python3 -m pip install -r scripts/requirements-pdf.txt
+            python3 scripts/generate-halbjahresprogramm-pdf.py -o programm/HalbJahresprogramm.pdf
+          fi
+          if [ ! -f programm/HalbJahresprogramm.pdf ]; then
+            echo "::error::programm/HalbJahresprogramm.pdf fehlt und konnte nicht erzeugt werden."
+            exit 1
+          fi
+
       - name: Soft-Launch-Paket bauen
         run: ./scripts/build-hostpoint-soft-launch.sh
 

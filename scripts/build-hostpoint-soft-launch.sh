@@ -31,6 +31,12 @@ cp "${ROOT}/.htaccess" "${OUT}/.htaccess"
 cp "${ROOT}/robots.txt" "${OUT}/robots.txt"
 cp "${ROOT}/programm/index.html" "${OUT}/programm/index.html"
 cp "${ROOT}/programm/.htaccess" "${OUT}/programm/.htaccess"
+if [[ -f "${ROOT}/programm/HalbJahresprogramm.pdf" ]]; then
+  cp "${ROOT}/programm/HalbJahresprogramm.pdf" "${OUT}/programm/HalbJahresprogramm.pdf"
+fi
+if [[ -f "${ROOT}/programm/HalbJahresprogramm.json" ]]; then
+  cp "${ROOT}/programm/HalbJahresprogramm.json" "${OUT}/programm/HalbJahresprogramm.json"
+fi
 cp "${ROOT}/css/site.css" "${OUT}/css/site.css"
 cp "${ROOT}/js/tailwind-config.js" "${OUT}/js/tailwind-config.js"
 cp "${ROOT}/js/analytics.js" "${OUT}/js/analytics.js"
