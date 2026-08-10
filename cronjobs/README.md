@@ -7,10 +7,11 @@ Migriert von Kreativ Media (`giger-straehl.ch` / Plesk).
 | Job | Skript | Ergebnis |
 |---|---|---|
 | Coucou-Export | `eventfrog_to_coucou.py` | `https://www.hvwinterthur.ch/coucou_export.json` (alle Org-IDs) |
-| Museum Schaffen | `eventfrog_to_mus.py` | `https://www.hvwinterthur.ch/mus_export.json` (nur OrgID `5116588`, inkl. voller Eventbeschreibung) |
+| Museum Schaffen | `eventfrog_to_mus.py` | `https://www.hvwinterthur.ch/mus_export.json` (nur OrgID `5116588`) |
 | Homepage-Events | *(nicht hier)* | GitHub Action `update-eventfrog-events.yml` → `data/home-events.json` |
 
-Beide JSON-Exports nutzen **dasselbe Coucou-Record-Layout**.  
+Beide JSON-Exports nutzen **dasselbe Coucou-Record-Layout**, inkl. Kurz- und
+Langbeschreibung (`description`, `description_long`, `description_html`).
 `mus_export.json` holt die Agentur von museumschaffen.ch von hvwinterthur.ch ab.
 
 Das frühere `fetch-events.mjs` aus dem Plesk-Ordner ist durch die GitHub Action ersetzt und wird **nicht** auf Hostpoint eingerichtet.
