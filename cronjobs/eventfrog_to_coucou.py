@@ -41,6 +41,7 @@ Umgebungsvariablen (optional):
     HVW_ORG_IDS          Kommagetrennte Eventfrog-Org-IDs (Default: alle HVW)
     HVW_EXPORT_FILENAME  Dateiname im Webroot (Default: coucou_export.json)
     HVW_WRITE_HOME_EVENTS  0 = kein home-events.json
+    HVW_FULL_DESCRIPTION   1 = volle Eventbeschreibung (nur mus_export)
     HVW_HTTPDOCS_DIR     Expliziter Webroot
 
 Öffentliche URLs (Beispiele):
@@ -485,21 +486,35 @@ def map_rubric_to_category(rubric_id, rubrics_by_id):
     return DEFAULT_COUCOU_CATEGORY
 
 
-def build_coucou_event(event, rubrics_by_id, locations_by_id):
-    """Baut aus einem Eventfrog-Event-Objekt ein Dict im Coucou-Schema."""
+def build_coucou_event(event, rubrics_by_id, locations_by_id, full_description=False):
+    """Baut aus einem Eventfrog-Event-Objekt ein Dict im Coucou-Schema.
+
+    full_description=True (nur mus_export): 'description' aus der vollen
+    Eventbeschreibung (descriptionAsHTML), plus zusätzliches Feld
+    'description_html' mit dem HTML aus Eventfrog.
+    Coucou-Export (Default): unverändert shortDescription bevorzugt.
+    """
     begin = event.get("begin")
     end = event.get("end")
 
     emblem = event.get("emblemToShow")
     image_url = emblem.get("url") if isinstance(emblem, dict) else None
 
+    short_description = pick_lang(event.get("shortDescription"))
+    description_html = pick_lang(event.get("descriptionAsHTML"))
+    plain_full_description = strip_html(description_html) if description_html else None
+
+    if full_description:
+        # Museum Schaffen: Eventbeschreibung (lang) bevorzugen
+        description = plain_full_description or short_description
+    else:
+        # Coucou: Kurzbeschreibung bevorzugen (bisheriges Verhalten)
+        description = short_description or plain_full_description
+
     coucou_event = {
         "reference": event.get("id"),
         "title": pick_lang(event.get("title")),
-        "description": (
-            pick_lang(event.get("shortDescription"))
-            or strip_html(pick_lang(event.get("descriptionAsHTML")))
-        ),
+        "description": description,
         "image": image_url,
         "url": event.get("url"),
         "date": iso_to_date_str(begin),
@@ -509,6 +524,9 @@ def build_coucou_event(event, rubrics_by_id, locations_by_id):
         "presale": event.get("presaleLink"),
         "category": map_rubric_to_category(event.get("rubricId"), rubrics_by_id),
     }
+
+    if full_description and description_html:
+        coucou_event["description_html"] = description_html
 
     # date_end nur setzen, wenn Start- und Enddatum tatsächlich unterschiedlich sind
     date_begin = iso_to_date_str(begin)
@@ -602,6 +620,7 @@ def main():
     export_path = resolve_export_path(httpdocs_dir)
     home_output_path = os.path.join(httpdocs_dir, "home-events.json")
     write_home_events = env_flag_enabled("HVW_WRITE_HOME_EVENTS", default="1")
+    full_description = env_flag_enabled("HVW_FULL_DESCRIPTION", default="0")
 
     api_key = load_api_key()
     if not api_key:
@@ -671,7 +690,12 @@ def main():
     for event in events:
         try:
             coucou_events.append(
-                build_coucou_event(event, rubrics_by_id, locations_by_id)
+                build_coucou_event(
+                    event,
+                    rubrics_by_id,
+                    locations_by_id,
+                    full_description=full_description,
+                )
             )
         except Exception as exc:
             print(
