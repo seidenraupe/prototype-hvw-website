@@ -328,7 +328,11 @@ def download_image_as_jpeg(url, cache_dir, max_edge=900):
             im = im.convert("RGB")
         elif im.mode == "L":
             im = im.convert("RGB")
-        im.thumbnail((max_edge, max_edge), getattr(PILImage, "Resampling", PILImage).LANCZOS if hasattr(getattr(PILImage, "Resampling", PILImage), "LANCZOS") else PILImage.LANCZOS)
+        try:
+            resample = PILImage.Resampling.LANCZOS
+        except AttributeError:
+            resample = PILImage.LANCZOS
+        im.thumbnail((max_edge, max_edge), resample)
         im.save(out_path, "JPEG", quality=85, optimize=True)
         return out_path
     except Exception as exc:
