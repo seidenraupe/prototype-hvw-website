@@ -118,7 +118,7 @@ https://www.hvwinterthur.ch/programm
 ### Halbjahresprogramm (PDF)
 
 Auf der Soft-Launch-Programmseite gibt es einen Download des aktuellen
-Halbjahresprogramms (A5, druckbar):
+Halbjahresprogramms (A4, druckbar, mit Logo, Kalenderblatt und Event-Bildern):
 
 ```
 https://www.hvwinterthur.ch/programm/HalbJahresprogramm.pdf
