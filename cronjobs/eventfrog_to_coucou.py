@@ -10,8 +10,10 @@ Was macht dieses Skript?
     3. Baut daraus für jedes Event ein JSON-Objekt exakt nach dem Feld-Schema
        der Coucou-Schnittstelle (siehe "Schnittstelle Kulturmagazin Coucou",
        Version 1.4).
-    4. Speichert das Ergebnis als Liste von Event-Objekten in
-       'coucou_export.json' im öffentlichen Webroot (Coucou-Schnittstelle).
+    4. Speichert das Ergebnis als Liste von Event-Objekten im öffentlichen
+       Webroot (Standard: coucou_export.json). Dateiname und Org-IDs sind
+       per Umgebungsvariable steuerbar (siehe unten) – z.B. mus_export.json
+       nur für Museum Schaffen (OrgID 5116588).
     5. Optional: schreibt parallel 'home-events.json' mit den nächsten
        3 kommenden Veranstaltungen (Titelseiten-Auszug). Auf Hostpoint
        Soft-Launch meist nicht nötig – Homepage-Events laufen über
@@ -20,7 +22,7 @@ Was macht dieses Skript?
 Voraussetzungen:
     pip install -r requirements.txt   # bzw. pip install --user requests
 
-Bitte vor dem Start unten bei ORG_IDS die Organisations-IDs prüfen.
+Bitte vor dem Start unten bei DEFAULT_ORG_IDS die Organisations-IDs prüfen.
 
 API-Key (geheim – nie ins Git-Repo):
     1. Umgebungsvariable EVENTFROG_API_KEY, oder
@@ -34,8 +36,16 @@ Pfad-Hinweis:
       1. Umgebungsvariable HVW_HTTPDOCS_DIR
       2. ../www/hvwinterthur.ch  (Hostpoint)
       3. ../httpdocs             (Plesk / Kreativ Media)
-    Coucou holt die Datei öffentlich, z.B.:
-      https://www.hvwinterthur.ch/coucou_export.json
+
+Umgebungsvariablen (optional):
+    HVW_ORG_IDS          Kommagetrennte Eventfrog-Org-IDs (Default: alle HVW)
+    HVW_EXPORT_FILENAME  Dateiname im Webroot (Default: coucou_export.json)
+    HVW_WRITE_HOME_EVENTS  0 = kein home-events.json
+    HVW_HTTPDOCS_DIR     Expliziter Webroot
+
+Öffentliche URLs (Beispiele):
+    https://www.hvwinterthur.ch/coucou_export.json
+    https://www.hvwinterthur.ch/mus_export.json
 
 Bekannte Einschränkungen (siehe Kommentare weiter unten im Code):
     - "category" wird über den Rubrik-NAMEN auf die Coucou-Kategorie-IDs
@@ -58,7 +68,12 @@ import requests
 # ---------------------------------------------------------------------
 # Konfiguration - bitte anpassen
 # ---------------------------------------------------------------------
-ORG_IDS = ["4936116", "5116588", "5137433"]   # eine oder mehrere Eventfrog Organisations-IDs
+# Default: alle HVW-Organisationen (Coucou-Export).
+# Override: HVW_ORG_IDS=5116588 (Museum Schaffen → mus_export.json)
+DEFAULT_ORG_IDS = ["4936116", "5116588", "5137433"]
+ORG_IDS = DEFAULT_ORG_IDS  # Abwärtskompatibilität
+
+DEFAULT_EXPORT_FILENAME = "coucou_export.json"
 
 # API-Key wird NICHT im Quellcode gespeichert (siehe load_api_key()).
 API_KEY_ENV_NAME = "EVENTFROG_API_KEY"
@@ -91,15 +106,25 @@ DEFAULT_COUCOU_CATEGORY = 15  # "Diverses"
 # Titelseite hvwinterthur.ch: kompakter Auszug der nächsten Events
 HVW_HOME_EVENT_LIMIT = 3
 
-# home-events.json zusätzlich schreiben? ("0"/"false" = nur Coucou-Export)
-_WRITE_HOME_RAW = os.environ.get("HVW_WRITE_HOME_EVENTS", "1").strip().lower()
-WRITE_HOME_EVENTS = _WRITE_HOME_RAW not in ("0", "false", "no", "off")
-
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
+def env_flag_enabled(name, default="1"):
+    raw = os.environ.get(name, default).strip().lower()
+    return raw not in ("0", "false", "no", "off")
+
+
+def resolve_org_ids():
+    """Org-IDs aus HVW_ORG_IDS (kommagetrennt) oder DEFAULT_ORG_IDS."""
+    raw = os.environ.get("HVW_ORG_IDS", "").strip()
+    if not raw:
+        return list(DEFAULT_ORG_IDS)
+    ids = [part.strip() for part in raw.split(",") if part.strip()]
+    return ids or list(DEFAULT_ORG_IDS)
+
+
 def resolve_httpdocs_dir():
-    """Öffentlicher Webroot für coucou_export.json / home-events.json."""
+    """Öffentlicher Webroot für Export-JSON / home-events.json."""
     env_dir = os.environ.get("HVW_HTTPDOCS_DIR", "").strip()
     if env_dir:
         return os.path.abspath(env_dir)
@@ -116,9 +141,15 @@ def resolve_httpdocs_dir():
     return candidates[0]
 
 
-HTTPDOCS_DIR = resolve_httpdocs_dir()
-COUCOU_OUTPUT_PATH = os.path.join(HTTPDOCS_DIR, "coucou_export.json")
-HVW_HOME_OUTPUT_PATH = os.path.join(HTTPDOCS_DIR, "home-events.json")
+def resolve_export_path(httpdocs_dir):
+    """Zielpfad der Export-JSON (Basename via HVW_EXPORT_FILENAME)."""
+    name = os.environ.get("HVW_EXPORT_FILENAME", DEFAULT_EXPORT_FILENAME).strip()
+    if not name:
+        name = DEFAULT_EXPORT_FILENAME
+    # Keine Pfadtraversal: nur Dateiname im Webroot
+    name = os.path.basename(name)
+    return os.path.join(httpdocs_dir, name)
+
 
 # Geheimer Key-File neben dem Skript (ausserhalb vom Webroot, nicht im Git)
 API_KEY_FILE = os.path.join(SCRIPT_DIR, "eventfrog_api_key")
@@ -566,6 +597,12 @@ def build_home_events_payload(events, locations_by_id, limit=HVW_HOME_EVENT_LIMI
 # Hauptprogramm
 # ---------------------------------------------------------------------
 def main():
+    org_ids = resolve_org_ids()
+    httpdocs_dir = resolve_httpdocs_dir()
+    export_path = resolve_export_path(httpdocs_dir)
+    home_output_path = os.path.join(httpdocs_dir, "home-events.json")
+    write_home_events = env_flag_enabled("HVW_WRITE_HOME_EVENTS", default="1")
+
     api_key = load_api_key()
     if not api_key:
         print(
@@ -578,9 +615,13 @@ def main():
         )
         return
 
-    print("Rufe Events von Eventfrog ab ...")
+    print(
+        "Rufe Events von Eventfrog ab (Org-IDs: {0}) ...".format(
+            ", ".join(org_ids)
+        )
+    )
     try:
-        events = get_all_events(ORG_IDS, api_key)
+        events = get_all_events(org_ids, api_key)
     except requests.exceptions.RequestException as exc:
         print("Netzwerkfehler: {0}".format(exc))
         return
@@ -641,40 +682,40 @@ def main():
 
     # Öffentlichen Webroot sicherstellen
     try:
-        if not os.path.isdir(HTTPDOCS_DIR):
-            os.makedirs(HTTPDOCS_DIR)
+        if not os.path.isdir(httpdocs_dir):
+            os.makedirs(httpdocs_dir)
     except OSError as exc:
         print(
             "Fehler: Webroot '{0}' nicht schreibbar ({1}).".format(
-                HTTPDOCS_DIR, exc
+                httpdocs_dir, exc
             )
         )
         return
 
     # Export als JSON-Array, wie von Coucou verlangt: [ {event-object}, .. ]
-    with open(COUCOU_OUTPUT_PATH, "w", encoding="utf-8") as f:
+    with open(export_path, "w", encoding="utf-8") as f:
         json.dump(coucou_events, f, ensure_ascii=False, indent=2)
 
     print(
         "\n{0} Event(s) im Coucou-Format gespeichert in '{1}'.".format(
-            len(coucou_events), COUCOU_OUTPUT_PATH
+            len(coucou_events), export_path
         )
     )
     print("Bitte insbesondere die 'category'-Zuordnung stichprobenartig prüfen.")
 
-    if not WRITE_HOME_EVENTS:
+    if not write_home_events:
         print("home-events.json übersprungen (HVW_WRITE_HOME_EVENTS aus).")
         return
 
     # Kompakter Auszug für die Titelseite hvwinterthur.ch
     try:
         home_payload = build_home_events_payload(events, locations_by_id)
-        with open(HVW_HOME_OUTPUT_PATH, "w", encoding="utf-8") as f:
+        with open(home_output_path, "w", encoding="utf-8") as f:
             json.dump(home_payload, f, ensure_ascii=False, indent=2)
             f.write("\n")
         print(
             "{0} kommende Event(s) für die Titelseite gespeichert in '{1}'.".format(
-                len(home_payload.get("events", [])), HVW_HOME_OUTPUT_PATH
+                len(home_payload.get("events", [])), home_output_path
             )
         )
     except Exception as exc:

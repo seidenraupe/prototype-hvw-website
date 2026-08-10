@@ -99,9 +99,11 @@ Der frühere Plesk-Cron auf `giger-straehl.ch`
 (`eventfrog_to_coucou.py` → Event-File für Coucou) ist nach Hostpoint migriert:
 
 - Skripte: `cronjobs/` (siehe `cronjobs/README.md`)
-- Öffentliche Datei: `https://www.hvwinterthur.ch/coucou_export.json`
+- Öffentliche Dateien:
+  - `https://www.hvwinterthur.ch/coucou_export.json` (Coucou, alle Org-IDs)
+  - `https://www.hvwinterthur.ch/mus_export.json` (Museum Schaffen, OrgID 5116588)
 - Täglich nur auf Hostpoint (Cronjobs Manager), nicht über GitHub Actions
-- Soft-Launch-Deploy löscht `coucou_export.json` nicht (`rsync --exclude`)
+- Soft-Launch-Deploy löscht die Export-JSONs nicht (`rsync --exclude`)
 - Skript-Updates nach Hostpoint: Action `deploy-cronjobs.yml` (bei Änderungen an `cronjobs/`)
 
 Homepage-Events (`data/home-events.json`) laufen weiter über
@@ -141,7 +143,7 @@ programm.html       Redirect → /programm/
 robots.txt          Soft-Launch Indexierung
 scripts/build-hostpoint-soft-launch.sh
 deploy/hostpoint-soft-launch/   (generiertes Upload-Paket)
-cronjobs/           Coucou-Export für Hostpoint (täglich)
+cronjobs/           Coucou- + Museum-Schaffen-Export für Hostpoint (täglich)
 index.html          Startseite mit Event-Karten (Prototyp)
 agenda.html         Agenda (Programm + Rückblick)
 museen.html         Museum Schaffen / Lindengut / Mörsburg
