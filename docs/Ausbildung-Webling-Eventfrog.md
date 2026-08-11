@@ -93,7 +93,8 @@ Sobald die volle Website live ist, denselben Hinweis auf die Agenda-Seite setzen
    - 3–6 Sätze: Warum lohnt sich der Besuch? (Thema, Atmosphäre, für wen)
    - Ticket-/Anmeldehinweis (falls relevant)
 3. Absender klären (z. B. `info@hvwinterthur.ch` oder vereinbarte Vereinsadresse).
-4. Optional: Webling-Vorlage «Mitglieder-Agenda» öffnen bzw. nach dem ersten Versand speichern.
+4. Bestehende Webling-Vorlage prüfen: Unter **Dokumente → Vorlagen → E-Mails** gibt es bereits die Vorlage **«Info Halbjahresprogramm»** (für alle sichtbar).  
+   Diese Vorlage **nutzen oder duplizieren** — so bleiben Design, Absender und Aufbau konsistent, und man muss nicht jedes Mal bei null starten.
 
 ### 2.3 Empfänger: nur aktive Mitglieder
 
@@ -109,10 +110,12 @@ Sobald die volle Website live ist, denselben Hinweis auf die Agenda-Seite setzen
 ### 2.4 E-Mail erstellen und versenden
 
 1. Oberhalb der Liste: **Versenden** → **E-Mail senden**.
-2. Design wählen — empfohlen für Programm-Infos: **News** oder **Standard** (mit Button).
-3. Optional vorhandene **Vorlage** laden; sonst neu schreiben (siehe [Mail-Vorlage](#7-mail-vorlage-textbaustein)).
-4. **Platzhalter** für die Anrede setzen (z. B. Vorname / bedingte Anrede) — wirkt persönlicher.
-5. Im Mail:
+2. Bei der Vorlagenwahl idealerweise **«Info Halbjahresprogramm»** auswählen  
+   (Pfad auch über **Dokumente → Vorlagen → E-Mails**).  
+   Alternativ die Vorlage **duplizieren** und die Kopie für den aktuellen Versand anpassen — so bleibt das Original als Master erhalten.
+3. Inhalt aktualisieren (Highlight, Termine, Agenda-Link); Design der Vorlage beibehalten.
+4. **Platzhalter** für die Anrede prüfen bzw. setzen (z. B. Vorname / bedingte Anrede).
+5. Im Mail sicherstellen:
    - Betreff klar und einladend (Datum oder Highlight im Betreff hilft)
    - Kurz die kommenden Termine listen
    - Die **nächste Veranstaltung ausführlich** vorstellen
@@ -128,7 +131,7 @@ Offizielle Webling-Hilfe: [E-Mail senden](https://support.webling.ch/hc/de/artic
 
 ### 2.5 Nach dem Versand (empfohlen)
 
-- Vorlage speichern (öffentlich für den Vorstand), falls noch nicht geschehen.
+- Bei inhaltlichen Verbesserungen an der Vorlage: Master **«Info Halbjahresprogramm»** aktualisieren (oder die Duplikat-Vorlage für den Vorstand sichtbar machen).
 - Kurz im Vorstand notieren: Datum des Versands + Highlight-Anlass (vermeidet Doppelmails).
 - Bei Bounce/Retouren: Mitgliedereintrag in Webling nachziehen.
 
@@ -248,13 +251,14 @@ Wenn ein Event unter dem falschen Veranstalter läuft:
 
 - [ ] Kommende Termine aus Eventfrog / Programmseite zusammengestellt
 - [ ] Highlight (nächste Veranstaltung) mit Datum, Ort, Motivtext vorbereitet
+- [ ] Vorlage **«Info Halbjahresprogramm»** genutzt oder dupliziert
 - [ ] Gruppe **«aktive Mitglieder»** ausgewählt (keine Gesamtliste — sonst auch Austritte)
 - [ ] Betreff, Anrede-Platzhalter, motivierender Text
 - [ ] Link zur Agenda/Programm: `https://www.hvwinterthur.ch/programm`
 - [ ] Absender korrekt
 - [ ] Vorschau / Testmail ok
 - [ ] Versendet und in Dokumente → E-Mails nachvollziehbar
-- [ ] Vorlage aktualisiert/gespeichert
+- [ ] Vorlage ggf. aktualisiert (Master oder Duplikat)
 
 ### 5.2 Checkliste Eventfrog neu / mutiert
 
@@ -286,14 +290,17 @@ Wenn ein Event unter dem falschen Veranstalter läuft:
 **Tipps**
 
 - Texte in Eventfrog so schreiben, dass sie sowohl für Website als auch für das Webling-Mail als Grundlage dienen.
-- Für wiederkehrende Mailings eine Webling-Vorlage mit Platzhaltern und festem Agenda-Button pflegen.
+- Für Programm-Mails die bestehende Vorlage **«Info Halbjahresprogramm»** nutzen oder duplizieren (Dokumente → Vorlagen → E-Mails) — nicht jedes Mal neu gestalten.
 - OrgID-Thema einmal im Vorstand üben: zwei Beispiel-Events (Museum vs. Verein) gemeinsam durchspielen.
 
 ---
 
 ## 7. Mail-Vorlage (Textbaustein)
 
-Zum Kopieren nach Webling (Platzhalter an eure Felder anpassen):
+**Empfehlung:** Zuerst die bestehende Webling-Vorlage **«Info Halbjahresprogramm»** öffnen oder duplizieren  
+(**Dokumente → Vorlagen → E-Mails**). Den folgenden Textbaustein nur nutzen, um Inhalt zu ergänzen oder falls die Vorlage fehlt.
+
+Zum Anpassen in Webling (Platzhalter an eure Felder anpassen):
 
 **Betreff (Beispiel):**  
 `Einladung: [Titel der nächsten Veranstaltung] — und weitere Termine`
