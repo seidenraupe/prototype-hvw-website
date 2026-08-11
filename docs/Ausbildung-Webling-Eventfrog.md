@@ -99,12 +99,12 @@ Sobald die volle Website live ist, denselben Hinweis auf die Agenda-Seite setzen
 
 1. Bei Webling anmelden: [hvwinterthur.webling.ch](https://hvwinterthur.webling.ch)
 2. Bereich **Mitglieder** öffnen.
-3. Liste so **filtern**, dass nur **aktive** Mitglieder mit gültiger E-Mail sichtbar sind  
-   (Status «aktiv» / analoge HVW-Mitgliedschaftsfilter — je nach euren Datenfeldern).
-4. Tipp: Wird der Filter regelmässig gebraucht, Suche als **gespeicherte Suche / Verteiler** ablegen (z. B. «Aktive Mitglieder mit E-Mail»).
-5. Alle gefilterten Einträge auswählen (bzw. die gewünschte Gruppe markieren).
+3. Die Gruppe **«aktive Mitglieder»** auswählen (nicht die gesamte Mitgliederliste).  
+   Ohne diese Gruppenwahl werden auch **Austritte** und andere nicht mehr aktive Einträge mitbedient.
+4. Prüfen, dass in der angezeigten Liste nur aktive Mitglieder mit gültiger E-Mail stehen.
+5. Alle Einträge dieser Gruppe auswählen bzw. die Gruppe für den Versand markieren.
 
-> Niemals «alle jemals erfassten» Kontakte ohne Statusfilter anschreiben (Austritte, Interessierte ohne Mitgliedschaft usw.).
+> **Wichtig:** Nie «alle Mitglieder» oder die ungefilterte Gesamtliste anschreiben. Ohne die Gruppe **«aktive Mitglieder»** landen Mails auch bei ausgetretenen Personen.
 
 ### 2.4 E-Mail erstellen und versenden
 
@@ -248,7 +248,7 @@ Wenn ein Event unter dem falschen Veranstalter läuft:
 
 - [ ] Kommende Termine aus Eventfrog / Programmseite zusammengestellt
 - [ ] Highlight (nächste Veranstaltung) mit Datum, Ort, Motivtext vorbereitet
-- [ ] Nur **aktive** Mitglieder gefiltert und ausgewählt
+- [ ] Gruppe **«aktive Mitglieder»** ausgewählt (keine Gesamtliste — sonst auch Austritte)
 - [ ] Betreff, Anrede-Platzhalter, motivierender Text
 - [ ] Link zur Agenda/Programm: `https://www.hvwinterthur.ch/programm`
 - [ ] Absender korrekt
@@ -278,7 +278,7 @@ Wenn ein Event unter dem falschen Veranstalter läuft:
 | Anlass fehlt auf museumschaffen.ch | Falsche Org (nicht `5116588`) | Veranstalter auf Museum Schaffen setzen |
 | Anlass erscheint unerwünscht auf museumschaffen.ch | Museum-Schaffen-Org gewählt | Auf HVW-Org umstellen |
 | Anlass fehlt auf HVW-Programm | Nicht publiziert, oder Org ausserhalb der drei IDs | Publizieren / Org korrigieren |
-| Mail ging an Austritte | Kein Aktiv-Filter | Filter «aktiv» + gespeicherte Suche |
+| Mail ging an Austritte | Gruppe «aktive Mitglieder» nicht gewählt | Immer diese Gruppe auswählen, nie die Gesamtliste |
 | Link im Mail tot / veraltet | Falsche URL | Soft-Launch: `/programm` verwenden |
 | Startseiten-Karten noch alt | Cache / periodischer Abruf | Später erneut prüfen; Widget auf /programm ist aktueller |
 | Doppelte Events | Zweimal erfasst unter verschiedenen Orgs | Altes Event depublizieren |
