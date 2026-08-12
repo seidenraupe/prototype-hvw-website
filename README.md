@@ -139,14 +139,17 @@ Die Integration auf der finalen `agenda.html` folgt nach Freigabe der Soft-Launc
 Die Programmseite kann mit **GA4** im Konto `thomas.giger@cloud-7.net` gemessen werden
 (gleiche Analytics-Oberfläche wie bei Ihren anderen Websites).
 
-1. Mit diesem Konto auf [analytics.google.com](https://analytics.google.com) anmelden
-2. **Admin** → Property erstellen (oder bestehende nutzen), Name z. B. «HVW Soft-Launch»
-3. **Datenstream** → Web → URL `https://www.hvwinterthur.ch` → Stream anlegen
-4. **Measurement ID** notieren (`G-XXXXXXXXXX`)
-5. In `data/analytics.json` als `measurementId` eintragen und Soft-Launch neu deployen
+Aktuelle Soft-Launch Measurement ID: **`G-14VQXM5EK7`**
 
-Technisch: `js/analytics.js` lädt gtag.js nur, wenn eine gültige ID gesetzt ist.
-Gemessen wird vor allem `/programm` (Stamm-URL leitet weiter und wird nicht als HVW-Seite getrackt).
+Auf `/programm` ist der Google-Tag **inline** im `<head>` (wie von Google
+vorgesehen), damit die Tag-Erkennung greift. Zusätzlich bleibt
+`data/analytics.json` / `js/analytics.js` für weitere Seiten.
+
+1. Mit diesem Konto auf [analytics.google.com](https://analytics.google.com) anmelden
+2. **Admin** → Property / Datenstream für `https://www.hvwinterthur.ch`
+3. **Measurement ID** in `programm/index.html` (Inline-Tag) und
+   `data/analytics.json` eintragen, Soft-Launch neu deployen
+4. In GA4 unter **Realtime** prüfen bzw. Tag-Setup erneut testen
 
 ### Später: volle Website live
 

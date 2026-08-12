@@ -1,12 +1,29 @@
 /**
- * Google Analytics 4 (gtag.js) — Soft-Launch / Website
- * Lädt nur, wenn data/analytics.json eine gültige Measurement ID enthält.
+ * Google Analytics 4 (gtag.js) — optionaler Loader für Seiten ohne Inline-Tag.
+ *
+ * Soft-Launch /programm enthält den Google-Tag bereits inline im <head>
+ * (von Google empfohlen / für die Tag-Erkennung nötig). Diese Datei
+ * überspringt das erneute Laden, wenn gtag bereits konfiguriert ist, und
+ * kann auf weiteren Seiten data/analytics.json nutzen.
  */
 (function initAnalytics() {
   const CONFIG_URL = '/data/analytics.json';
 
   function isValidMeasurementId(id) {
     return typeof id === 'string' && /^G-[A-Z0-9]+$/i.test(id.trim());
+  }
+
+  function alreadyConfigured() {
+    if (typeof window.gtag === 'function' && Array.isArray(window.dataLayer)) {
+      return window.dataLayer.some(
+        (entry) =>
+          Array.isArray(entry) &&
+          entry[0] === 'config' &&
+          typeof entry[1] === 'string' &&
+          entry[1].indexOf('G-') === 0
+      );
+    }
+    return false;
   }
 
   function loadGtag(measurementId) {
@@ -22,10 +39,11 @@
     document.head.appendChild(script);
 
     window.gtag('js', new Date());
-    window.gtag('config', id, {
-      anonymize_ip: true,
-      send_page_view: true,
-    });
+    window.gtag('config', id);
+  }
+
+  if (alreadyConfigured()) {
+    return;
   }
 
   fetch(CONFIG_URL, { cache: 'no-cache' })
@@ -34,9 +52,12 @@
       if (!config || !isValidMeasurementId(config.measurementId)) {
         return;
       }
+      if (alreadyConfigured()) {
+        return;
+      }
       loadGtag(config.measurementId);
     })
     .catch(() => {
-      /* Analytics optional — Soft-Launch ohne ID bleibt funktionsfähig */
+      /* Analytics optional */
     });
 })();
