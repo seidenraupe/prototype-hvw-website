@@ -139,7 +139,7 @@ Die Integration auf der finalen `agenda.html` folgt nach Freigabe der Soft-Launc
 Die Programmseite kann mit **GA4** im Konto `thomas.giger@cloud-7.net` gemessen werden
 (gleiche Analytics-Oberfläche wie bei Ihren anderen Websites).
 
-Aktuelle Soft-Launch Measurement ID: **`G-14VQXM5EK7`**
+Aktuelle Soft-Launch Measurement ID: **`G-7C20PSV7SW`**
 
 Auf `/programm` ist der Google-Tag **inline** im `<head>` (wie von Google
 vorgesehen), damit die Tag-Erkennung greift. Zusätzlich bleibt
