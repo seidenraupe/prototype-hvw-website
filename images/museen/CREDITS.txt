@@ -1,21 +1,8 @@
-Fotos auf der PDF-Titelseite und der Museen-Seite (Platzhalter ersetzt).
+Fotos für Startseite («Unsere Häuser»), Museen-Seite und PDF-Titelseite.
 
-Die vom Auftrag beigelegten Originaldateien lagen in dieser Umgebung
-nicht als Dateien vor. Verwendet wurden daher frei lizenzierte Aufnahmen
-derselben drei Häuser:
+Quelle: vom Auftrag beigelegtes Archiv museen-bilder.zip
+(museumschaffen.jpg, lindengut.jpeg, mörsburg.jpg).
 
-- museum-schaffen.jpg
-  Wikimedia Commons: «Aussenfassade Museum Schaffen.jpg»
-  https://commons.wikimedia.org/wiki/File:Aussenfassade_Museum_Schaffen.jpg
-
-- museum-lindengut.jpg
-  Wikimedia Commons: «Parkseite Museum Lindengut (Winterthur, 2020).jpg»
-  Autor: JoachimKohler-HB, CC BY-SA 4.0
-  https://commons.wikimedia.org/wiki/File:Parkseite_Museum_Lindengut_(Winterthur,_2020).jpg
-
-- schloss-moersburg.jpg
-  Wikimedia Commons: «Morsbürg Winterthur Stadel.jpg»
-  https://commons.wikimedia.org/wiki/File:Morsb%C3%BCrg_Winterthur_Stadel.jpg
-
-Falls die Originalfotos nachgereicht werden, können sie diese Dateien
-1:1 ersetzen (gleicher Dateiname, Querformat ca. 3:2).
+- museum-schaffen.jpg — Eingang Lagerplatz 9 mit Leuchtschrift
+- museum-lindengut.jpg — Villa Lindengut, Parkseite mit Brunnen
+- schloss-moersburg.jpg — Luftaufnahme mit rot-weissen Fensterläden
