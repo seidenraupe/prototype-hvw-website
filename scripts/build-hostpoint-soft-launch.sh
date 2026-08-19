@@ -42,6 +42,11 @@ cp "${ROOT}/js/tailwind-config.js" "${OUT}/js/tailwind-config.js"
 cp "${ROOT}/js/analytics.js" "${OUT}/js/analytics.js"
 cp "${ROOT}/data/analytics.json" "${OUT}/data/analytics.json"
 cp "${ROOT}/images/hvw-logo.png" "${OUT}/images/hvw-logo.png"
+for f in favicon.ico favicon-32.png favicon-192.png apple-touch-icon.png; do
+  if [[ -f "${ROOT}/images/${f}" ]]; then
+    cp "${ROOT}/images/${f}" "${OUT}/images/${f}"
+  fi
+done
 
 cat > "${OUT}/UPLOAD.txt" <<'TXT'
 Hostpoint Soft-Launch — Upload-Anleitung

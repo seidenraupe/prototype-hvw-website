@@ -50,6 +50,7 @@ from reportlab.platypus import (
     KeepTogether,
     Flowable,
     HRFlowable,
+    PageBreak,
 )
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -57,6 +58,20 @@ ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 DEFAULT_OUTPUT = os.path.join(ROOT_DIR, "programm", "HalbJahresprogramm.pdf")
 DEFAULT_LOGO = os.path.join(ROOT_DIR, "images", "hvw-logo.png")
 DEFAULT_ORG_IDS = ["4936116", "5116588", "5137433"]
+MUSEUM_PHOTOS = [
+    (
+        os.path.join(ROOT_DIR, "images", "museen", "museum-schaffen.jpg"),
+        "Museum Schaffen",
+    ),
+    (
+        os.path.join(ROOT_DIR, "images", "museen", "museum-lindengut.jpg"),
+        "Museum Lindengut",
+    ),
+    (
+        os.path.join(ROOT_DIR, "images", "museen", "schloss-moersburg.jpg"),
+        "Schloss Mörsburg",
+    ),
+]
 API_BASE = "https://api.eventfrog.net"
 API_KEY_ENV = "EVENTFROG_API_KEY"
 PREFERRED_LANGUAGES = ["de", "de_CH", "en", "fr", "it"]
@@ -502,23 +517,63 @@ def build_styles():
             leading=11,
             textColor=HVW_INK,
         ),
+        "caption": ParagraphStyle(
+            "MuseumCaption",
+            parent=styles["Normal"],
+            fontName="Helvetica",
+            fontSize=8,
+            leading=10,
+            textColor=HVW_MUTE,
+            alignment=1,
+            spaceBefore=2,
+        ),
     }
 
 
-def make_header(styles, logo_path, year, period_label):
+def make_cover(styles, logo_path, year, period_label):
+    """Titelseite: Logo, Titel, drei Museumsfotos."""
     parts = []
     if logo_path and os.path.isfile(logo_path):
-        # Website-Header-Proportion: Logo breit, eher flach
-        logo_w = 72 * mm
+        logo_w = 96 * mm
         logo_h = logo_w * (163 / 715.0)
-        parts.append(Image(logo_path, width=logo_w, height=logo_h))
-        parts.append(Spacer(1, 4 * mm))
+        logo = Image(logo_path, width=logo_w, height=logo_h)
+        logo.hAlign = "CENTER"
+        parts.append(logo)
+        parts.append(Spacer(1, 8 * mm))
     parts.append(Paragraph("PROGRAMM {0}".format(year), styles["prog"]))
     parts.append(Paragraph(escape_xml(period_label), styles["period"]))
-    parts.append(Spacer(1, 2 * mm))
+    parts.append(Spacer(1, 3 * mm))
     parts.append(
-        HRFlowable(width="100%", thickness=1, color=HVW_INK, spaceAfter=6 * mm)
+        HRFlowable(width="100%", thickness=1, color=HVW_INK, spaceAfter=8 * mm)
     )
+
+    photo_w = 54 * mm
+    photo_h = photo_w * (2.0 / 3.0)
+    cells = []
+    for path, label in MUSEUM_PHOTOS:
+        cell = []
+        if path and os.path.isfile(path):
+            cell.append(Image(path, width=photo_w, height=photo_h))
+        else:
+            cell.append(Spacer(photo_w, photo_h))
+        cell.append(Paragraph(escape_xml(label), styles["caption"]))
+        cells.append(cell)
+
+    table = Table([cells], colWidths=[58 * mm, 58 * mm, 58 * mm], hAlign="CENTER")
+    table.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 2 * mm),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 2 * mm),
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+            ]
+        )
+    )
+    parts.append(table)
+    parts.append(PageBreak())
     return parts
 
 
@@ -614,7 +669,7 @@ def write_pdf(path, events, locations_by_id, image_paths, year, period_label, lo
     doc.addPageTemplates([PageTemplate(id="main", frames=frame, onPage=draw_footer)])
 
     styles = build_styles()
-    story = make_header(styles, logo_path, year, period_label)
+    story = make_cover(styles, logo_path, year, period_label)
     for event in events:
         img_path = image_paths.get(str(event.get("id")))
         story.append(make_event_block(event, locations_by_id, img_path, styles))
