@@ -1,22 +1,8 @@
 Fotos für Startseite («Unsere Häuser»), Museen-Seite und PDF-Titelseite.
 
-Die drei im Chat beigelegten Originaldateien lagen in dieser Umgebung
-nicht als Dateien vor (nur Bildbeschreibungen). Deshalb stammen die
-JPEGs aus der eigenen Mediathek der bestehenden HVW-Website
-historischer-verein-winterthur.ch — dieselben drei Häuser und Motive
-wie die hochgeladenen Aufnahmen, nicht Wikimedia-Fremdfotos.
+Quelle: vom Auftrag beigelegtes Archiv museen-bilder.zip
+(museumschaffen.jpg, lindengut.jpeg, mörsburg.jpg).
 
-- museum-schaffen.jpg
-  Eingang Lagerplatz 9 mit Leuchtschrift «MUSEUM SCHAFFEN»
-  Quelle: /site/wp-content/uploads/2021/04/Museum-SChaffen.jpg
-
-- museum-lindengut.jpg
-  Villa Lindengut, Parkseite mit Brunnen und grünen Fensterläden
-  Quelle: /site/wp-content/uploads/2015/06/lindengut.jpg
-
-- schloss-moersburg.jpg
-  Erhöhte Aufnahme des Turms mit rot-weissen Chevron-Läden
-  Quelle: /site/wp-content/uploads/2015/06/moersburg.jpg
-
-Falls die Chat-Originale nachgereicht werden, können sie diese Dateien
-1:1 ersetzen (gleicher Dateiname).
+- museum-schaffen.jpg — Eingang Lagerplatz 9 mit Leuchtschrift
+- museum-lindengut.jpg — Villa Lindengut, Parkseite mit Brunnen
+- schloss-moersburg.jpg — Luftaufnahme mit rot-weissen Fensterläden
