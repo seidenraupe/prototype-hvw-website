@@ -1,21 +1,22 @@
-Fotos auf der PDF-Titelseite und der Museen-Seite (Platzhalter ersetzt).
+Fotos für Startseite («Unsere Häuser»), Museen-Seite und PDF-Titelseite.
 
-Die vom Auftrag beigelegten Originaldateien lagen in dieser Umgebung
-nicht als Dateien vor. Verwendet wurden daher frei lizenzierte Aufnahmen
-derselben drei Häuser:
+Die drei im Chat beigelegten Originaldateien lagen in dieser Umgebung
+nicht als Dateien vor (nur Bildbeschreibungen). Deshalb stammen die
+JPEGs aus der eigenen Mediathek der bestehenden HVW-Website
+historischer-verein-winterthur.ch — dieselben drei Häuser und Motive
+wie die hochgeladenen Aufnahmen, nicht Wikimedia-Fremdfotos.
 
 - museum-schaffen.jpg
-  Wikimedia Commons: «Aussenfassade Museum Schaffen.jpg»
-  https://commons.wikimedia.org/wiki/File:Aussenfassade_Museum_Schaffen.jpg
+  Eingang Lagerplatz 9 mit Leuchtschrift «MUSEUM SCHAFFEN»
+  Quelle: /site/wp-content/uploads/2021/04/Museum-SChaffen.jpg
 
 - museum-lindengut.jpg
-  Wikimedia Commons: «Parkseite Museum Lindengut (Winterthur, 2020).jpg»
-  Autor: JoachimKohler-HB, CC BY-SA 4.0
-  https://commons.wikimedia.org/wiki/File:Parkseite_Museum_Lindengut_(Winterthur,_2020).jpg
+  Villa Lindengut, Parkseite mit Brunnen und grünen Fensterläden
+  Quelle: /site/wp-content/uploads/2015/06/lindengut.jpg
 
 - schloss-moersburg.jpg
-  Wikimedia Commons: «Morsbürg Winterthur Stadel.jpg»
-  https://commons.wikimedia.org/wiki/File:Morsb%C3%BCrg_Winterthur_Stadel.jpg
+  Erhöhte Aufnahme des Turms mit rot-weissen Chevron-Läden
+  Quelle: /site/wp-content/uploads/2015/06/moersburg.jpg
 
-Falls die Originalfotos nachgereicht werden, können sie diese Dateien
-1:1 ersetzen (gleicher Dateiname, Querformat ca. 3:2).
+Falls die Chat-Originale nachgereicht werden, können sie diese Dateien
+1:1 ersetzen (gleicher Dateiname).
