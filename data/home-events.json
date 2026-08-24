@@ -1,16 +1,7 @@
 {
-  "generatedAt": "2026-08-23T05:30:35.191Z",
+  "generatedAt": "2026-08-24T05:39:04.790Z",
   "source": "eventfrog-public-api+og-image",
   "events": [
-    {
-      "id": "7454450224431374322",
-      "title": "Szenische Führung in der Burg",
-      "begin": "2026-08-23T17:00:00+02:00",
-      "url": "https://eventfrog.ch/de/p/fuehrungen-vortraege/fuehrung/szenische-fuehrung-in-der-burg-7454450224431374322.html",
-      "organizerName": "Historischer Verein Winterthur",
-      "location": "Schloss Mörsburg, Winterthur",
-      "image": "https://res.eventfrog.net/production_res_public/magd2024-4-bearbeitet-65XFUPY9-PFD8M-AWTE5U8K.webp"
-    },
     {
       "id": "7478107357592992377",
       "title": "Käfele mit der Kuratorin der Haldengut-Ausstellung",
@@ -28,6 +19,15 @@
       "organizerName": "Museum Schaffen",
       "location": "Museum Schaffen, Winterthur",
       "image": "https://res.eventfrog.net/production_res_public/konzert-P6W3PG0K.webp"
+    },
+    {
+      "id": "7488923152891775703",
+      "title": "Kuratorinnenführung – Wir (ver)zapfen Geschichte",
+      "begin": "2026-09-03T19:00:00+02:00",
+      "url": "https://eventfrog.ch/de/p/fuehrungen-vortraege/fuehrung/kuratorinnenfuehrung-wir-ver-zapfen-geschichte-7488923152891775703.html",
+      "organizerName": "Museum Schaffen",
+      "location": "Museum Schaffen, Winterthur",
+      "image": "https://res.eventfrog.net/production_res_public/screenshot-2026-07-31-134556-HVEM4JCO.webp"
     }
   ]
 }
