@@ -29,6 +29,8 @@ HTML
 
 cp "${ROOT}/.htaccess" "${OUT}/.htaccess"
 cp "${ROOT}/robots.txt" "${OUT}/robots.txt"
+cp "${ROOT}/impressum.html" "${OUT}/impressum.html"
+cp "${ROOT}/datenschutz.html" "${OUT}/datenschutz.html"
 cp "${ROOT}/programm/index.html" "${OUT}/programm/index.html"
 cp "${ROOT}/programm/.htaccess" "${OUT}/programm/.htaccess"
 if [[ -f "${ROOT}/programm/HalbJahresprogramm.pdf" ]]; then
@@ -40,6 +42,7 @@ fi
 cp "${ROOT}/css/site.css" "${OUT}/css/site.css"
 cp "${ROOT}/js/tailwind-config.js" "${OUT}/js/tailwind-config.js"
 cp "${ROOT}/js/analytics.js" "${OUT}/js/analytics.js"
+cp "${ROOT}/js/main.js" "${OUT}/js/main.js"
 cp "${ROOT}/data/analytics.json" "${OUT}/data/analytics.json"
 cp "${ROOT}/images/hvw-logo.png" "${OUT}/images/hvw-logo.png"
 for f in favicon.ico favicon-32.png favicon-192.png apple-touch-icon.png; do
@@ -62,6 +65,8 @@ Programm:   https://www.hvwinterthur.ch/programm  (Newsletter / Direktlink)
 3. Prüfen:
    - https://www.hvwinterthur.ch/         → Weiterleitung zur Vereinswebsite
    - https://www.hvwinterthur.ch/programm → Programmseite
+   - https://www.hvwinterthur.ch/impressum.html
+   - https://www.hvwinterthur.ch/datenschutz.html
 4. Eventfrog: Domain www.hvwinterthur.ch für das Embed freischalten.
 
 Hinweis: Die übrige Prototyp-Website gehört NICHT in diesen Upload.
