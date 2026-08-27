@@ -59,21 +59,45 @@
       const res = await fetch(API + "?action=me", { credentials: "same-origin", cache: "no-store" });
       if (!res.ok) return;
       const data = await res.json();
-      if (!data || !data.user) return;
-      if (!document.querySelector('link[href="css/content-editor.css"]')) {
-        const css = document.createElement("link");
-        css.rel = "stylesheet";
-        css.href = "css/content-editor.css";
-        document.head.appendChild(css);
+      if (data && data.user) {
+        loadEditor();
+        return;
       }
-      if (!document.querySelector('script[src="js/content-editor.js"]')) {
-        const script = document.createElement("script");
-        script.src = "js/content-editor.js";
-        document.body.appendChild(script);
-      }
+      showLoginInvite();
     } catch (_err) {
       /* PHP-Redaktion nicht erreichbar (z. B. reiner Datei-Server) */
     }
+  }
+
+  function loadEditor() {
+    if (!document.querySelector('link[href="css/content-editor.css"]')) {
+      const css = document.createElement("link");
+      css.rel = "stylesheet";
+      css.href = "css/content-editor.css";
+      document.head.appendChild(css);
+    }
+    if (!document.querySelector('script[src="js/content-editor.js"]')) {
+      const script = document.createElement("script");
+      script.src = "js/content-editor.js";
+      document.body.appendChild(script);
+    }
+  }
+
+  function showLoginInvite() {
+    if (document.getElementById("hvw-login-invite")) return;
+    const page = (location.pathname.split("/").pop() || "index.html");
+    const next = "../" + (page.includes(".") ? page : "index.html");
+    const bar = document.createElement("div");
+    bar.id = "hvw-login-invite";
+    bar.setAttribute("role", "region");
+    bar.setAttribute("aria-label", "Änderungsmodus");
+    bar.innerHTML =
+      "<p><strong>Änderungsmodus</strong> — Texte bearbeiten oder freigeben?</p>" +
+      "<a href=\"redaktion/?next=" +
+      encodeURIComponent(next) +
+      "\">Anmelden</a>";
+    document.body.appendChild(bar);
+    document.body.classList.add("hvw-has-login-invite");
   }
 
   window.hvwApplyContent = applyFields;

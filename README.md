@@ -256,7 +256,8 @@ Ordner**, der nicht verlinkt und nicht indexiert ist:
    (Stamm-URL leitet weiter zur bestehenden Vereinswebsite).
 2. **Vorschau + Redaktion:** `https://www.hvwinterthur.ch/vorschau/`
    — HTTP-Passwort (Browser-Dialog), danach die Website wie live.
-3. **Texte ändern:** `https://www.hvwinterthur.ch/vorschau/redaktion/`
+3. **Texte ändern:** Oben auf jeder Vorschau-Seite «Änderungsmodus — Anmelden»,
+   oder direkt `https://www.hvwinterthur.ch/vorschau/redaktion/`
    — zweites Login (Rolle Redaktion oder Freigabe).
 4. Erst beim Launch wandert die Website an die Stamm-URL, das HTTP-Passwort
    entfällt.

@@ -5,7 +5,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
-  initNewsletter();
   initStimmenRandom();
   loadHomeEvents();
 });
@@ -29,15 +28,6 @@ function initNav() {
 
   mobileNav.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', () => setOpen(false));
-  });
-}
-
-function initNewsletter() {
-  const form = document.querySelector('[data-newsletter]');
-  if (!form) return;
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    alert('Prototyp: Newsletter-Anmeldung würde hier angebunden werden.');
   });
 }
 
