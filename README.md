@@ -234,6 +234,8 @@ schaut die Seite an → live schalten.**
 - Entwurf: `redaktion/storage/content-draft.json` (nicht öffentlich)
 - Erlaubt: fett, kursiv, unterstrichen. Keine Farben, keine neuen Blöcke.
 - Rollen: `redaktion` speichert Entwürfe; `freigabe` darf live schalten.
+- Freigabe: von Änderung zu Änderung springen, einzeln **annehmen**, **ändern**
+  oder **rückgängig** machen, danach die Seite live schalten.
 
 Standard-Zugänge (sofort ändern, z. B. via `redaktion/config.local.php`):
 

@@ -11,8 +11,72 @@
   let view = "draft";
   let dirty = false;
   let activeEl = null;
+  let reviewIndex = 0;
+  const REVIEW_KEY = "hvw-review-id";
+  const ACCEPTED_KEY = "hvw-review-accepted";
+  let acceptedIds = loadAccepted();
 
   const $ = (sel, root) => (root || document).querySelector(sel);
+
+  function isFreigabe() {
+    return session && session.role === "freigabe";
+  }
+
+  function loadAccepted() {
+    try {
+      const raw = sessionStorage.getItem(ACCEPTED_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return new Set(Array.isArray(arr) ? arr : []);
+    } catch (_e) {
+      return new Set();
+    }
+  }
+
+  function persistAccepted() {
+    sessionStorage.setItem(ACCEPTED_KEY, JSON.stringify([...acceptedIds]));
+  }
+
+  function currentPageName() {
+    const parts = (location.pathname || "").split("/").filter(Boolean);
+    let name = parts[parts.length - 1] || "index.html";
+    if (!name.includes(".")) name = "index.html";
+    return name;
+  }
+
+  function pageHref(page) {
+    return page || "index.html";
+  }
+
+  function currentFields() {
+    return Object.assign({}, draftFields, view === "draft" ? collectFields() : {});
+  }
+
+  function allChanges() {
+    const current = currentFields();
+    const list = [];
+    Object.keys(schema).forEach((id) => {
+      if (String(current[id] || "") !== String(liveFields[id] || "")) {
+        list.push({
+          id,
+          label: fieldMeta(id).label,
+          page: fieldMeta(id).page || "index.html",
+          live: String(liveFields[id] || ""),
+          draft: String(current[id] || ""),
+        });
+      }
+    });
+    return list;
+  }
+
+  function fieldEl(id) {
+    return document.querySelector('[data-content="' + String(id).replace(/"/g, "") + '"]');
+  }
+
+  function clip(html, max) {
+    const text = strip(html).replace(/\s+/g, " ").trim();
+    if (text.length <= max) return text;
+    return text.slice(0, max - 1) + "…";
+  }
 
   function csrfHeaders() {
     return {
@@ -58,15 +122,23 @@
     document.querySelectorAll("[data-content]").forEach((el) => {
       const id = el.getAttribute("data-content");
       const changed = editing && fieldValue(el) !== String(liveFields[id] || "");
-      el.classList.toggle("hvw-changed", changed);
-      if (changed) {
+      const accepted = changed && acceptedIds.has(id);
+      el.classList.toggle("hvw-changed", changed && !accepted);
+      el.classList.toggle("hvw-accepted", accepted);
+      if (accepted) {
+        el.setAttribute("title", "Angenommen — wird mit «Live schalten» öffentlich");
+        el.setAttribute("data-change-hint", "Angenommen");
+      } else if (changed) {
         el.setAttribute("title", "Geändert — noch nicht öffentlich, wartet auf Freigabe");
         el.setAttribute("data-change-hint", "Geändert — zur Freigabe");
       } else {
         el.removeAttribute("title");
         el.removeAttribute("data-change-hint");
+        acceptedIds.delete(id);
       }
     });
+    persistAccepted();
+    updateReviewDock();
   }
 
   function setView(mode) {
@@ -133,18 +205,174 @@
     $("#hvw-btn-save").disabled = view !== "draft";
     const pub = $("#hvw-btn-publish");
     if (pub) {
-      pub.hidden = session.role !== "freigabe";
+      pub.hidden = !isFreigabe();
       pub.disabled = view !== "draft" || dirty || changes === 0;
     }
+    updateReviewDock();
   }
 
   function diffCount() {
-    const current = view === "draft" && dirty ? Object.assign({}, draftFields, collectFields()) : draftFields;
-    let n = 0;
-    Object.keys(schema).forEach((id) => {
-      if (String(current[id] || "") !== String(liveFields[id] || "")) n += 1;
+    return allChanges().length;
+  }
+
+  function syncReviewIndex(changes) {
+    if (!changes.length) {
+      reviewIndex = 0;
+      return;
+    }
+    if (reviewIndex >= changes.length) reviewIndex = changes.length - 1;
+    if (reviewIndex < 0) reviewIndex = 0;
+  }
+
+  function highlightCurrent(id) {
+    document.querySelectorAll("[data-content].hvw-review-current").forEach((el) => {
+      el.classList.remove("hvw-review-current");
     });
-    return n;
+    const el = fieldEl(id);
+    if (!el) return null;
+    el.classList.add("hvw-review-current");
+    return el;
+  }
+
+  function goToChange(index, opts) {
+    const options = opts || {};
+    if (view !== "draft") setView("draft");
+    const changes = allChanges();
+    if (!changes.length) {
+      updateReviewDock();
+      return;
+    }
+    reviewIndex = ((index % changes.length) + changes.length) % changes.length;
+    const item = changes[reviewIndex];
+    sessionStorage.setItem(REVIEW_KEY, item.id);
+    if (!options.stay && item.page && item.page !== currentPageName()) {
+      location.href = pageHref(item.page);
+      return;
+    }
+    const el = highlightCurrent(item.id);
+    if (el) {
+      el.scrollIntoView({ behavior: options.instant ? "auto" : "smooth", block: "center" });
+      if (options.focus) {
+        el.focus({ preventScroll: true });
+        activeEl = el;
+        updateCounter();
+      }
+    }
+    updateReviewDock();
+  }
+
+  function goRelative(step) {
+    const changes = allChanges();
+    if (!changes.length) return;
+    syncReviewIndex(changes);
+    goToChange(reviewIndex + step);
+  }
+
+  function goToNextOpen() {
+    const changes = allChanges();
+    if (!changes.length) {
+      updateReviewDock();
+      return;
+    }
+    const start = reviewIndex;
+    for (let i = 1; i <= changes.length; i += 1) {
+      const next = changes[(start + i) % changes.length];
+      if (!acceptedIds.has(next.id)) {
+        goToChange((start + i) % changes.length);
+        return;
+      }
+    }
+    updateReviewDock();
+  }
+
+  function acceptCurrent() {
+    const changes = allChanges();
+    if (!changes.length) return;
+    syncReviewIndex(changes);
+    acceptedIds.add(changes[reviewIndex].id);
+    persistAccepted();
+    markChangedFields();
+    toast("Änderung angenommen.");
+    goToNextOpen();
+  }
+
+  function editCurrent() {
+    const changes = allChanges();
+    if (!changes.length) return;
+    syncReviewIndex(changes);
+    const id = changes[reviewIndex].id;
+    acceptedIds.delete(id);
+    persistAccepted();
+    goToChange(reviewIndex, { focus: true });
+  }
+
+  function revertCurrent() {
+    const changes = allChanges();
+    if (!changes.length) return;
+    syncReviewIndex(changes);
+    const item = changes[reviewIndex];
+    if (!confirm("Diese Änderung rückgängig machen und den Live-Text wiederherstellen?")) return;
+    draftFields[item.id] = liveFields[item.id] || "";
+    acceptedIds.delete(item.id);
+    persistAccepted();
+    const el = fieldEl(item.id);
+    if (el) window.hvwApplyContent({ [item.id]: draftFields[item.id] });
+    markDirty();
+    saveDraft(true).catch(() => {});
+    toast("Änderung rückgängig gemacht.");
+    const left = allChanges();
+    if (left.length) goToChange(Math.min(reviewIndex, left.length - 1), { stay: true });
+    else updateReviewDock();
+  }
+
+  function updateReviewDock() {
+    const dock = $("#hvw-review-dock");
+    if (!dock) return;
+    const changes = view === "draft" ? allChanges() : [];
+    const show = isFreigabe() && view === "draft" && changes.length > 0;
+    dock.hidden = !show;
+    document.body.classList.toggle("hvw-has-review", show);
+    if (!show) {
+      document.querySelectorAll(".hvw-review-current").forEach((el) => el.classList.remove("hvw-review-current"));
+      return;
+    }
+    syncReviewIndex(changes);
+    const item = changes[reviewIndex];
+    const open = changes.filter((c) => !acceptedIds.has(c.id)).length;
+    $("#hvw-review-pos").textContent = reviewIndex + 1 + " / " + changes.length;
+    $("#hvw-review-label").textContent = item.label;
+    $("#hvw-review-open").textContent =
+      open === 0
+        ? "Alle angenommen — jetzt live schalten"
+        : open + " noch offen";
+    $("#hvw-review-old").textContent = clip(item.live, 140) || "—";
+    $("#hvw-review-new").textContent = clip(item.draft, 140) || "—";
+    const otherPage = item.page && item.page !== currentPageName();
+    $("#hvw-review-page").textContent = otherPage ? "andere Seite — «Zur Stelle» wechseln" : "";
+    $("#hvw-btn-accept").disabled = otherPage || acceptedIds.has(item.id);
+    $("#hvw-btn-edit").disabled = otherPage;
+    $("#hvw-btn-revert").disabled = otherPage;
+    if (!otherPage) highlightCurrent(item.id);
+  }
+
+  function resumeReview() {
+    if (!isFreigabe()) return;
+    const changes = allChanges();
+    if (!changes.length) return;
+    const wanted = sessionStorage.getItem(REVIEW_KEY);
+    if (wanted) {
+      const found = changes.findIndex((c) => c.id === wanted);
+      if (found >= 0) {
+        goToChange(found, { instant: true, stay: true });
+        return;
+      }
+    }
+    const onPage = changes.findIndex((c) => (c.page || "index.html") === currentPageName());
+    if (onPage >= 0) goToChange(onPage, { instant: true, stay: true });
+    else {
+      reviewIndex = 0;
+      updateReviewDock();
+    }
   }
 
   function exec(cmd) {
@@ -184,13 +412,13 @@
     markDirty();
   }
 
-  async function saveDraft() {
+  async function saveDraft(quiet) {
     const fields = Object.assign({}, draftFields, collectFields());
     try {
       const data = await api("save", { method: "POST", headers: csrfHeaders(), body: JSON.stringify({ fields }) });
       draftFields = fields;
       dirty = false;
-      toast("Entwurf gespeichert. Noch nicht öffentlich.");
+      if (!quiet) toast("Entwurf gespeichert. Noch nicht öffentlich.");
       updateBar();
       return data;
     } catch (err) {
@@ -205,6 +433,9 @@
     try {
       await api("publish", { method: "POST", headers: csrfHeaders(), body: "{}" });
       liveFields = Object.assign({}, draftFields);
+      acceptedIds = new Set();
+      persistAccepted();
+      sessionStorage.removeItem(REVIEW_KEY);
       markChangedFields();
       toast("Freigegeben — die Texte sind live.");
       updateBar();
@@ -219,6 +450,9 @@
       await api("discard", { method: "POST", headers: csrfHeaders(), body: "{}" });
       draftFields = Object.assign({}, liveFields);
       dirty = false;
+      acceptedIds = new Set();
+      persistAccepted();
+      sessionStorage.removeItem(REVIEW_KEY);
       applyCurrent();
       toast("Entwurf verworfen.");
       updateBar();
@@ -236,13 +470,17 @@
       if (a === b) return;
       const label = fieldMeta(id).label;
       rows.push(
-        "<article class=\"hvw-diff-item\"><h3>" +
+        "<article class=\"hvw-diff-item\" data-jump=\"" +
+          escapeHtml(id) +
+          "\"><h3>" +
           escapeHtml(label) +
           "</h3><p class=\"hvw-diff-old\">" +
           escapeHtml(strip(a)) +
           "</p><p class=\"hvw-diff-new\">" +
           escapeHtml(strip(b)) +
-          "</p></article>"
+          "</p><p><button type=\"button\" class=\"hvw-diff-jump\" data-jump-id=\"" +
+          escapeHtml(id) +
+          "\">Zur Stelle</button></p></article>"
       );
     });
     $("#hvw-diff-body").innerHTML = rows.length
@@ -300,6 +538,28 @@
           <button type="button" id="hvw-btn-logout">Abmelden</button>
         </div>
       </div>
+      <div id="hvw-review-dock" hidden>
+        <div class="hvw-review-dock__nav">
+          <button type="button" id="hvw-btn-prev" title="Vorherige Änderung">← Vorherige</button>
+          <span id="hvw-review-pos">0 / 0</span>
+          <button type="button" id="hvw-btn-next" title="Nächste Änderung">Nächste →</button>
+        </div>
+        <div class="hvw-review-dock__meta">
+          <strong id="hvw-review-label"></strong>
+          <span id="hvw-review-page"></span>
+          <span id="hvw-review-open"></span>
+        </div>
+        <div class="hvw-review-dock__compare">
+          <p><span>Live</span> <span id="hvw-review-old"></span></p>
+          <p><span>Entwurf</span> <span id="hvw-review-new"></span></p>
+        </div>
+        <div class="hvw-review-dock__actions">
+          <button type="button" id="hvw-btn-goto">Zur Stelle</button>
+          <button type="button" id="hvw-btn-accept">Annehmen</button>
+          <button type="button" id="hvw-btn-edit">Ändern</button>
+          <button type="button" id="hvw-btn-revert">Rückgängig</button>
+        </div>
+      </div>
       <div id="hvw-toast" hidden></div>
       <div id="hvw-diff" hidden>
         <div class="hvw-diff-panel">
@@ -328,6 +588,32 @@
     $("#hvw-diff-close").addEventListener("click", () => {
       $("#hvw-diff").hidden = true;
     });
+    $("#hvw-diff-body").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-jump-id]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-jump-id");
+      $("#hvw-diff").hidden = true;
+      const changes = allChanges();
+      const idx = changes.findIndex((c) => c.id === id);
+      if (idx >= 0) goToChange(idx, { focus: true });
+    });
+    $("#hvw-btn-prev").addEventListener("click", () => goRelative(-1));
+    $("#hvw-btn-next").addEventListener("click", () => goRelative(1));
+    $("#hvw-btn-goto").addEventListener("click", () => goToChange(reviewIndex, { focus: true }));
+    $("#hvw-btn-accept").addEventListener("click", acceptCurrent);
+    $("#hvw-btn-edit").addEventListener("click", editCurrent);
+    $("#hvw-btn-revert").addEventListener("click", revertCurrent);
+    document.addEventListener("keydown", (e) => {
+      if (!isFreigabe() || view !== "draft") return;
+      if (e.altKey && e.key === "ArrowRight") {
+        e.preventDefault();
+        goRelative(1);
+      }
+      if (e.altKey && e.key === "ArrowLeft") {
+        e.preventDefault();
+        goRelative(-1);
+      }
+    });
     $("#hvw-btn-logout").addEventListener("click", async () => {
       try {
         await api("logout", { method: "POST", headers: csrfHeaders(), body: "{}" });
@@ -343,6 +629,11 @@
         updateCounter();
       });
       el.addEventListener("input", () => {
+        const id = el.getAttribute("data-content");
+        if (acceptedIds.has(id)) {
+          acceptedIds.delete(id);
+          persistAccepted();
+        }
         markDirty();
         updateCounter();
       });
@@ -391,6 +682,7 @@
       mountBar();
       bindFields();
       setView("draft");
+      resumeReview();
     } catch (err) {
       console.warn("Redaktion nicht gestartet:", err);
     }

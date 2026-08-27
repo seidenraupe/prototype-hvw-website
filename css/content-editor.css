@@ -42,7 +42,8 @@ body.hvw-has-editor {
   gap: 0.4rem;
 }
 
-#hvw-editor-bar button {
+#hvw-editor-bar button,
+#hvw-review-dock button {
   min-height: 2.5rem;
   padding: 0 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.45);
@@ -52,11 +53,13 @@ body.hvw-has-editor {
   cursor: pointer;
 }
 
-#hvw-editor-bar button:hover:not(:disabled) {
+#hvw-editor-bar button:hover:not(:disabled),
+#hvw-review-dock button:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.12);
 }
 
-#hvw-editor-bar button:disabled {
+#hvw-editor-bar button:disabled,
+#hvw-review-dock button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
@@ -218,8 +221,148 @@ body.hvw-editing [data-content].hvw-changed::after {
   font-weight: 500;
 }
 
+body.hvw-has-editor.hvw-has-review {
+  padding-top: 14.5rem;
+}
+
+#hvw-review-dock {
+  position: fixed;
+  top: 7.5rem;
+  left: 0;
+  right: 0;
+  z-index: 79;
+  display: grid;
+  gap: 0.55rem 1rem;
+  padding: 0.65rem 1rem 0.75rem;
+  background: #2a2118;
+  color: #fff;
+  font-size: 0.88rem;
+  border-bottom: 2px solid #c05612;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+}
+
+#hvw-review-dock[hidden] {
+  display: none;
+}
+
+.hvw-review-dock__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+#hvw-review-pos {
+  min-width: 3.5rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.hvw-review-dock__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.85rem;
+  align-items: baseline;
+}
+
+#hvw-review-open {
+  color: #ffd7b8;
+  font-weight: 600;
+}
+
+#hvw-review-page {
+  color: #ffd7b8;
+}
+
+.hvw-review-dock__compare {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.hvw-review-dock__compare p {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.hvw-review-dock__compare p span:first-child {
+  color: #c8c0b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  padding-top: 0.15rem;
+}
+
+#hvw-review-old {
+  text-decoration: line-through;
+  color: #c8c0b8;
+}
+
+.hvw-review-dock__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+
+#hvw-review-dock #hvw-btn-accept {
+  background: #2f6f3e;
+  border-color: #2f6f3e;
+}
+
+#hvw-review-dock #hvw-btn-accept:hover:not(:disabled) {
+  background: #3a8650;
+}
+
+body.hvw-editing [data-content].hvw-accepted {
+  position: relative;
+  outline: 2px solid #2f6f3e;
+  outline-offset: 4px;
+  background: rgba(47, 111, 62, 0.12);
+}
+
+body.hvw-editing [data-content].hvw-accepted::after {
+  content: attr(data-change-hint);
+  display: inline-block;
+  margin: 0.35rem 0 0 0.5rem;
+  padding: 0.15rem 0.45rem;
+  vertical-align: middle;
+  background: #2f6f3e;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+body.hvw-editing [data-content].hvw-review-current {
+  outline: 3px solid #47a1fb;
+  outline-offset: 5px;
+}
+
+.hvw-diff-jump {
+  margin-top: 0.4rem;
+  min-height: 2.25rem;
+  padding: 0 0.75rem;
+  border: 1px solid #1a1a1a;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 @media (max-width: 1023px) {
-  body.hvw-has-editor {
-    padding-top: 9.5rem;
+  body.hvw-has-editor.hvw-has-review {
+    padding-top: 18rem;
+  }
+
+  #hvw-review-dock {
+    top: 9.5rem;
+    grid-template-columns: 1fr;
   }
 }
