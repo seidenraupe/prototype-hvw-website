@@ -243,16 +243,40 @@ jobs:
             deploy/hostpoint-vorschau/ \
             "${SSH_USER}@${host}:${target}vorschau/"
 
-          rsync -avz --ignore-existing \
+          echo "Redaktionstexte mergen (Server gewinnt, Git nur neue Felder)…"
+          merge_dir=$(mktemp -d)
+          rsync -avz \
             -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
-            deploy/hostpoint-vorschau/data/content-live.json \
+            "${SSH_USER}@${host}:${target}vorschau/data/content-live.json" \
+            "${merge_dir}/remote-live.json" || true
+          rsync -avz \
+            -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
+            "${SSH_USER}@${host}:${target}vorschau/redaktion/storage/content-draft.json" \
+            "${merge_dir}/remote-draft.json" || true
+
+          python3 scripts/merge-content-json.py \
+            --schema data/content-schema.json \
+            --seed data/content-live.json \
+            --remote-live "${merge_dir}/remote-live.json" \
+            --remote-draft "${merge_dir}/remote-draft.json" \
+            --out-live "${merge_dir}/merged-live.json" \
+            --out-draft "${merge_dir}/merged-draft.json"
+
+          rsync -avz \
+            -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
+            "${merge_dir}/merged-live.json" \
             "${SSH_USER}@${host}:${target}vorschau/data/content-live.json"
+          rsync -avz \
+            -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
+            "${merge_dir}/merged-draft.json" \
+            "${SSH_USER}@${host}:${target}vorschau/redaktion/storage/content-draft.json"
+          rm -rf "${merge_dir}"
 
           ssh -i "$keyfile" -p 22 \
             -o IdentitiesOnly=yes \
             -o StrictHostKeyChecking=no \
             "${SSH_USER}@${host}" \
-            "mkdir -p '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rwX '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rw '${target}vorschau/data/content-live.json' 2>/dev/null || true"
+            "mkdir -p '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rwX '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rw '${target}vorschau/data/content-live.json' '${target}vorschau/redaktion/storage/content-draft.json' 2>/dev/null || true"
 
           rm -f "$keyfile"
           echo "Deploy abgeschlossen (Soft-Launch + /vorschau/)."

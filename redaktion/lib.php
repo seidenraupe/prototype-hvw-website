@@ -172,15 +172,43 @@ function hvw_sanitize_plain(string $html): string
     return $text;
 }
 
-function hvw_normalize_fields(array $incoming): array
+function hvw_seed_fields(): array
+{
+    $path = HVW_ROOT . '/data/content-live.seed.json';
+    if (!is_file($path)) {
+        $path = HVW_LIVE;
+    }
+    $data = hvw_read_json($path);
+    $fields = $data['fields'] ?? [];
+    return is_array($fields) ? $fields : [];
+}
+
+function hvw_fallback_fields(): array
+{
+    $live = hvw_live()['fields'] ?? [];
+    $draft = [];
+    if (is_file(HVW_DRAFT)) {
+        $draft = hvw_read_json(HVW_DRAFT)['fields'] ?? [];
+    }
+    $draft = is_array($draft) ? $draft : [];
+    $live = is_array($live) ? $live : [];
+    return array_merge(hvw_seed_fields(), $live, $draft);
+}
+
+function hvw_normalize_fields(array $incoming, ?array $fallback = null): array
 {
     $schema = hvw_schema();
+    $fallback = $fallback ?? hvw_fallback_fields();
     $out = [];
     $errors = [];
     foreach ($schema as $id => $meta) {
         if (!array_key_exists($id, $incoming)) {
-            $errors[] = 'Feld fehlt: ' . $id;
-            continue;
+            if (array_key_exists($id, $fallback)) {
+                $incoming[$id] = $fallback[$id];
+            } else {
+                $errors[] = 'Feld fehlt: ' . $id;
+                continue;
+            }
         }
         $raw = (string) $incoming[$id];
         $rich = !empty($meta['rich']);

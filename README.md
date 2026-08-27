@@ -63,7 +63,8 @@ Baut `deploy/hostpoint-soft-launch/` **und** die interne Vorschau
 (`deploy/hostpoint-vorschau/` → `/vorschau/`) und synct beides per rsync/SSH.
 Der Soft-Launch-Sync lässt `/vorschau/` unangetastet (`--exclude vorschau/`).
 Veröffentlichte Redaktionstexte in `/vorschau/data/content-live.json` und Entwürfe
-werden bei späteren Deploys nicht überschrieben.
+werden bei Deploys **nicht überschrieben**. Neue Textfelder aus Git werden nur
+**ergänzt** (Merge: Server gewinnt, Git liefert Startwerte für neue IDs).
 
 #### Secrets (Repo → Settings → Secrets and variables → Actions)
 
@@ -264,6 +265,24 @@ Standard HTTP-Zugang (sofort in den GitHub-Secrets `VORSCHAU_BASIC_USER` /
 | HTTP-Benutzer | HTTP-Passwort |
 |---|---|
 | `hvw-vorschau` | `Vorschau-HVW-2026` |
+
+### Redaktion und Weiterentwicklung parallel
+
+Texte und Code sind getrennt:
+
+| Spur | Wo | Was |
+|---|---|---|
+| Redaktion | Hostpoint `/vorschau/` | `data/content-live.json` und Entwurf auf dem **Server** |
+| Entwicklung | GitHub `main` | HTML, CSS, JS, Schema, neue Feld-IDs |
+
+Beim Deploy gilt: **Felder, die auf dem Server schon existieren, bleiben.** Git liefert nur Startwerte für **neue** Feld-IDs (Merge-Skript `scripts/merge-content-json.py`). Entwürfe werden gleich behandelt: vorhandene Änderungen bleiben, neue IDs kommen dazu.
+
+Damit das so bleibt:
+
+- Texte nur in der Vorschau redigieren, nicht in HTML oder in `data/content-live.json` «korrigieren».
+- Feld-IDs (`data-content="…"`) nicht umbenennen — sonst hängt der Redaktionstext in der Luft.
+- Neue Texte: ID in HTML + `data/content-schema.json` + Startwert in `data/content-live.json`.
+- GitHub Pages zeigt die Git-Startwerte, nicht den Redaktionsstand auf Hostpoint.
 
 Lokal zum Ausprobieren:
 

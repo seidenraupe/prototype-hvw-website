@@ -25,6 +25,7 @@ copy_dir "${ROOT}/css" "${OUT}/css"
 copy_dir "${ROOT}/js" "${OUT}/js"
 copy_dir "${ROOT}/images" "${OUT}/images"
 copy_dir "${ROOT}/data" "${OUT}/data"
+cp "${ROOT}/data/content-live.json" "${OUT}/data/content-live.seed.json"
 copy_dir "${ROOT}/programm" "${OUT}/programm"
 
 mkdir -p "${OUT}/redaktion/storage"
@@ -54,6 +55,7 @@ Danach Redaktion:  https://www.hvwinterthur.ch/vorschau/redaktion/
 
 Die öffentliche Soft-Launch-Seite /programm bleibt unverändert.
 Diese Vorschau ist per HTTP-Passwort und robots noindex geschützt.
+Redaktionstexte (content-live.json) nicht aus Git überspielen — Merge auf dem Server.
 
 Bevorzugt: GitHub Action «Deploy via rsync» (siehe README).
 TXT
