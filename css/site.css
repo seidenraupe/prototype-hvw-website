@@ -230,7 +230,7 @@ body.hvw-has-login-invite {
   justify-content: space-between;
   gap: 0.65rem 1rem;
   padding: 0.65rem 1rem;
-  background: #146b54;
+  background: #146b54 !important;
   color: #fff;
   font-size: 0.95rem;
   border-bottom: 3px solid #c9a227;

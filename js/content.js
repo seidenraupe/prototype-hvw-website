@@ -91,6 +91,9 @@
     bar.id = "hvw-login-invite";
     bar.setAttribute("role", "region");
     bar.setAttribute("aria-label", "Änderungsmodus");
+    bar.style.background = "#146b54";
+    bar.style.color = "#fff";
+    bar.style.borderBottom = "3px solid #c9a227";
     bar.innerHTML =
       "<p><strong>Änderungsmodus</strong> — Texte bearbeiten oder freigeben?</p>" +
       "<a href=\"redaktion/?next=" +

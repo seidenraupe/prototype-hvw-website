@@ -536,8 +536,8 @@
           <button type="button" id="hvw-btn-diff">Änderungen</button>
           <button type="button" id="hvw-btn-save">Entwurf speichern</button>
           <button type="button" id="hvw-btn-discard">Verwerfen</button>
-          <button type="button" id="hvw-btn-publish">Live schalten</button>
-          <a id="hvw-btn-zugang" href="redaktion/zugang.php">E-Mail-Zugang</a>
+          <button type="button" id="hvw-btn-publish" hidden>Live schalten</button>
+          <a id="hvw-btn-zugang" hidden href="redaktion/zugang.php">E-Mail-Zugang</a>
           <button type="button" id="hvw-btn-logout">Abmelden</button>
         </div>
       </div>
