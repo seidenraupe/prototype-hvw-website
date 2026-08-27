@@ -43,6 +43,7 @@ cp "${ROOT}/css/site.css" "${OUT}/css/site.css"
 cp "${ROOT}/js/tailwind-config.js" "${OUT}/js/tailwind-config.js"
 cp "${ROOT}/js/analytics.js" "${OUT}/js/analytics.js"
 cp "${ROOT}/js/main.js" "${OUT}/js/main.js"
+cp "${ROOT}/js/programm-download.js" "${OUT}/js/programm-download.js"
 cp "${ROOT}/data/analytics.json" "${OUT}/data/analytics.json"
 cp "${ROOT}/images/hvw-logo.png" "${OUT}/images/hvw-logo.png"
 for f in favicon.ico favicon-32.png favicon-192.png apple-touch-icon.png; do

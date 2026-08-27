@@ -274,6 +274,21 @@ def program_year_label(print_on, last_event_on):
     return "{0}/{1}".format(print_on.year, str(last_event_on.year)[2:])
 
 
+def download_basename(print_on, last_event_on):
+    """Dateiname ohne Pfad-Slash: «Programm HVW MM.JJJJ bis MM.JJJJ».
+
+    Schrägstriche (08/2026) würden im Browser-Download nur «2026.pdf» speichern.
+    """
+    if last_event_on < print_on:
+        last_event_on = print_on
+    return "Programm HVW {0:02d}.{1} bis {2:02d}.{3}".format(
+        print_on.month,
+        print_on.year,
+        last_event_on.month,
+        last_event_on.year,
+    )
+
+
 def last_event_date(events, fallback):
     latest = fallback
     for event in events:
@@ -682,7 +697,7 @@ def draw_footer(canvas, doc):
     canvas.restoreState()
 
 
-def write_pdf(path, events, locations_by_id, image_paths, year, period_label, logo_path):
+def write_pdf(path, events, locations_by_id, image_paths, year, period_label, logo_path, title=None):
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     doc = BaseDocTemplate(
         path,
@@ -691,6 +706,8 @@ def write_pdf(path, events, locations_by_id, image_paths, year, period_label, lo
         rightMargin=16 * mm,
         topMargin=12 * mm,
         bottomMargin=22 * mm,
+        title=title or "Programm HVW",
+        author="Historischer Verein Winterthur",
     )
     frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="normal")
     doc.addPageTemplates([PageTemplate(id="main", frames=frame, onPage=draw_footer)])
@@ -732,6 +749,7 @@ def main(argv=None):
     period_label = format_period_label(print_on, last_on)
     year_label = program_year_label(print_on, last_on)
     slug = "{0}_{1:02d}".format(print_on.year, print_on.month)
+    download_name = download_basename(print_on, last_on) + ".pdf"
     print("{0} Veranstaltung(en), Periode «{1}».".format(len(events), period_label))
 
     loc_ids = set()
@@ -759,6 +777,7 @@ def main(argv=None):
         year_label,
         period_label,
         args.logo,
+        title=download_basename(print_on, last_on),
     )
     print("PDF geschrieben: {0} ({1} Bytes)".format(out_path, os.path.getsize(out_path)))
 
@@ -775,6 +794,7 @@ def main(argv=None):
                 "eventCount": len(events),
                 "format": "A4",
                 "file": os.path.basename(out_path),
+                "downloadName": download_name,
             },
             f,
             ensure_ascii=False,
