@@ -91,20 +91,6 @@
       "rich": false,
       "multiline": false
     },
-    "start.newsletter.heading": {
-      "label": "Startseite · Titel Newsletter",
-      "page": "index.html",
-      "max": 40,
-      "rich": false,
-      "multiline": false
-    },
-    "start.newsletter.lead": {
-      "label": "Startseite · Text Newsletter",
-      "page": "index.html",
-      "max": 180,
-      "rich": true,
-      "multiline": true
-    },
     "ueber-uns.intro": {
       "label": "Über uns · Einleitung",
       "page": "ueber-uns.html",

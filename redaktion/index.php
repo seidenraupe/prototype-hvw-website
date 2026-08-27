@@ -49,7 +49,7 @@ if (str_contains($next, '://') || str_starts_with($next, '//')) {
 <body class="bg-hvw-fog font-sans text-hvw-ink antialiased">
   <main class="mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-12">
     <p class="text-sm font-semibold uppercase tracking-[0.08em] text-hvw-mute">Historischer Verein Winterthur</p>
-    <h1 class="mt-2 text-3xl font-semibold">Texte bearbeiten</h1>
+    <h1 class="mt-2 text-3xl font-semibold">Änderungsmodus</h1>
     <p class="mt-3 text-hvw-mute">
       Anmelden, auf der Website in einen Text klicken, speichern. Live geht nichts, bevor die Freigabe zustimmt.
     </p>

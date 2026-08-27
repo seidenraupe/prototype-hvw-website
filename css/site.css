@@ -212,3 +212,44 @@ input:focus-visible {
     padding-bottom: 4.5rem;
   }
 }
+
+/* Anmelde-Hinweis für den Änderungsmodus (nur wenn PHP-Redaktion erreichbar) */
+body.hvw-has-login-invite {
+  padding-top: 4.5rem;
+}
+
+#hvw-login-invite {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 70;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem 1rem;
+  padding: 0.65rem 1rem;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+#hvw-login-invite p {
+  margin: 0;
+}
+
+#hvw-login-invite a {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  padding: 0 1rem;
+  background: #fff;
+  color: #1a1a1a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#hvw-login-invite a:hover {
+  background: #e8e8e8;
+}
