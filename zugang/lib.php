@@ -11,8 +11,7 @@ define('HVW_ACCESS_FILE', HVW_ROOT . '/redaktion/storage/access-emails.json');
 define('HVW_OTP_FILE', HVW_ROOT . '/redaktion/storage/otp.json');
 define('HVW_ZUGANG_SECRET_FILE', HVW_ROOT . '/redaktion/storage/zugang-secret.txt');
 define('HVW_MAIL_CONFIG', HVW_ROOT . '/redaktion/config.mail.php');
-define('HVW_OTP_TTL', 600);
-define('HVW_ZUGANG_TTL', 43200);
+define('HVW_ZUGANG_TZ', 'Europe/Zurich');
 
 /**
  * Ordner-URLs auf index.php oder index.html auflösen.
@@ -34,6 +33,19 @@ function hvw_zugang_resolve_index(string $rel): string
         }
     }
     return ($dir === '' ? '' : $dir) . '/index.html';
+}
+
+function hvw_zugang_timezone(): DateTimeZone
+{
+    return new DateTimeZone(HVW_ZUGANG_TZ);
+}
+
+/** Unix-Zeitpunkt der nächsten Mitternacht (Europe/Zurich). */
+function hvw_zugang_day_end(?int $now = null): int
+{
+    $tz = hvw_zugang_timezone();
+    $nowDt = (new DateTimeImmutable('@' . ($now ?? time())))->setTimezone($tz);
+    return $nowDt->modify('tomorrow')->setTime(0, 0, 0)->getTimestamp();
 }
 
 function hvw_zugang_base(): string
@@ -167,9 +179,16 @@ function hvw_zugang_cookie_name(): string
     return 'hvw_zugang';
 }
 
+/** Session nur am Kalendertag gültig, dessen Mitternacht in $exp steht. */
+function hvw_zugang_session_valid(int $exp, ?int $now = null): bool
+{
+    $now = $now ?? time();
+    return $exp > $now && $exp === hvw_zugang_day_end($now);
+}
+
 function hvw_zugang_set_cookie(string $email): void
 {
-    $exp = time() + HVW_ZUGANG_TTL;
+    $exp = hvw_zugang_day_end();
     $payload = $exp . '|' . hvw_normalize_email($email);
     $sig = hash_hmac('sha256', $payload, hvw_zugang_secret());
     $value = rtrim(strtr(base64_encode($payload . '|' . $sig), '+/', '-_'), '=');
@@ -214,7 +233,7 @@ function hvw_zugang_ok(): bool
         return false;
     }
     [$exp, $email, $sig] = $parts;
-    if (!ctype_digit($exp) || (int) $exp < time()) {
+    if (!ctype_digit($exp) || !hvw_zugang_session_valid((int) $exp)) {
         return false;
     }
     $payload = $exp . '|' . $email;
@@ -243,7 +262,7 @@ function hvw_otp_issue(string $email): string
     }
     $data[$email] = [
         'hash' => password_hash($code, PASSWORD_DEFAULT),
-        'exp' => $now + HVW_OTP_TTL,
+        'exp' => hvw_zugang_day_end($now),
         'tries' => 0,
         'sentAt' => $now,
         'hourCount' => $hourCount + 1,
@@ -288,7 +307,7 @@ function hvw_send_access_code(string $email, string $code): void
 {
     $cfg = hvw_mail_config();
     $subject = 'Ihr Zugangscode für die HVW-Vorschau';
-    $body = "Guten Tag\n\nIhr Code für die interne Vorschau des Historischen Vereins Winterthur lautet:\n\n  {$code}\n\nEr gilt 10 Minuten. Wenn Sie diesen Code nicht angefordert haben, können Sie die Nachricht ignorieren.\n\nHistorischer Verein Winterthur\n";
+    $body = "Guten Tag\n\nIhr Code für die interne Vorschau des Historischen Vereins Winterthur lautet:\n\n  {$code}\n\nEr gilt bis Mitternacht (Schweizer Zeit) und kann nur einmal verwendet werden. Am nächsten Tag brauchen Sie einen neuen Code.\n\nWenn Sie diesen Code nicht angefordert haben, können Sie die Nachricht ignorieren.\n\nHistorischer Verein Winterthur\n";
     $from = (string) $cfg['from'];
     $fromName = (string) $cfg['from_name'];
     if ((string) $cfg['host'] !== '' && (string) $cfg['user'] !== '' && (string) $cfg['pass'] !== '') {
