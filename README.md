@@ -74,8 +74,12 @@ werden bei Deploys **nicht überschrieben**. Neue Textfelder aus Git werden nur
 | `SSH_HOST` | Server-Hostname aus Hostpoint «Server Übersicht», z. B. `sl45.web.hostpoint.ch` |
 | `SSH_USER` | Hosting-Account exakt wie im Control Panel, z. B. `zozuhosa` |
 | `SSH_TARGET_DIR` | Document Root mit `/` am Ende, z. B. `/home/zozuhosa/www/hvwinterthur.ch/` |
-| `VORSCHAU_BASIC_USER` | Optional: HTTP-Benutzer für `/vorschau/` |
-| `VORSCHAU_BASIC_PASSWORD` | Optional: HTTP-Passwort für `/vorschau/` |
+| `MAIL_SMTP_HOST` | SMTP-Server, z. B. `smtp.mail.hostpoint.ch` |
+| `MAIL_SMTP_PORT` | Meist `587` |
+| `MAIL_SMTP_USER` | SMTP-Benutzer (Postfach) |
+| `MAIL_SMTP_PASSWORD` | SMTP-Passwort des Postfachs |
+| `MAIL_FROM` | Absender, z. B. `noreply@hvwinterthur.ch` |
+| `VORSCHAU_ALLOWED_EMAILS` | Kommagetrennte E-Mails für den **ersten** Zugang (danach in der Vorschau pflegen) |
 
 #### SSH bei Hostpoint vorbereiten
 
@@ -254,20 +258,21 @@ Ordner**, der nicht verlinkt und nicht indexiert ist:
 
 1. **Öffentlich bleibt nur** `https://www.hvwinterthur.ch/programm`
    (Stamm-URL leitet weiter zur bestehenden Vereinswebsite).
-2. **Vorschau + Redaktion:** `https://www.hvwinterthur.ch/vorschau/`
-   — HTTP-Passwort (Browser-Dialog), danach die Website wie live.
-3. **Texte ändern:** Oben auf jeder Vorschau-Seite «Änderungsmodus — Anmelden»,
-   oder direkt `https://www.hvwinterthur.ch/vorschau/redaktion/`
-   — zweites Login (Rolle Redaktion oder Freigabe).
-4. Erst beim Launch wandert die Website an die Stamm-URL, das HTTP-Passwort
+2. **Vorschau:** `https://www.hvwinterthur.ch/vorschau/`
+   — E-Mail (Allowlist) + Code, der an diese Adresse geht.
+3. **Texte ändern:** Oben «Änderungsmodus — Anmelden»,
+   oder `https://www.hvwinterthur.ch/vorschau/redaktion/`
+   — Login `redaktion` oder `freigabe` (kein zweiter Mail-Code).
+4. **E-Mail-Liste pflegen:** als Freigabe unter
+   `https://www.hvwinterthur.ch/vorschau/redaktion/zugang.php`
+5. Erst beim Launch wandert die Website an die Stamm-URL, der Mail-Code
    entfällt.
 
-Standard HTTP-Zugang (sofort in den GitHub-Secrets `VORSCHAU_BASIC_USER` /
-`VORSCHAU_BASIC_PASSWORD` ersetzen):
+Vor dem ersten Besuch das Secret `VORSCHAU_ALLOWED_EMAILS` setzen
+(Ihre Adresse) und SMTP-Passwort als `MAIL_SMTP_PASSWORD`. Ohne SMTP kommt
+kein Code an.
 
-| HTTP-Benutzer | HTTP-Passwort |
-|---|---|
-| `hvw-vorschau` | `Vorschau-HVW-2026` |
+Die Redaktionsleiste ist dunkelgrün, damit sie sich von der schwarzen Website unterscheidet.
 
 ### Redaktion und Weiterentwicklung parallel
 

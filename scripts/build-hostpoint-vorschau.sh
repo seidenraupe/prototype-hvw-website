@@ -4,7 +4,6 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="${ROOT}/deploy/hostpoint-vorschau"
-AUTH_USER_FILE="${AUTH_USER_FILE:-.htpasswd}"
 
 rm -rf "${OUT}"
 mkdir -p "${OUT}"
@@ -27,35 +26,38 @@ copy_dir "${ROOT}/images" "${OUT}/images"
 copy_dir "${ROOT}/data" "${OUT}/data"
 cp "${ROOT}/data/content-live.json" "${OUT}/data/content-live.seed.json"
 copy_dir "${ROOT}/programm" "${OUT}/programm"
+copy_dir "${ROOT}/zugang" "${OUT}/zugang"
 
 mkdir -p "${OUT}/redaktion/storage"
 cp "${ROOT}/redaktion/api.php" "${OUT}/redaktion/api.php"
 cp "${ROOT}/redaktion/index.php" "${OUT}/redaktion/index.php"
+cp "${ROOT}/redaktion/zugang.php" "${OUT}/redaktion/zugang.php"
 cp "${ROOT}/redaktion/lib.php" "${OUT}/redaktion/lib.php"
 cp "${ROOT}/redaktion/.htaccess" "${OUT}/redaktion/.htaccess"
 cp "${ROOT}/redaktion/storage/.htaccess" "${OUT}/redaktion/storage/.htaccess"
 cp "${ROOT}/redaktion/config.local.example.php" "${OUT}/redaktion/config.local.example.php"
+cp "${ROOT}/redaktion/config.mail.example.php" "${OUT}/redaktion/config.mail.example.php"
 
-sed "s|__AUTH_USER_FILE__|${AUTH_USER_FILE}|g" \
-  "${ROOT}/deploy/vorschau.htaccess" > "${OUT}/.htaccess"
-cp "${ROOT}/deploy/vorschau.htpasswd" "${OUT}/.htpasswd"
+cp "${ROOT}/deploy/vorschau.htaccess" "${OUT}/.htaccess"
 cp "${ROOT}/deploy/vorschau.robots.txt" "${OUT}/robots.txt"
 
-# Entwürfe und lokale Zugänge gehören nicht ins Paket
 rm -f "${OUT}/redaktion/config.local.php"
+rm -f "${OUT}/redaktion/config.mail.php"
 rm -f "${OUT}/redaktion/storage/content-draft.json"
+rm -f "${OUT}/redaktion/storage/access-emails.json"
+rm -f "${OUT}/redaktion/storage/otp.json"
+rm -f "${OUT}/redaktion/storage/zugang-secret.txt"
 
 cat > "${OUT}/UPLOAD.txt" <<'TXT'
 Hostpoint interne Vorschau — /vorschau/
 ======================================
 
 URL:  https://www.hvwinterthur.ch/vorschau/
-Login (HTTP):  hvw-vorschau  /  Vorschau-HVW-2026
-Danach Redaktion:  https://www.hvwinterthur.ch/vorschau/redaktion/
+Zugang: zugelassene E-Mail-Adresse + Code per Mail
+Redaktion: https://www.hvwinterthur.ch/vorschau/redaktion/
+E-Mail-Liste: https://www.hvwinterthur.ch/vorschau/redaktion/zugang.php (Rolle Freigabe)
 
-Die öffentliche Soft-Launch-Seite /programm bleibt unverändert.
-Diese Vorschau ist per HTTP-Passwort und robots noindex geschützt.
-Redaktionstexte (content-live.json) nicht aus Git überspielen — Merge auf dem Server.
+SMTP und Start-Adressen: GitHub-Secrets MAIL_SMTP_* und VORSCHAU_ALLOWED_EMAILS.
 
 Bevorzugt: GitHub Action «Deploy via rsync» (siehe README).
 TXT

@@ -1,5 +1,5 @@
 # Soft-Launch: deploy/hostpoint-soft-launch → Hostpoint (www.hvwinterthur.ch)
-# Interne Vorschau: deploy/hostpoint-vorschau → /vorschau/ (HTTP-Passwort)
+# Interne Vorschau: deploy/hostpoint-vorschau → /vorschau/ (E-Mail-Code)
 #
 # Benötigte Repository-Secrets (Settings → Secrets and variables → Actions):
 #   SSH_PRIVATE_KEY  – kompletter privater Key (inkl. -----BEGIN … PRIVATE KEY-----)
@@ -10,9 +10,13 @@
 #   SSH_TARGET_DIR   – Document Root, z. B. /home/BENUTZER/www/hvwinterthur.ch/
 #                      (mit abschliessendem /)
 #
-# Optional für die interne Vorschau (sonst Standard-Zugang, siehe README):
-#   VORSCHAU_BASIC_USER
-#   VORSCHAU_BASIC_PASSWORD
+# Für den E-Mail-Code (Vorschau-Zugang):
+#   MAIL_SMTP_HOST       – z. B. smtp.mail.hostpoint.ch
+#   MAIL_SMTP_PORT       – meist 587
+#   MAIL_SMTP_USER       – SMTP-Benutzer (oft die Absenderadresse)
+#   MAIL_SMTP_PASSWORD   – SMTP-Passwort (Hostpoint-Postfach)
+#   MAIL_FROM            – Absender, z. B. noreply@hvwinterthur.ch
+#   VORSCHAU_ALLOWED_EMAILS – Kommagetrennte Start-Adressen (nur falls die Liste auf dem Server noch leer ist)
 #
 # Hostpoint: SSH muss im Control Panel aktiviert und der öffentliche Key
 # unter authorized_keys hinterlegt sein.
@@ -57,30 +61,48 @@ jobs:
 
       - name: Interne Vorschau bauen
         env:
-          SSH_TARGET_DIR: ${{ secrets.SSH_TARGET_DIR }}
-          VORSCHAU_BASIC_USER: ${{ secrets.VORSCHAU_BASIC_USER }}
-          VORSCHAU_BASIC_PASSWORD: ${{ secrets.VORSCHAU_BASIC_PASSWORD }}
+          MAIL_SMTP_HOST: ${{ secrets.MAIL_SMTP_HOST }}
+          MAIL_SMTP_PORT: ${{ secrets.MAIL_SMTP_PORT }}
+          MAIL_SMTP_USER: ${{ secrets.MAIL_SMTP_USER }}
+          MAIL_SMTP_PASSWORD: ${{ secrets.MAIL_SMTP_PASSWORD }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          VORSCHAU_ALLOWED_EMAILS: ${{ secrets.VORSCHAU_ALLOWED_EMAILS }}
         run: |
           set -euo pipefail
-          target="${SSH_TARGET_DIR:-}"
-          case "$target" in
-            */) ;;
-            *) target="${target}/" ;;
-          esac
-          if [ -n "$target" ]; then
-            export AUTH_USER_FILE="${target}vorschau/.htpasswd"
-          else
-            export AUTH_USER_FILE=".htpasswd"
-          fi
           chmod +x ./scripts/build-hostpoint-vorschau.sh
           ./scripts/build-hostpoint-vorschau.sh
-          if [ -n "${VORSCHAU_BASIC_USER:-}" ] && [ -n "${VORSCHAU_BASIC_PASSWORD:-}" ]; then
-            hash="$(openssl passwd -apr1 "${VORSCHAU_BASIC_PASSWORD}")"
-            printf '%s:%s\n' "${VORSCHAU_BASIC_USER}" "$hash" > deploy/hostpoint-vorschau/.htpasswd
-            echo "HTTP-Zugang für /vorschau/ aus Repository-Secrets gesetzt."
-          else
-            echo "HTTP-Zugang für /vorschau/: Standard aus deploy/vorschau.htpasswd (bitte nach dem Launch ändern)."
-          fi
+          python3 - <<'PY'
+          import json, os, pathlib
+          host = os.environ.get("MAIL_SMTP_HOST") or "smtp.mail.hostpoint.ch"
+          port = int(os.environ.get("MAIL_SMTP_PORT") or "587")
+          user = os.environ.get("MAIL_SMTP_USER") or ""
+          password = os.environ.get("MAIL_SMTP_PASSWORD") or ""
+          mail_from = os.environ.get("MAIL_FROM") or "noreply@hvwinterthur.ch"
+          raw = os.environ.get("VORSCHAU_ALLOWED_EMAILS") or ""
+          emails = [e.strip().lower() for e in raw.replace(";", ",").split(",") if e.strip()]
+          out = pathlib.Path("deploy/hostpoint-vorschau/redaktion/config.mail.php")
+          def php_str(value: str) -> str:
+              return "'" + value.replace("\\", "\\\\").replace("'", "\\'") + "'"
+          lines = [
+              "<?php",
+              "return [",
+              f"  'host' => {php_str(host)},",
+              f"  'port' => {port},",
+              f"  'user' => {php_str(user)},",
+              f"  'pass' => {php_str(password)},",
+              "  'secure' => 'tls',",
+              f"  'from' => {php_str(mail_from)},",
+              "  'from_name' => 'HVW Vorschau',",
+              "  'allowed_emails' => [",
+          ]
+          for email in emails:
+              lines.append(f"    {php_str(email)},")
+          lines += ["  ],", "];", ""]
+          out.write_text("\n".join(lines), encoding="utf-8")
+          print("config.mail.php geschrieben; Start-Adressen:", len(emails))
+          if not user or not password:
+              print("::warning::MAIL_SMTP_USER oder MAIL_SMTP_PASSWORD fehlt — Codes können nicht per SMTP gesendet werden.")
+          PY
 
       - name: Secrets und SSH-Host prüfen
         env:
@@ -238,6 +260,9 @@ jobs:
           rsync -avz --delete \
             --exclude 'data/content-live.json' \
             --exclude 'redaktion/storage/content-draft.json' \
+            --exclude 'redaktion/storage/access-emails.json' \
+            --exclude 'redaktion/storage/otp.json' \
+            --exclude 'redaktion/storage/zugang-secret.txt' \
             --exclude 'redaktion/config.local.php' \
             -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
             deploy/hostpoint-vorschau/ \
@@ -276,7 +301,7 @@ jobs:
             -o IdentitiesOnly=yes \
             -o StrictHostKeyChecking=no \
             "${SSH_USER}@${host}" \
-            "mkdir -p '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rwX '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rw '${target}vorschau/data/content-live.json' '${target}vorschau/redaktion/storage/content-draft.json' 2>/dev/null || true"
+            "mkdir -p '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rwX '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rw '${target}vorschau/data/content-live.json' '${target}vorschau/redaktion/storage/content-draft.json' '${target}vorschau/redaktion/storage/access-emails.json' '${target}vorschau/redaktion/storage/otp.json' '${target}vorschau/redaktion/storage/zugang-secret.txt' 2>/dev/null || true"
 
           rm -f "$keyfile"
           echo "Deploy abgeschlossen (Soft-Launch + /vorschau/)."

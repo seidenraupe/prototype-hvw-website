@@ -1,3 +1,3 @@
-<FilesMatch "^(lib\.php|config\.local\.php)$">
+<FilesMatch "^(lib\.php|config\.local\.php|config\.mail\.php)$">
   Require all denied
 </FilesMatch>

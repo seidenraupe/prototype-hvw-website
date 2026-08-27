@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/lib.php';
+require_once __DIR__ . '/lib.php';
 hvw_boot_session();
 
 $user = hvw_user();
@@ -61,6 +61,11 @@ if (str_contains($next, '://') || str_starts_with($next, '//')) {
       <p class="mt-4">
         <a href="../index.html" class="inline-flex min-h-12 items-center justify-center bg-hvw-ink px-5 font-semibold text-white no-underline hover:bg-hvw-charcoal">Zur Website</a>
       </p>
+      <?php if ($user['role'] === 'freigabe'): ?>
+      <p class="mt-3">
+        <a href="zugang.php" class="inline-flex min-h-12 items-center justify-center border border-hvw-ink px-5 font-semibold no-underline hover:bg-hvw-fog">E-Mail-Zugang verwalten</a>
+      </p>
+      <?php endif; ?>
     <?php endif; ?>
 
     <form method="post" class="mt-8 border border-hvw-ink bg-white p-6">
