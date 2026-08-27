@@ -38,14 +38,35 @@
     return (d.textContent || "").replace(/\s+/g, " ").trim().length;
   }
 
+  function fieldValue(el) {
+    const rich = el.getAttribute("data-content-rich") === "1";
+    return rich
+      ? window.hvwSanitizeRich(el.innerHTML)
+      : (el.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
   function collectFields() {
     const out = {};
     document.querySelectorAll("[data-content]").forEach((el) => {
-      const id = el.getAttribute("data-content");
-      const rich = el.getAttribute("data-content-rich") === "1";
-      out[id] = rich ? window.hvwSanitizeRich(el.innerHTML) : (el.textContent || "").replace(/\s+/g, " ").trim();
+      out[el.getAttribute("data-content")] = fieldValue(el);
     });
     return out;
+  }
+
+  function markChangedFields() {
+    const editing = view === "draft";
+    document.querySelectorAll("[data-content]").forEach((el) => {
+      const id = el.getAttribute("data-content");
+      const changed = editing && fieldValue(el) !== String(liveFields[id] || "");
+      el.classList.toggle("hvw-changed", changed);
+      if (changed) {
+        el.setAttribute("title", "Geändert — noch nicht öffentlich, wartet auf Freigabe");
+        el.setAttribute("data-change-hint", "Geändert — zur Freigabe");
+      } else {
+        el.removeAttribute("title");
+        el.removeAttribute("data-change-hint");
+      }
+    });
   }
 
   function setView(mode) {
@@ -64,6 +85,7 @@
       el.classList.toggle("hvw-editable", canEdit);
       el.spellcheck = true;
     });
+    markChangedFields();
   }
 
   function fieldMeta(id) {
@@ -85,6 +107,7 @@
 
   function markDirty() {
     dirty = true;
+    markChangedFields();
     updateBar();
   }
 
@@ -101,6 +124,10 @@
           : dirty
             ? "Entwurf · nicht gespeichert"
             : "Entwurf · identisch mit Live";
+    const legend = $("#hvw-legend");
+    if (legend) legend.hidden = view !== "draft" || changes === 0;
+    const diffBtn = $("#hvw-btn-diff");
+    if (diffBtn) diffBtn.classList.toggle("is-attention", view === "draft" && changes > 0);
     $("#hvw-btn-draft").hidden = view === "draft";
     $("#hvw-btn-live").hidden = view === "live";
     $("#hvw-btn-save").disabled = view !== "draft";
@@ -178,6 +205,7 @@
     try {
       await api("publish", { method: "POST", headers: csrfHeaders(), body: "{}" });
       liveFields = Object.assign({}, draftFields);
+      markChangedFields();
       toast("Freigegeben — die Texte sind live.");
       updateBar();
     } catch (err) {
@@ -254,6 +282,7 @@
         <div class="hvw-editor-bar__main">
           <span id="hvw-role-label"></span>
           <span id="hvw-status"></span>
+          <span id="hvw-legend" hidden><span class="hvw-legend-swatch" aria-hidden="true"></span> Orange = geändert, noch nicht live</span>
           <span id="hvw-counter"></span>
         </div>
         <div class="hvw-editor-bar__tools">
@@ -323,8 +352,24 @@
         if (el.getAttribute("data-content-rich") === "1") {
           el.innerHTML = window.hvwSanitizeRich(el.innerHTML);
         }
+        markChangedFields();
+      });
+      el.addEventListener("click", (e) => {
+        if (view !== "draft") return;
+        e.stopPropagation();
       });
     });
+    document.addEventListener(
+      "click",
+      (e) => {
+        if (view !== "draft") return;
+        const field = e.target.closest && e.target.closest("[data-content]");
+        if (!field) return;
+        const link = e.target.closest("a");
+        if (link && link.contains(field)) e.preventDefault();
+      },
+      true
+    );
   }
 
   async function boot() {

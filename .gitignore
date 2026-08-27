@@ -1,3 +1,4 @@
 redaktion/config.local.php
 redaktion/storage/content-draft.json
 redaktion/storage/*.log
+deploy/hostpoint-vorschau/

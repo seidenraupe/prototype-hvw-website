@@ -88,6 +88,61 @@ body.hvw-editing [data-content].hvw-editable:focus {
   background: rgba(71, 161, 251, 0.08);
 }
 
+body.hvw-editing [data-content].hvw-changed {
+  position: relative;
+  outline: 2px solid #c05612;
+  outline-offset: 4px;
+  background: rgba(192, 86, 18, 0.14);
+  box-shadow: 0 0 0 1px rgba(192, 86, 18, 0.25);
+}
+
+body.hvw-editing .hvw-hero [data-content].hvw-changed {
+  outline-color: #ffb370;
+  background: rgba(255, 179, 112, 0.22);
+}
+
+body.hvw-editing [data-content].hvw-changed::after {
+  content: attr(data-change-hint);
+  display: inline-block;
+  margin: 0.35rem 0 0 0.5rem;
+  padding: 0.15rem 0.45rem;
+  vertical-align: middle;
+  background: #c05612;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+#hvw-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #ffd7b8;
+  font-weight: 600;
+}
+
+#hvw-legend[hidden] {
+  display: none;
+}
+
+.hvw-legend-swatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: #c05612;
+  box-shadow: 0 0 0 2px rgba(255, 179, 112, 0.7);
+}
+
+#hvw-btn-diff.is-attention {
+  background: #c05612;
+  border-color: #c05612;
+  color: #fff;
+}
+
 #hvw-toast {
   position: fixed;
   z-index: 90;

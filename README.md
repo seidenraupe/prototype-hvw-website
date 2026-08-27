@@ -49,6 +49,8 @@ Solange die Gesamtwebsite noch nicht live geht:
 - Stamm-URL `https://www.hvwinterthur.ch/` → Weiterleitung nach
   **`https://www.historischer-verein-winterthur.ch/`** (wie bisher)
 - Direktlink / Newsletter: **`https://www.hvwinterthur.ch/programm`**
+- Interne Redaktion (Passwort, nicht öffentlich):
+  **`https://www.hvwinterthur.ch/vorschau/`**
 - Inhalt Programm: nur Eventfrog-«Programm» (ohne Rückblick / Prototyp-Navigation)
 - Apache/Hostpoint: `.htaccess` (Stamm-Redirect + `/programm`)
 - `robots.txt` + `noindex` auf Prototyp-Seiten
@@ -57,8 +59,11 @@ Solange die Gesamtwebsite noch nicht live geht:
 
 Workflow: `.github/workflows/deploy.yml` — bei Push auf `main` (oder manuell unter Actions).
 
-Baut `deploy/hostpoint-soft-launch/` und synct **nur dieses Paket** per rsync/SSH
-in den Document Root.
+Baut `deploy/hostpoint-soft-launch/` **und** die interne Vorschau
+(`deploy/hostpoint-vorschau/` → `/vorschau/`) und synct beides per rsync/SSH.
+Der Soft-Launch-Sync lässt `/vorschau/` unangetastet (`--exclude vorschau/`).
+Veröffentlichte Redaktionstexte in `/vorschau/data/content-live.json` und Entwürfe
+werden bei späteren Deploys nicht überschrieben.
 
 #### Secrets (Repo → Settings → Secrets and variables → Actions)
 
@@ -68,6 +73,8 @@ in den Document Root.
 | `SSH_HOST` | Server-Hostname aus Hostpoint «Server Übersicht», z. B. `sl45.web.hostpoint.ch` |
 | `SSH_USER` | Hosting-Account exakt wie im Control Panel, z. B. `zozuhosa` |
 | `SSH_TARGET_DIR` | Document Root mit `/` am Ende, z. B. `/home/zozuhosa/www/hvwinterthur.ch/` |
+| `VORSCHAU_BASIC_USER` | Optional: HTTP-Benutzer für `/vorschau/` |
+| `VORSCHAU_BASIC_PASSWORD` | Optional: HTTP-Passwort für `/vorschau/` |
 
 #### SSH bei Hostpoint vorbereiten
 
@@ -235,7 +242,30 @@ Standard-Zugänge (sofort ändern, z. B. via `redaktion/config.local.php`):
 | `freigabe`  | `Freigabe-HVW-2026`  | Freigabe |
 
 PHP muss in `data/` und `redaktion/storage/` schreiben dürfen.
-Lokal:
+
+### Redaktion im Web, ohne öffentliche Website
+
+GitHub Pages führt kein PHP aus — dort kann man die Seiten ansehen, aber nicht
+einloggen. Die Redaktion läuft deshalb auf Hostpoint, in einem **internen
+Ordner**, der nicht verlinkt und nicht indexiert ist:
+
+1. **Öffentlich bleibt nur** `https://www.hvwinterthur.ch/programm`
+   (Stamm-URL leitet weiter zur bestehenden Vereinswebsite).
+2. **Vorschau + Redaktion:** `https://www.hvwinterthur.ch/vorschau/`
+   — HTTP-Passwort (Browser-Dialog), danach die Website wie live.
+3. **Texte ändern:** `https://www.hvwinterthur.ch/vorschau/redaktion/`
+   — zweites Login (Rolle Redaktion oder Freigabe).
+4. Erst beim Launch wandert die Website an die Stamm-URL, das HTTP-Passwort
+   entfällt.
+
+Standard HTTP-Zugang (sofort in den GitHub-Secrets `VORSCHAU_BASIC_USER` /
+`VORSCHAU_BASIC_PASSWORD` ersetzen):
+
+| HTTP-Benutzer | HTTP-Passwort |
+|---|---|
+| `hvw-vorschau` | `Vorschau-HVW-2026` |
+
+Lokal zum Ausprobieren:
 
 ```bash
 php -S localhost:8080

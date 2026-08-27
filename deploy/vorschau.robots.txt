@@ -1,0 +1,3 @@
+# Interne Vorschau: nichts indexieren.
+User-agent: *
+Disallow: /
