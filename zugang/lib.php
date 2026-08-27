@@ -14,6 +14,46 @@ define('HVW_MAIL_CONFIG', HVW_ROOT . '/redaktion/config.mail.php');
 define('HVW_OTP_TTL', 600);
 define('HVW_ZUGANG_TTL', 43200);
 
+/**
+ * Ordner-URLs auf index.php oder index.html auflösen.
+ * /redaktion/ hat nur index.php — nicht index.html.
+ */
+function hvw_zugang_resolve_index(string $rel): string
+{
+    $rel = '/' . ltrim($rel, '/');
+    $dirPath = HVW_ROOT . rtrim($rel, '/');
+    $isDir = $rel === '/' || str_ends_with($rel, '/') || is_dir($dirPath);
+    if (!$isDir) {
+        return $rel;
+    }
+    $dir = rtrim($rel, '/');
+    foreach (['index.php', 'index.html'] as $index) {
+        $candidate = ($dir === '' ? '' : $dir) . '/' . $index;
+        if (is_file(HVW_ROOT . $candidate)) {
+            return $candidate;
+        }
+    }
+    return ($dir === '' ? '' : $dir) . '/index.html';
+}
+
+function hvw_zugang_base(): string
+{
+    $script = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/zugang/serve.php'));
+    $base = preg_replace('#/zugang/serve\.php$#', '', $script);
+    return is_string($base) ? rtrim($base, '/') : '';
+}
+
+function hvw_zugang_rel(): string
+{
+    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $base = hvw_zugang_base();
+    if ($base !== '' && str_starts_with($uri, $base)) {
+        $uri = substr($uri, strlen($base)) ?: '/';
+    }
+    $uri = '/' . ltrim($uri, '/');
+    return hvw_zugang_resolve_index($uri);
+}
+
 function hvw_default_access_emails(): array
 {
     return [
