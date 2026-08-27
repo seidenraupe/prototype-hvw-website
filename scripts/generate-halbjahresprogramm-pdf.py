@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Halbjahresprogramm-PDF aus Eventfrog (alle HVW-Org-IDs)
-=======================================================
+Programm-PDF aus Eventfrog (alle HVW-Org-IDs)
+=============================================
 
 A4-Hochformat mit:
-  - HVW-Logo (Website-Header)
-  - Teaser-Bild pro Anlass (Eventfrog emblemToShow)
-  - Datum/Zeit als Kalenderblatt
-  - Titel, Kurztext, Ort
+  - Kompakter Kopf (Logo, Titel, drei Museumsfotos)
+  - Alle Anlässe ab Druckdatum (kein Halbjahres-Schnitt)
+  - Monatszeile: Druckmonat bis letzte Veranstaltung
+  - Teaser-Bild, Kalenderblatt, Titel, Kurztext, Ort
 
 Org-IDs (Default): 4936116, 5116588, 5137433
 
@@ -15,7 +15,7 @@ API-Key:
   EVENTFROG_API_KEY oder Datei cronjobs/eventfrog_api_key
 
 Usage:
-  EVENTFROG_API_KEY=… python3 scripts/generate-halbjahresprogramm-pdf.py
+  EVENTFROG_API_KEY=... python3 scripts/generate-halbjahresprogramm-pdf.py
   python3 scripts/generate-halbjahresprogramm-pdf.py -o programm/HalbJahresprogramm.pdf
 """
 
@@ -248,38 +248,44 @@ def parse_iso(iso_string):
     return None
 
 
-def half_year_bounds(today=None):
-    today = today or date.today()
-    year = today.year
-    if today.month <= 6:
-        start = date(year, 1, 1)
-        end = date(year, 6, 30)
-        label = "JANUAR BIS JUNI"
-        slug = "{0}_1".format(year)
-    else:
-        start = date(year, 7, 1)
-        end = date(year, 12, 31)
-        label = "JULI BIS DEZEMBER"
-        slug = "{0}_2".format(year)
-    return start, end, label, year, slug
+def month_name(d):
+    return MONTHS_DE[d.month].upper()
 
 
-def period_label_from_events(events, fallback_label):
-    months = []
+def format_period_label(print_on, last_event_on):
+    """Monatszeile: Druckdatum bis letzte sichtbare Veranstaltung."""
+    if last_event_on < print_on:
+        last_event_on = print_on
+    if print_on.year == last_event_on.year and print_on.month == last_event_on.month:
+        return month_name(print_on)
+    if print_on.year == last_event_on.year:
+        return "{0} BIS {1}".format(month_name(print_on), month_name(last_event_on))
+    return "{0} {1} BIS {2} {3}".format(
+        month_name(print_on),
+        print_on.year,
+        month_name(last_event_on),
+        last_event_on.year,
+    )
+
+
+def program_year_label(print_on, last_event_on):
+    if last_event_on.year == print_on.year:
+        return str(print_on.year)
+    return "{0}/{1}".format(print_on.year, str(last_event_on.year)[2:])
+
+
+def last_event_date(events, fallback):
+    latest = fallback
     for event in events:
         begin_dt = parse_iso(event.get("begin"))
-        if begin_dt:
-            months.append(begin_dt.month)
-    if not months:
-        return fallback_label
-    first = min(months)
-    last = max(months)
-    if first == last:
-        return MONTHS_DE[first].upper()
-    return "{0} BIS {1}".format(MONTHS_DE[first].upper(), MONTHS_DE[last].upper())
+        if begin_dt and begin_dt.date() > latest:
+            latest = begin_dt.date()
+    return latest
 
 
-def select_half_year_events(events, start, end):
+def select_upcoming_events(events, today=None):
+    """Alle nicht abgesagten Anlässe ab Druckdatum, ohne Halbjahres-Schnitt."""
+    today = today or date.today()
     selected = []
     for event in events:
         if event.get("cancelled"):
@@ -287,8 +293,7 @@ def select_half_year_events(events, start, end):
         begin_dt = parse_iso(event.get("begin"))
         if not begin_dt:
             continue
-        d = begin_dt.date()
-        if start <= d <= end:
+        if begin_dt.date() >= today:
             selected.append(event)
     selected.sort(key=lambda e: e.get("begin") or "")
     return selected
@@ -714,16 +719,19 @@ def main(argv=None):
         return 1
 
     org_ids = [x.strip() for x in args.org_ids.split(",") if x.strip()]
-    start, end, period_fallback, year, slug = half_year_bounds()
+    print_on = date.today()
     print(
-        "Halbjahr-Fenster {0} – {1}, Org-IDs: {2}".format(
-            start.isoformat(), end.isoformat(), ", ".join(org_ids)
+        "Alle Anlässe ab Druckdatum {0}, Org-IDs: {1}".format(
+            print_on.isoformat(), ", ".join(org_ids)
         )
     )
 
-    events = get_all_events(org_ids, api_key, date_from=start.isoformat())
-    events = select_half_year_events(events, start, end)
-    period_label = period_label_from_events(events, period_fallback)
+    events = get_all_events(org_ids, api_key, date_from=print_on.isoformat())
+    events = select_upcoming_events(events, print_on)
+    last_on = last_event_date(events, print_on)
+    period_label = format_period_label(print_on, last_on)
+    year_label = program_year_label(print_on, last_on)
+    slug = "{0}_{1:02d}".format(print_on.year, print_on.month)
     print("{0} Veranstaltung(en), Periode «{1}».".format(len(events), period_label))
 
     loc_ids = set()
@@ -748,7 +756,7 @@ def main(argv=None):
         events,
         locations_by_id,
         image_paths,
-        year,
+        year_label,
         period_label,
         args.logo,
     )
@@ -759,7 +767,9 @@ def main(argv=None):
         json.dump(
             {
                 "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                "year": year,
+                "printOn": print_on.isoformat(),
+                "lastEventOn": last_on.isoformat(),
+                "year": year_label,
                 "periodLabel": period_label,
                 "slug": slug,
                 "eventCount": len(events),
