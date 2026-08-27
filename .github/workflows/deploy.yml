@@ -1,4 +1,5 @@
 # Soft-Launch: deploy/hostpoint-soft-launch → Hostpoint (www.hvwinterthur.ch)
+# Interne Vorschau: deploy/hostpoint-vorschau → /vorschau/ (HTTP-Passwort)
 #
 # Benötigte Repository-Secrets (Settings → Secrets and variables → Actions):
 #   SSH_PRIVATE_KEY  – kompletter privater Key (inkl. -----BEGIN … PRIVATE KEY-----)
@@ -8,6 +9,10 @@
 #   SSH_USER         – SSH-/FTP-Benutzername bei Hostpoint
 #   SSH_TARGET_DIR   – Document Root, z. B. /home/BENUTZER/www/hvwinterthur.ch/
 #                      (mit abschliessendem /)
+#
+# Optional für die interne Vorschau (sonst Standard-Zugang, siehe README):
+#   VORSCHAU_BASIC_USER
+#   VORSCHAU_BASIC_PASSWORD
 #
 # Hostpoint: SSH muss im Control Panel aktiviert und der öffentliche Key
 # unter authorized_keys hinterlegt sein.
@@ -49,6 +54,33 @@ jobs:
 
       - name: Soft-Launch-Paket bauen
         run: ./scripts/build-hostpoint-soft-launch.sh
+
+      - name: Interne Vorschau bauen
+        env:
+          SSH_TARGET_DIR: ${{ secrets.SSH_TARGET_DIR }}
+          VORSCHAU_BASIC_USER: ${{ secrets.VORSCHAU_BASIC_USER }}
+          VORSCHAU_BASIC_PASSWORD: ${{ secrets.VORSCHAU_BASIC_PASSWORD }}
+        run: |
+          set -euo pipefail
+          target="${SSH_TARGET_DIR:-}"
+          case "$target" in
+            */) ;;
+            *) target="${target}/" ;;
+          esac
+          if [ -n "$target" ]; then
+            export AUTH_USER_FILE="${target}vorschau/.htpasswd"
+          else
+            export AUTH_USER_FILE=".htpasswd"
+          fi
+          chmod +x ./scripts/build-hostpoint-vorschau.sh
+          ./scripts/build-hostpoint-vorschau.sh
+          if [ -n "${VORSCHAU_BASIC_USER:-}" ] && [ -n "${VORSCHAU_BASIC_PASSWORD:-}" ]; then
+            hash="$(openssl passwd -apr1 "${VORSCHAU_BASIC_PASSWORD}")"
+            printf '%s:%s\n' "${VORSCHAU_BASIC_USER}" "$hash" > deploy/hostpoint-vorschau/.htpasswd
+            echo "HTTP-Zugang für /vorschau/ aus Repository-Secrets gesetzt."
+          else
+            echo "HTTP-Zugang für /vorschau/: Standard aus deploy/vorschau.htpasswd (bitte nach dem Launch ändern)."
+          fi
 
       - name: Secrets und SSH-Host prüfen
         env:
@@ -192,14 +224,35 @@ jobs:
           echo "rsync Soft-Launch → ${SSH_USER}@${host}:${target}"
           # coucou_export.json / mus_export.json werden vom Hostpoint-Cron
           # (cronjobs/) erzeugt und dürfen durch Soft-Launch-Deploys nicht
-          # gelöscht werden.
+          # gelöscht werden. /vorschau/ ist die interne Website-Vorschau.
           rsync -avz --delete \
             --exclude 'coucou_export.json' \
             --exclude 'mus_export.json' \
             --exclude 'home-events.json' \
+            --exclude 'vorschau/' \
             -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
             deploy/hostpoint-soft-launch/ \
             "${SSH_USER}@${host}:${target}"
 
+          echo "rsync interne Vorschau → ${SSH_USER}@${host}:${target}vorschau/"
+          rsync -avz --delete \
+            --exclude 'data/content-live.json' \
+            --exclude 'redaktion/storage/content-draft.json' \
+            --exclude 'redaktion/config.local.php' \
+            -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
+            deploy/hostpoint-vorschau/ \
+            "${SSH_USER}@${host}:${target}vorschau/"
+
+          rsync -avz --ignore-existing \
+            -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
+            deploy/hostpoint-vorschau/data/content-live.json \
+            "${SSH_USER}@${host}:${target}vorschau/data/content-live.json"
+
+          ssh -i "$keyfile" -p 22 \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=no \
+            "${SSH_USER}@${host}" \
+            "mkdir -p '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rwX '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rw '${target}vorschau/data/content-live.json' 2>/dev/null || true"
+
           rm -f "$keyfile"
-          echo "Deploy abgeschlossen."
+          echo "Deploy abgeschlossen (Soft-Launch + /vorschau/)."

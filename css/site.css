@@ -113,6 +113,11 @@ body {
   }
 }
 
+.event-card > a.event-card__media {
+  display: block;
+  color: inherit;
+}
+
 .event-card__media {
   position: relative;
   overflow: hidden;

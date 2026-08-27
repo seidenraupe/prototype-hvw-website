@@ -11,6 +11,16 @@ define('HVW_LIVE', HVW_ROOT . '/data/content-live.json');
 define('HVW_DRAFT', __DIR__ . '/storage/content-draft.json');
 define('HVW_ALLOWED_TAGS', ['strong', 'em', 'u', 'br']);
 
+function hvw_cookie_path(): string
+{
+    $script = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/'));
+    $base = preg_replace('#/redaktion(?:/.*)?$#', '', $script);
+    if (!is_string($base) || $base === '') {
+        return '/';
+    }
+    return rtrim($base, '/') . '/';
+}
+
 function hvw_boot_session(): void
 {
     if (session_status() === PHP_SESSION_ACTIVE) {
@@ -20,7 +30,7 @@ function hvw_boot_session(): void
     session_name('hvw_redaktion');
     session_set_cookie_params([
         'lifetime' => 0,
-        'path' => '/',
+        'path' => hvw_cookie_path(),
         'secure' => $secure,
         'httponly' => true,
         'samesite' => 'Lax',

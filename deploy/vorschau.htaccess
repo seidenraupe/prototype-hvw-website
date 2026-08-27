@@ -1,0 +1,25 @@
+# Interne Vorschau der neuen Website — nicht öffentlich.
+# HTTP-Basic-Auth. AuthUserFile wird beim Deploy auf den Hostpoint-Pfad gesetzt.
+
+DirectoryIndex index.html index.php
+
+Options -Indexes
+
+<IfModule mod_authn_file.c>
+  AuthType Basic
+  AuthName "HVW interne Vorschau — nicht oeffentlich"
+  AuthUserFile __AUTH_USER_FILE__
+  Require valid-user
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Robots-Tag "noindex, nofollow, noarchive"
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
