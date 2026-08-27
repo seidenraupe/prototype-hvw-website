@@ -211,3 +211,33 @@ Die Seite `mitmachen.html` bettet das Webling-Mitgliedschaftsformular als **ifra
 - iframe-`src`: `https://hvwinterthur.webling.ch/forms/memberform/d9e980cf304ee928a7e5`
 - Referenz auch in `data/webling-form.json`
 - Nach dem Absenden bleibt die Besucherin/der Besucher auf der HVW-Website
+
+## Texte redigieren (ohne Layout zu ändern)
+
+Auf Startseite, Über uns und Museen sind ausgewählte Texte als Felder hinterlegt
+(`data-content`). Layout, Navigation, Agenda (Eventfrog) und das Webling-Formular
+bleiben fest.
+
+Ablauf: **anmelden → auf der echten Seite klicken → Entwurf speichern → Freigabe
+schaut die Seite an → live schalten.**
+
+- Anmeldung: `/redaktion/` (PHP, Hostpoint oder `php -S localhost:8080`)
+- Live-Texte: `data/content-live.json` (öffentlich)
+- Entwurf: `redaktion/storage/content-draft.json` (nicht öffentlich)
+- Erlaubt: fett, kursiv, unterstrichen. Keine Farben, keine neuen Blöcke.
+- Rollen: `redaktion` speichert Entwürfe; `freigabe` darf live schalten.
+
+Standard-Zugänge (sofort ändern, z. B. via `redaktion/config.local.php`):
+
+| Benutzer   | Passwort            | Rolle    |
+|------------|---------------------|----------|
+| `redaktion` | `Redaktion-HVW-2026` | Entwurf  |
+| `freigabe`  | `Freigabe-HVW-2026`  | Freigabe |
+
+PHP muss in `data/` und `redaktion/storage/` schreiben dürfen.
+Lokal:
+
+```bash
+php -S localhost:8080
+# → http://localhost:8080/redaktion/
+```

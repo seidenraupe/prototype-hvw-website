@@ -1,0 +1,270 @@
+{
+  "fields": {
+    "start.hero.headline": {
+      "label": "Startseite · Hauptaussage",
+      "page": "index.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "start.hero.lead": {
+      "label": "Startseite · Einleitung unter der Hauptaussage",
+      "page": "index.html",
+      "max": 240,
+      "rich": true,
+      "multiline": true
+    },
+    "start.programm.kicker": {
+      "label": "Startseite · Kleine Überschrift Programm",
+      "page": "index.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "start.programm.heading": {
+      "label": "Startseite · Titel Programm",
+      "page": "index.html",
+      "max": 50,
+      "rich": false,
+      "multiline": false
+    },
+    "start.haeuser.kicker": {
+      "label": "Startseite · Kleine Überschrift Häuser",
+      "page": "index.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "start.haeuser.heading": {
+      "label": "Startseite · Titel Häuser",
+      "page": "index.html",
+      "max": 50,
+      "rich": false,
+      "multiline": false
+    },
+    "start.haeuser.schaffen.teaser": {
+      "label": "Startseite · Teaser Museum Schaffen",
+      "page": "index.html",
+      "max": 140,
+      "rich": true,
+      "multiline": true
+    },
+    "start.haeuser.lindengut.teaser": {
+      "label": "Startseite · Teaser Museum Lindengut",
+      "page": "index.html",
+      "max": 140,
+      "rich": true,
+      "multiline": true
+    },
+    "start.haeuser.moersburg.teaser": {
+      "label": "Startseite · Teaser Schloss Mörsburg",
+      "page": "index.html",
+      "max": 140,
+      "rich": true,
+      "multiline": true
+    },
+    "start.stimmen.kicker": {
+      "label": "Startseite · Kleine Überschrift Stimmen",
+      "page": "index.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "start.stimmen.heading": {
+      "label": "Startseite · Titel Stimmen",
+      "page": "index.html",
+      "max": 50,
+      "rich": false,
+      "multiline": false
+    },
+    "start.mitglied.kicker": {
+      "label": "Startseite · Kleine Überschrift Mitgliedschaft",
+      "page": "index.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "start.mitglied.heading": {
+      "label": "Startseite · Titel Mitmachen",
+      "page": "index.html",
+      "max": 50,
+      "rich": false,
+      "multiline": false
+    },
+    "start.newsletter.heading": {
+      "label": "Startseite · Titel Newsletter",
+      "page": "index.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "start.newsletter.lead": {
+      "label": "Startseite · Text Newsletter",
+      "page": "index.html",
+      "max": 180,
+      "rich": true,
+      "multiline": true
+    },
+    "ueber-uns.intro": {
+      "label": "Über uns · Einleitung",
+      "page": "ueber-uns.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "ueber-uns.seit1874.heading": {
+      "label": "Über uns · Titel Geschichte",
+      "page": "ueber-uns.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "ueber-uns.seit1874.p1": {
+      "label": "Über uns · Absatz 1",
+      "page": "ueber-uns.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    },
+    "ueber-uns.seit1874.p2": {
+      "label": "Über uns · Absatz 2",
+      "page": "ueber-uns.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    },
+    "ueber-uns.vorstand.kicker": {
+      "label": "Über uns · Kleine Überschrift Vorstand",
+      "page": "ueber-uns.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "ueber-uns.vorstand.caption": {
+      "label": "Über uns · Bildlegende Vorstand",
+      "page": "ueber-uns.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "ueber-uns.vorstand.person1": {
+      "label": "Über uns · Vorstand Person 1",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": true,
+      "multiline": false
+    },
+    "ueber-uns.vorstand.person2": {
+      "label": "Über uns · Vorstand Person 2",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": true,
+      "multiline": false
+    },
+    "ueber-uns.vorstand.person3": {
+      "label": "Über uns · Vorstand Person 3",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": true,
+      "multiline": false
+    },
+    "ueber-uns.vorstand.note": {
+      "label": "Über uns · Hinweis unter dem Vorstand",
+      "page": "ueber-uns.html",
+      "max": 220,
+      "rich": true,
+      "multiline": true
+    },
+    "ueber-uns.faq.q1": {
+      "label": "Über uns · Frage 1",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": false,
+      "multiline": false
+    },
+    "ueber-uns.faq.a1": {
+      "label": "Über uns · Antwort 1",
+      "page": "ueber-uns.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    },
+    "ueber-uns.faq.q2": {
+      "label": "Über uns · Frage 2",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": false,
+      "multiline": false
+    },
+    "ueber-uns.faq.a2": {
+      "label": "Über uns · Antwort 2",
+      "page": "ueber-uns.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    },
+    "ueber-uns.faq.q3": {
+      "label": "Über uns · Frage 3",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": false,
+      "multiline": false
+    },
+    "ueber-uns.faq.a3": {
+      "label": "Über uns · Antwort 3",
+      "page": "ueber-uns.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    },
+    "museen.intro": {
+      "label": "Museen · Einleitung",
+      "page": "museen.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "museen.schaffen.kicker": {
+      "label": "Museen · Kleine Überschrift Schaffen",
+      "page": "museen.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "museen.schaffen.body": {
+      "label": "Museen · Text Museum Schaffen",
+      "page": "museen.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    },
+    "museen.lindengut.kicker": {
+      "label": "Museen · Kleine Überschrift Lindengut",
+      "page": "museen.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "museen.lindengut.body": {
+      "label": "Museen · Text Museum Lindengut",
+      "page": "museen.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    },
+    "museen.moersburg.kicker": {
+      "label": "Museen · Kleine Überschrift Mörsburg",
+      "page": "museen.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "museen.moersburg.body": {
+      "label": "Museen · Text Schloss Mörsburg",
+      "page": "museen.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    }
+  }
+}
