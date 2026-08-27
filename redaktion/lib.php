@@ -14,7 +14,8 @@ define('HVW_ALLOWED_TAGS', ['strong', 'em', 'u', 'br']);
 function hvw_cookie_path(): string
 {
     $script = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/'));
-    $base = preg_replace('#/redaktion(?:/.*)?$#', '', $script);
+    $base = preg_replace('#/zugang/serve\.php$#', '', $script);
+    $base = preg_replace('#/redaktion(?:/.*)?$#', '', is_string($base) ? $base : $script);
     if (!is_string($base) || $base === '') {
         return '/';
     }

@@ -208,6 +208,8 @@
       pub.hidden = !isFreigabe();
       pub.disabled = view !== "draft" || dirty || changes === 0;
     }
+    const zugang = $("#hvw-btn-zugang");
+    if (zugang) zugang.hidden = !isFreigabe();
     updateReviewDock();
   }
 
@@ -535,6 +537,7 @@
           <button type="button" id="hvw-btn-save">Entwurf speichern</button>
           <button type="button" id="hvw-btn-discard">Verwerfen</button>
           <button type="button" id="hvw-btn-publish">Live schalten</button>
+          <a id="hvw-btn-zugang" href="redaktion/zugang.php">E-Mail-Zugang</a>
           <button type="button" id="hvw-btn-logout">Abmelden</button>
         </div>
       </div>
