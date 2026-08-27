@@ -4,6 +4,8 @@ User-agent: *
 Allow: /programm
 Allow: /programm/
 Allow: /programm.html
+Allow: /impressum.html
+Allow: /datenschutz.html
 Allow: /css/
 Allow: /js/
 Allow: /data/

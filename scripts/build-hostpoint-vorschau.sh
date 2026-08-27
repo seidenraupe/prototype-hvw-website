@@ -16,7 +16,8 @@ copy_dir() {
 }
 
 for page in index.html agenda.html museen.html ueber-uns.html mitmachen.html \
-            publikationen.html sammlung.html zitate.html programm.html; do
+            publikationen.html sammlung.html zitate.html programm.html \
+            impressum.html datenschutz.html; do
   cp "${ROOT}/${page}" "${OUT}/${page}"
 done
 
