@@ -50,7 +50,6 @@ from reportlab.platypus import (
     KeepTogether,
     Flowable,
     HRFlowable,
-    PageBreak,
 )
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -474,22 +473,22 @@ def build_styles():
             "Period",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=11,
-            leading=14,
+            fontSize=8.5,
+            leading=11,
             textColor=HVW_MUTE,
-            alignment=1,
-            spaceAfter=2,
+            alignment=2,
+            spaceAfter=0,
         ),
         "prog": ParagraphStyle(
             "ProgTitle",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=16,
-            leading=20,
+            fontSize=13,
+            leading=16,
             textColor=HVW_INK,
-            alignment=1,
-            spaceBefore=2,
-            spaceAfter=2,
+            alignment=2,
+            spaceBefore=0,
+            spaceAfter=1,
         ),
         "title": ParagraphStyle(
             "EventTitle",
@@ -521,34 +520,54 @@ def build_styles():
             "MuseumCaption",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=8,
-            leading=10,
+            fontSize=7,
+            leading=9,
             textColor=HVW_MUTE,
             alignment=1,
-            spaceBefore=2,
+            spaceBefore=1.5,
         ),
     }
 
 
 def make_cover(styles, logo_path, year, period_label):
-    """Titelseite: Logo, Titel, drei Museumsfotos."""
+    """Kompakter Kopf nur auf der ersten Seite — Programm folgt ohne Seitenumbruch."""
     parts = []
+    title_block = [
+        Paragraph("PROGRAMM {0}".format(year), styles["prog"]),
+        Paragraph(escape_xml(period_label), styles["period"]),
+    ]
     if logo_path and os.path.isfile(logo_path):
-        logo_w = 96 * mm
+        logo_w = 46 * mm
         logo_h = logo_w * (163 / 715.0)
         logo = Image(logo_path, width=logo_w, height=logo_h)
-        logo.hAlign = "CENTER"
-        parts.append(logo)
-        parts.append(Spacer(1, 8 * mm))
-    parts.append(Paragraph("PROGRAMM {0}".format(year), styles["prog"]))
-    parts.append(Paragraph(escape_xml(period_label), styles["period"]))
-    parts.append(Spacer(1, 3 * mm))
+        header = Table(
+            [[logo, title_block]],
+            colWidths=[52 * mm, None],
+        )
+        header.setStyle(
+            TableStyle(
+                [
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("ALIGN", (0, 0), (0, 0), "LEFT"),
+                    ("ALIGN", (1, 0), (1, 0), "RIGHT"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                    ("TOPPADDING", (0, 0), (-1, -1), 0),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+                ]
+            )
+        )
+        parts.append(header)
+    else:
+        parts.extend(title_block)
+
+    parts.append(Spacer(1, 2.5 * mm))
     parts.append(
-        HRFlowable(width="100%", thickness=1, color=HVW_INK, spaceAfter=8 * mm)
+        HRFlowable(width="100%", thickness=0.8, color=HVW_INK, spaceAfter=3 * mm)
     )
 
-    photo_w = 54 * mm
-    photo_h = photo_w * (2.0 / 3.0)
+    photo_w = 47 * mm
+    photo_h = 27 * mm
     cells = []
     for path, label in MUSEUM_PHOTOS:
         cell = []
@@ -559,21 +578,24 @@ def make_cover(styles, logo_path, year, period_label):
         cell.append(Paragraph(escape_xml(label), styles["caption"]))
         cells.append(cell)
 
-    table = Table([cells], colWidths=[58 * mm, 58 * mm, 58 * mm], hAlign="CENTER")
+    table = Table([cells], colWidths=[56 * mm, 56 * mm, 56 * mm], hAlign="CENTER")
     table.setStyle(
         TableStyle(
             [
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 2 * mm),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 2 * mm),
+                ("LEFTPADDING", (0, 0), (-1, -1), 1.5 * mm),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 1.5 * mm),
                 ("TOPPADDING", (0, 0), (-1, -1), 0),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
             ]
         )
     )
     parts.append(table)
-    parts.append(PageBreak())
+    parts.append(Spacer(1, 2 * mm))
+    parts.append(
+        HRFlowable(width="100%", thickness=0.8, color=HVW_INK, spaceAfter=4 * mm)
+    )
     return parts
 
 
@@ -662,7 +684,7 @@ def write_pdf(path, events, locations_by_id, image_paths, year, period_label, lo
         pagesize=A4,
         leftMargin=16 * mm,
         rightMargin=16 * mm,
-        topMargin=14 * mm,
+        topMargin=12 * mm,
         bottomMargin=22 * mm,
     )
     frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="normal")
