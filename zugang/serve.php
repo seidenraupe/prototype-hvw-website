@@ -3,30 +3,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/lib.php';
 
-function hvw_zugang_base(): string
-{
-    $script = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/zugang/serve.php'));
-    $base = preg_replace('#/zugang/serve\.php$#', '', $script);
-    return is_string($base) ? rtrim($base, '/') : '';
-}
-
-function hvw_zugang_rel(): string
-{
-    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-    $base = hvw_zugang_base();
-    if ($base !== '' && str_starts_with($uri, $base)) {
-        $uri = substr($uri, strlen($base)) ?: '/';
-    }
-    $uri = '/' . ltrim($uri, '/');
-    if ($uri === '/' || str_ends_with($uri, '/')) {
-        $uri = rtrim($uri, '/') . '/index.html';
-        if ($uri === '/index.html' && !is_file(HVW_ROOT . '/index.html')) {
-            $uri = '/index.php';
-        }
-    }
-    return $uri;
-}
-
 function hvw_zugang_denied(): never
 {
     http_response_code(403);

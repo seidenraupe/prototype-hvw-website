@@ -96,7 +96,7 @@
     bar.style.borderBottom = "3px solid #c9a227";
     bar.innerHTML =
       "<p><strong>Änderungsmodus</strong> — Texte bearbeiten oder freigeben?</p>" +
-      "<a href=\"redaktion/?next=" +
+      "<a href=\"redaktion/index.php?next=" +
       encodeURIComponent(next) +
       "\">Anmelden</a>";
     document.body.appendChild(bar);
