@@ -137,6 +137,9 @@ Anlässe ab Druckdatum bis zur letzten Veranstaltung):
 https://www.hvwinterthur.ch/programm/HalbJahresprogramm.pdf
 ```
 
+Beim Speichern heisst die Datei `Programm HVW MM.JJJJ bis MM.JJJJ.pdf`
+(Druckmonat bis letzte Veranstaltung; Punkte statt Schrägstrich, damit der Browser den Namen nicht abschneidet).
+
 Erzeugung aus Eventfrog (alle drei Org-IDs):
 
 ```bash
