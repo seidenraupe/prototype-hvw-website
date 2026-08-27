@@ -130,7 +130,8 @@ https://www.hvwinterthur.ch/programm
 ### Halbjahresprogramm (PDF)
 
 Auf der Soft-Launch-Programmseite gibt es einen Download des aktuellen
-Halbjahresprogramms (A4, druckbar, mit Logo, Titelseite der drei Museen, Kalenderblatt und Event-Bildern):
+Programms (A4, druckbar: kompakter Kopf mit den drei Museen, dann alle
+Anlässe ab Druckdatum bis zur letzten Veranstaltung):
 
 ```
 https://www.hvwinterthur.ch/programm/HalbJahresprogramm.pdf
