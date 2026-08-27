@@ -14,6 +14,15 @@ define('HVW_MAIL_CONFIG', HVW_ROOT . '/redaktion/config.mail.php');
 define('HVW_OTP_TTL', 600);
 define('HVW_ZUGANG_TTL', 43200);
 
+function hvw_default_access_emails(): array
+{
+    return [
+        'thomas.giger@hvwinterthur.ch',
+        'christian.huggenberg@hvwinterthur.ch',
+        'gioia.joehri@hvwinterthur.ch',
+    ];
+}
+
 function hvw_mail_config(): array
 {
     $defaults = [
@@ -24,13 +33,20 @@ function hvw_mail_config(): array
         'secure' => 'tls',
         'from' => 'noreply@hvwinterthur.ch',
         'from_name' => 'HVW Vorschau',
-        'allowed_emails' => [],
+        'allowed_emails' => hvw_default_access_emails(),
     ];
     if (!is_file(HVW_MAIL_CONFIG)) {
         return $defaults;
     }
     $cfg = require HVW_MAIL_CONFIG;
-    return is_array($cfg) ? array_merge($defaults, $cfg) : $defaults;
+    if (!is_array($cfg)) {
+        return $defaults;
+    }
+    $merged = array_merge($defaults, $cfg);
+    if (empty($merged['allowed_emails']) || !is_array($merged['allowed_emails'])) {
+        $merged['allowed_emails'] = hvw_default_access_emails();
+    }
+    return $merged;
 }
 
 function hvw_normalize_email(string $email): string
@@ -43,9 +59,9 @@ function hvw_access_emails(): array
     $data = hvw_read_json(HVW_ACCESS_FILE);
     $emails = $data['emails'] ?? null;
     if (!is_array($emails)) {
-        $seed = hvw_mail_config()['allowed_emails'] ?? [];
+        $seed = array_merge(hvw_default_access_emails(), (array) (hvw_mail_config()['allowed_emails'] ?? []));
         $emails = [];
-        foreach ((array) $seed as $item) {
+        foreach ($seed as $item) {
             $n = hvw_normalize_email((string) $item);
             if ($n !== '' && filter_var($n, FILTER_VALIDATE_EMAIL)) {
                 $emails[] = $n;

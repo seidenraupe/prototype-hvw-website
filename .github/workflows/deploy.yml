@@ -16,7 +16,7 @@
 #   MAIL_SMTP_USER       – SMTP-Benutzer (oft die Absenderadresse)
 #   MAIL_SMTP_PASSWORD   – SMTP-Passwort (Hostpoint-Postfach)
 #   MAIL_FROM            – Absender, z. B. noreply@hvwinterthur.ch
-#   VORSCHAU_ALLOWED_EMAILS – Kommagetrennte Start-Adressen (nur falls die Liste auf dem Server noch leer ist)
+#   VORSCHAU_ALLOWED_EMAILS – optional, weitere Start-Adressen (die drei HVW-Adressen sind bereits im Code)
 #
 # Hostpoint: SSH muss im Control Panel aktiviert und der öffentliche Key
 # unter authorized_keys hinterlegt sein.
@@ -79,7 +79,15 @@ jobs:
           password = os.environ.get("MAIL_SMTP_PASSWORD") or ""
           mail_from = os.environ.get("MAIL_FROM") or "noreply@hvwinterthur.ch"
           raw = os.environ.get("VORSCHAU_ALLOWED_EMAILS") or ""
-          emails = [e.strip().lower() for e in raw.replace(";", ",").split(",") if e.strip()]
+          emails = [
+              "thomas.giger@hvwinterthur.ch",
+              "christian.huggenberg@hvwinterthur.ch",
+              "gioia.joehri@hvwinterthur.ch",
+          ]
+          for extra in raw.replace(";", ",").split(","):
+              item = extra.strip().lower()
+              if item and item not in emails:
+                  emails.append(item)
           out = pathlib.Path("deploy/hostpoint-vorschau/redaktion/config.mail.php")
           def php_str(value: str) -> str:
               return "'" + value.replace("\\", "\\\\").replace("'", "\\'") + "'"

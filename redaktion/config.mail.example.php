@@ -11,6 +11,10 @@
  *   'secure' => 'tls',
  *   'from' => 'noreply@hvwinterthur.ch',
  *   'from_name' => 'HVW Vorschau',
- *   'allowed_emails' => ['vorstand@hvwinterthur.ch'],
+ *   'allowed_emails' => [
+ *     'thomas.giger@hvwinterthur.ch',
+ *     'christian.huggenberg@hvwinterthur.ch',
+ *     'gioia.joehri@hvwinterthur.ch',
+ *   ],
  * ];
  */

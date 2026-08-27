@@ -79,7 +79,7 @@ werden bei Deploys **nicht überschrieben**. Neue Textfelder aus Git werden nur
 | `MAIL_SMTP_USER` | SMTP-Benutzer (Postfach) |
 | `MAIL_SMTP_PASSWORD` | SMTP-Passwort des Postfachs |
 | `MAIL_FROM` | Absender, z. B. `noreply@hvwinterthur.ch` |
-| `VORSCHAU_ALLOWED_EMAILS` | Kommagetrennte E-Mails für den **ersten** Zugang (danach in der Vorschau pflegen) |
+| `VORSCHAU_ALLOWED_EMAILS` | Optional: weitere Start-Adressen (die drei HVW-Adressen stehen bereits im Code) |
 
 #### SSH bei Hostpoint vorbereiten
 
@@ -268,9 +268,10 @@ Ordner**, der nicht verlinkt und nicht indexiert ist:
 5. Erst beim Launch wandert die Website an die Stamm-URL, der Mail-Code
    entfällt.
 
-Vor dem ersten Besuch das Secret `VORSCHAU_ALLOWED_EMAILS` setzen
-(Ihre Adresse) und SMTP-Passwort als `MAIL_SMTP_PASSWORD`. Ohne SMTP kommt
-kein Code an.
+Start-Adressen (Code per Mail): `thomas.giger@hvwinterthur.ch`,
+`christian.huggenberg@hvwinterthur.ch`, `gioia.joehri@hvwinterthur.ch`.
+Weitere Adressen legt die Freigabe in der Vorschau an. SMTP-Passwort als
+`MAIL_SMTP_PASSWORD` setzen — ohne SMTP kommt kein Code an.
 
 Die Redaktionsleiste ist dunkelgrün, damit sie sich von der schwarzen Website unterscheidet.
 

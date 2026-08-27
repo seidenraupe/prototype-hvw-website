@@ -87,7 +87,7 @@ $esc = static fn (string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8'
 
     <ul class="mt-8 border border-hvw-ink bg-white">
       <?php if (!$emails): ?>
-        <li class="px-5 py-4 text-hvw-mute">Noch keine Adressen. Legen Sie die erste an, oder setzen Sie das GitHub-Secret <code>VORSCHAU_ALLOWED_EMAILS</code>.</li>
+        <li class="px-5 py-4 text-hvw-mute">Noch keine Adressen. Beim ersten Aufruf der Vorschau werden die drei HVW-Adressen eingetragen.</li>
       <?php endif; ?>
       <?php foreach ($emails as $item): ?>
         <li class="flex flex-wrap items-center justify-between gap-3 border-b border-hvw-ink/15 px-5 py-3 last:border-b-0">

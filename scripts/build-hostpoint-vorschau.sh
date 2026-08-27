@@ -57,7 +57,7 @@ Zugang: zugelassene E-Mail-Adresse + Code per Mail
 Redaktion: https://www.hvwinterthur.ch/vorschau/redaktion/
 E-Mail-Liste: https://www.hvwinterthur.ch/vorschau/redaktion/zugang.php (Rolle Freigabe)
 
-SMTP und Start-Adressen: GitHub-Secrets MAIL_SMTP_* und VORSCHAU_ALLOWED_EMAILS.
+SMTP: GitHub-Secrets MAIL_SMTP_*. Start-Adressen im Code (Giger, Huggenberg, Jöhri).
 
 Bevorzugt: GitHub Action «Deploy via rsync» (siehe README).
 TXT
