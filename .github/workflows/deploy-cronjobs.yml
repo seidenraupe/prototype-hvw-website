@@ -84,6 +84,7 @@ jobs:
             echo "--- einmaliger Testlauf Museum Schaffen ---"
             /usr/local/bin/python eventfrog_to_mus.py
             ls -la "$HOME/www/hvwinterthur.ch/coucou_export.json" \
+                   "$HOME/www/hvwinterthur.ch/guidle_export.json" \
                    "$HOME/www/hvwinterthur.ch/mus_export.json" 2>/dev/null || true
           '
 

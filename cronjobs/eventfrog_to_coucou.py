@@ -11,13 +11,14 @@ Was macht dieses Skript?
        der Coucou-Schnittstelle (siehe "Schnittstelle Kulturmagazin Coucou",
        Version 1.4).
     4. Speichert das Ergebnis als Liste von Event-Objekten im öffentlichen
-       Webroot (Standard: coucou_export.json). Dateiname und Org-IDs sind
-       per Umgebungsvariable steuerbar (siehe unten) – z.B. mus_export.json
-       nur für Museum Schaffen (OrgID 5116588).
+       Webroot (Standard: coucou_export.json). Nach dem Coucou-Export wird
+       dieselbe Datei als guidle_export.json dupliziert. Dateiname und Org-IDs
+       sind per Umgebungsvariable steuerbar (siehe unten) – z.B. mus_export.json
+       nur für Museum Schaffen (OrgID 5116588); dann keine Guidle-Kopie.
     5. Optional: schreibt parallel 'home-events.json' mit den nächsten
        3 kommenden Veranstaltungen (Titelseiten-Auszug). Auf Hostpoint
        ist das ausgeschaltet (HVW_WRITE_HOME_EVENTS=0): der Cron schreibt
-       nur coucou_export.json bzw. mus_export.json.
+       coucou_export.json, guidle_export.json bzw. mus_export.json.
 
 Voraussetzungen:
     pip install -r requirements.txt   # bzw. pip install --user requests
@@ -50,6 +51,7 @@ Beschreibung in beiden Exporten (coucou_export.json und mus_export.json):
 
 Öffentliche URLs (Beispiele):
     https://www.hvwinterthur.ch/coucou_export.json
+    https://www.hvwinterthur.ch/guidle_export.json
     https://www.hvwinterthur.ch/mus_export.json
 
 Bekannte Einschränkungen (siehe Kommentare weiter unten im Code):
@@ -66,6 +68,7 @@ Bekannte Einschränkungen (siehe Kommentare weiter unten im Code):
 import json
 import os
 import re
+import shutil
 from datetime import datetime, timezone
 
 import requests
@@ -79,6 +82,7 @@ DEFAULT_ORG_IDS = ["4936116", "5116588", "5137433"]
 ORG_IDS = DEFAULT_ORG_IDS  # Abwärtskompatibilität
 
 DEFAULT_EXPORT_FILENAME = "coucou_export.json"
+GUIDLE_EXPORT_FILENAME = "guidle_export.json"
 
 # API-Key wird NICHT im Quellcode gespeichert (siehe load_api_key()).
 API_KEY_ENV_NAME = "EVENTFROG_API_KEY"
@@ -154,6 +158,18 @@ def resolve_export_path(httpdocs_dir):
     # Keine Pfadtraversal: nur Dateiname im Webroot
     name = os.path.basename(name)
     return os.path.join(httpdocs_dir, name)
+
+
+def copy_guidle_export(export_path):
+    """Nach coucou_export.json eine identische guidle_export.json ablegen.
+
+    mus_export.json (Museum Schaffen) wird nicht kopiert.
+    """
+    if os.path.basename(export_path) != DEFAULT_EXPORT_FILENAME:
+        return None
+    dest = os.path.join(os.path.dirname(export_path), GUIDLE_EXPORT_FILENAME)
+    shutil.copy2(export_path, dest)
+    return dest
 
 
 # Geheimer Key-File neben dem Skript (ausserhalb vom Webroot, nicht im Git)
@@ -722,6 +738,16 @@ def main():
             len(coucou_events), export_path
         )
     )
+    try:
+        guidle_path = copy_guidle_export(export_path)
+        if guidle_path:
+            print("Kopie für Guidle gespeichert in '{0}'.".format(guidle_path))
+    except OSError as exc:
+        print(
+            "Warnung: guidle_export.json konnte nicht geschrieben werden ({0}).".format(
+                exc
+            )
+        )
     print("Bitte insbesondere die 'category'-Zuordnung stichprobenartig prüfen.")
 
     if not write_home_events:

@@ -254,11 +254,13 @@ jobs:
 
 
           echo "rsync Soft-Launch → ${SSH_USER}@${host}:${target}"
-          # coucou_export.json / mus_export.json werden vom Hostpoint-Cron
-          # (cronjobs/) erzeugt und dürfen durch Soft-Launch-Deploys nicht
-          # gelöscht werden. /vorschau/ ist die interne Website-Vorschau.
+          # coucou_export.json / guidle_export.json / mus_export.json werden
+          # vom Hostpoint-Cron (cronjobs/) erzeugt und dürfen durch
+          # Soft-Launch-Deploys nicht gelöscht werden. /vorschau/ ist die
+          # interne Website-Vorschau.
           rsync -avz --delete \
             --exclude 'coucou_export.json' \
+            --exclude 'guidle_export.json' \
             --exclude 'mus_export.json' \
             --exclude 'home-events.json' \
             --exclude 'vorschau/' \

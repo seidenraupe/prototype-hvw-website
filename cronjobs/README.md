@@ -7,6 +7,7 @@ Migriert von Kreativ Media (`giger-straehl.ch` / Plesk).
 | Job | Skript | Ergebnis |
 |---|---|---|
 | Coucou-Export | `eventfrog_to_coucou.py` | `https://www.hvwinterthur.ch/coucou_export.json` (alle Org-IDs) |
+| Guidle-Kopie | *(dieselbe Coucou-Datei)* | `https://www.hvwinterthur.ch/guidle_export.json` |
 | Museum Schaffen | `eventfrog_to_mus.py` | `https://www.hvwinterthur.ch/mus_export.json` (nur OrgID `5116588`) |
 
 Beide JSON-Exports nutzen **dasselbe Coucou-Record-Layout**, inkl. Kurz- und
@@ -14,7 +15,8 @@ Langbeschreibung (`description`, `description_long`, `description_html`).
 `mus_export.json` holt die Agentur von museumschaffen.ch von hvwinterthur.ch ab.
 
 Die früheren GitHub-Crons (Coucou-Export und Homepage-Events im Repo) sind
-entfernt. Auf Hostpoint werden **nur** die zwei Export-JSON-Dateien erzeugt.
+entfernt. Auf Hostpoint entstehen **coucou_export.json** (danach 1:1 als
+**guidle_export.json** kopiert) und **mus_export.json**.
 
 ## Hostpoint-Einrichtung
 
@@ -81,6 +83,7 @@ cd /home/zozuhosa/cronjobs && /usr/local/bin/python eventfrog_to_mus.py >/dev/nu
 | Abnehmer | URL |
 |---|---|
 | Coucou | `https://www.hvwinterthur.ch/coucou_export.json` |
+| Guidle | `https://www.hvwinterthur.ch/guidle_export.json` |
 | museumschaffen.ch (Agentur) | `https://www.hvwinterthur.ch/mus_export.json` |
 
 Alten Cron auf Kreativ Media deaktivieren, sobald Coucou umgestellt ist.
@@ -92,6 +95,7 @@ cd ~/cronjobs
 HVW_WRITE_HOME_EVENTS=0 /usr/local/bin/python eventfrog_to_coucou.py
 /usr/local/bin/python eventfrog_to_mus.py
 curl -sI https://www.hvwinterthur.ch/coucou_export.json
+curl -sI https://www.hvwinterthur.ch/guidle_export.json
 curl -sI https://www.hvwinterthur.ch/mus_export.json
 ```
 
@@ -99,7 +103,7 @@ curl -sI https://www.hvwinterthur.ch/mus_export.json
 
 Die Exporte laufen **nur** über den Hostpoint-Cronjobs Manager, nicht über
 GitHub Actions. Soft-Launch-Deploy (`Deploy via rsync`) löscht
-`coucou_export.json` und `mus_export.json` nicht (`rsync --exclude`).
+`coucou_export.json`, `guidle_export.json` und `mus_export.json` nicht (`rsync --exclude`).
 
 Skript-Änderungen im Repo werden mit der Action
 `deploy-cronjobs.yml` nach `~/cronjobs/` synchronisiert (bei Push auf `main`
