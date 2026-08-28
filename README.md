@@ -144,8 +144,9 @@ pip install -r scripts/requirements-pdf.txt
 EVENTFROG_API_KEY=… python3 scripts/generate-halbjahresprogramm-pdf.py
 ```
 
-Beim Soft-Launch-Deploy wird das PDF in GitHub Actions frisch erzeugt.
-Die Integration auf der finalen `agenda.html` folgt nach Freigabe der Soft-Launch-Version.
+Beim Soft-Launch-Deploy wird das PDF in GitHub Actions frisch erzeugt,
+sofern die Eventfrog-API von GitHub aus antwortet. Schlägt der Abruf
+fehl (z. B. HTTP 403), bleibt das PDF aus dem Repository.
 
 ### Google Analytics 4 (Soft-Launch)
 
