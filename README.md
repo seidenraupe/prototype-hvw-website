@@ -264,6 +264,8 @@ Ordner**, der nicht verlinkt und nicht indexiert ist:
    (Stamm-URL leitet weiter zur bestehenden Vereinswebsite).
 2. **Vorschau:** `https://www.hvwinterthur.ch/vorschau/`
    — E-Mail (Allowlist) + Code, der an diese Adresse geht.
+   Der Zugang gilt bis Mitternacht (Schweizer Zeit); am nächsten Tag
+   braucht man einen neuen Code.
 3. **Texte ändern:** Oben «Änderungsmodus — Anmelden»,
    oder `https://www.hvwinterthur.ch/vorschau/redaktion/`
    — Login `redaktion` oder `freigabe` (kein zweiter Mail-Code).

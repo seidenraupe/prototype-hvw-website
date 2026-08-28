@@ -40,7 +40,7 @@ function hvw_zugang_form(string $error, string $step, string $email): void
     $esc = static fn (string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
     $inner = '<p class="text-sm font-semibold uppercase tracking-[0.08em] text-hvw-mute">Historischer Verein Winterthur</p>';
     $inner .= '<h1 class="mt-2 text-3xl font-semibold">Interne Vorschau</h1>';
-    $inner .= '<p class="mt-3 text-hvw-mute">Nur hinterlegte E-Mail-Adressen erhalten einen Code. Danach ist die Vorschau offen. Für das Bearbeiten von Texten bleiben die Logins Redaktion und Freigabe.</p>';
+    $inner .= '<p class="mt-3 text-hvw-mute">Nur hinterlegte E-Mail-Adressen erhalten einen Code. Der Zugang gilt bis Mitternacht; am nächsten Tag ist ein neuer Code nötig. Für das Bearbeiten von Texten bleiben die Logins Redaktion und Freigabe.</p>';
     if ($error !== '') {
         $inner .= '<p class="mt-6 border border-red-700 bg-red-50 px-4 py-3 text-red-800" role="alert">' . $esc($error) . '</p>';
     }
@@ -48,7 +48,7 @@ function hvw_zugang_form(string $error, string $step, string $email): void
     if ($step === 'code') {
         $inner .= '<input type="hidden" name="hvw_step" value="code">';
         $inner .= '<input type="hidden" name="email" value="' . $esc($email) . '">';
-        $inner .= '<p class="text-sm text-hvw-mute">Code an <strong>' . $esc($email) . '</strong> gesendet (falls berechtigt).</p>';
+        $inner .= '<p class="text-sm text-hvw-mute">Code an <strong>' . $esc($email) . '</strong> gesendet (falls berechtigt). Er gilt bis Mitternacht.</p>';
         $inner .= '<label class="mt-4 block text-sm font-semibold" for="code">Code aus der E-Mail</label>';
         $inner .= '<input class="mt-2 min-h-12 w-full border border-hvw-ink px-4 text-base tracking-[0.3em]" id="code" name="code" inputmode="numeric" autocomplete="one-time-code" required maxlength="8">';
         $inner .= '<button class="mt-6 min-h-12 w-full bg-hvw-ink font-semibold text-white hover:bg-hvw-charcoal" type="submit">Eintreten</button>';
