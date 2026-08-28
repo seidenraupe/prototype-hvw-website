@@ -1,6 +1,6 @@
 /**
  * Historischer Verein Winterthur — Prototyp
- * Event-Karten aus data/home-events.json (Eventfrog, via GitHub Action).
+ * Event-Karten aus data/home-events.json (statischer Eventfrog-Auszug).
  */
 
 document.addEventListener('DOMContentLoaded', () => {

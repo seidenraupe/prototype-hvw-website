@@ -16,8 +16,8 @@ Was macht dieses Skript?
        nur für Museum Schaffen (OrgID 5116588).
     5. Optional: schreibt parallel 'home-events.json' mit den nächsten
        3 kommenden Veranstaltungen (Titelseiten-Auszug). Auf Hostpoint
-       Soft-Launch meist nicht nötig – Homepage-Events laufen über
-       GitHub Actions (scripts/fetch-eventfrog-events.mjs).
+       ist das ausgeschaltet (HVW_WRITE_HOME_EVENTS=0): der Cron schreibt
+       nur coucou_export.json bzw. mus_export.json.
 
 Voraussetzungen:
     pip install -r requirements.txt   # bzw. pip install --user requests
