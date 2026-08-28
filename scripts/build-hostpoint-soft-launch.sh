@@ -33,11 +33,11 @@ cp "${ROOT}/impressum.html" "${OUT}/impressum.html"
 cp "${ROOT}/datenschutz.html" "${OUT}/datenschutz.html"
 cp "${ROOT}/programm/index.html" "${OUT}/programm/index.html"
 cp "${ROOT}/programm/.htaccess" "${OUT}/programm/.htaccess"
-if [[ -f "${ROOT}/programm/HalbJahresprogramm.pdf" ]]; then
-  cp "${ROOT}/programm/HalbJahresprogramm.pdf" "${OUT}/programm/HalbJahresprogramm.pdf"
+if [[ -f "${ROOT}/programm/Programm.pdf" ]]; then
+  cp "${ROOT}/programm/Programm.pdf" "${OUT}/programm/Programm.pdf"
 fi
-if [[ -f "${ROOT}/programm/HalbJahresprogramm.json" ]]; then
-  cp "${ROOT}/programm/HalbJahresprogramm.json" "${OUT}/programm/HalbJahresprogramm.json"
+if [[ -f "${ROOT}/programm/Programm.json" ]]; then
+  cp "${ROOT}/programm/Programm.json" "${OUT}/programm/Programm.json"
 fi
 cp "${ROOT}/css/site.css" "${OUT}/css/site.css"
 cp "${ROOT}/js/tailwind-config.js" "${OUT}/js/tailwind-config.js"

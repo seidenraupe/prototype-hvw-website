@@ -23,5 +23,8 @@ Options -Indexes
   RewriteRule ^js/ - [L]
   RewriteRule ^images/ - [L]
 
+  RewriteRule ^programm/HalbJahresprogramm\.pdf$ programm/Programm.pdf [L,R=301]
+  RewriteRule ^programm/HalbJahresprogramm\.json$ programm/Programm.json [L,R=301]
+
   RewriteRule ^ zugang/serve.php [QSA,L]
 </IfModule>
