@@ -113,6 +113,7 @@ Der frühere Plesk-Cron auf `giger-straehl.ch`
 - Skripte: `cronjobs/` (siehe `cronjobs/README.md`)
 - Öffentliche Dateien:
   - `https://www.hvwinterthur.ch/coucou_export.json` (Coucou, alle Org-IDs)
+  - `https://www.hvwinterthur.ch/guidle_export.json` (Kopie von Coucou, für Guidle)
   - `https://www.hvwinterthur.ch/mus_export.json` (Museum Schaffen, OrgID 5116588)
 - Täglich nur auf Hostpoint (Cronjobs Manager), nicht über GitHub Actions
 - Soft-Launch-Deploy löscht die Export-JSONs nicht (`rsync --exclude`)
@@ -199,7 +200,7 @@ scripts/            Eventfrog-Fetch / Hostpoint-Build
 
 ## Eventfrog aktualisieren
 
-Die nächtlichen JSON-Exporte (`coucou_export.json`, `mus_export.json`) laufen
+Die nächtlichen JSON-Exporte (`coucou_export.json`, `guidle_export.json`, `mus_export.json`) laufen
 **nur** auf Hostpoint, siehe `cronjobs/README.md`. Es gibt keinen GitHub-Cron
 mehr, der Event-JSON ins Repository schreibt.
 
