@@ -21,7 +21,7 @@ Raster **Mobile First**:
 
 Platzhalterbilder tragen den Wasserzeichen-Vermerk **«finales Bild fehlt»**.
 
-Datenquelle: `data/home-events.json` (Eventfrog Public API via `scripts/fetch-eventfrog-events.mjs` / GitHub Action).
+Datenquelle: `data/home-events.json` (statischer Auszug; optional lokal mit `scripts/fetch-eventfrog-events.mjs`).
 
 ## SEO & GEO
 
@@ -118,9 +118,6 @@ Der frühere Plesk-Cron auf `giger-straehl.ch`
 - Soft-Launch-Deploy löscht die Export-JSONs nicht (`rsync --exclude`)
 - Skript-Updates nach Hostpoint: Action `deploy-cronjobs.yml` (bei Änderungen an `cronjobs/`)
 
-Homepage-Events (`data/home-events.json`) laufen weiter über
-`update-eventfrog-events.yml` — nicht über den Hostpoint-Cron.
-
 ### Newsletter-Link
 
 ```
@@ -201,20 +198,19 @@ scripts/            Eventfrog-Fetch / Hostpoint-Build
 
 ## Eventfrog aktualisieren
 
-```bash
-# Public API key erforderlich (GitHub Secret EVENTFROG_API_KEY bzw. lokal gesetzt)
-EVENTFROG_API_KEY=<key> node scripts/fetch-eventfrog-events.mjs
-# oder:
-npm run fetch:events
-```
-
-GitHub Action: `.github/workflows/update-eventfrog-events.yml`  
-Secret `EVENTFROG_API_KEY` ist **pflichtig**. Im Eventfrog-Cockpit einen **Public API**-Key
-anlegen und unter Repo → Settings → Secrets speichern.
+Die nächtlichen JSON-Exporte (`coucou_export.json`, `mus_export.json`) laufen
+**nur** auf Hostpoint, siehe `cronjobs/README.md`. Es gibt keinen GitHub-Cron
+mehr, der Event-JSON ins Repository schreibt.
 
 Der API-Key liegt nicht im Repository-Code. Die Agenda-Seite (`agenda.html`) nutzt
 zusätzlich das öffentliche Eventfrog-Widget (iframe + `embed.js`); dessen Widget-Key in der URL
 ist kein API-Secret und muss im HTML stehen.
+
+Optional, nur für den Prototyp der Startseite:
+
+```bash
+EVENTFROG_API_KEY=<key> node scripts/fetch-eventfrog-events.mjs
+```
 
 Fehlende Event-Bilder ergänzt das Fetch-Skript über die `og:image` der Eventfrog-Eventseite.
 

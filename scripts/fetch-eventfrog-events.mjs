@@ -4,16 +4,15 @@
  * (orgIds 4936116, 5116588, 5137433) from the Eventfrog Public API and
  * writes data/home-events.json for the homepage.
  *
- * Requires GitHub Actions secret / env EVENTFROG_API_KEY (Public API key).
- * The embed widget key in agenda.html is unrelated and stays in the HTML only.
+ * Requires env EVENTFROG_API_KEY (Public API key). Optional local helper
+ * for the prototype homepage — not scheduled. Nightly JSON for Coucou and
+ * Museum Schaffen is written on Hostpoint (cronjobs/).
  *
  * Images: the Public API list endpoint often omits image URLs. When missing,
  * we enrich each event from the public event page's og:image.
  *
  * Usage:
  *   EVENTFROG_API_KEY=<key> node scripts/fetch-eventfrog-events.mjs
- *
- * Scheduled by .github/workflows/update-eventfrog-events.yml
  */
 
 import { writeFile } from 'node:fs/promises';
