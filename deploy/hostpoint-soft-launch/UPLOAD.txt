@@ -11,6 +11,8 @@ Programm:   https://www.hvwinterthur.ch/programm  (Newsletter / Direktlink)
 3. Prüfen:
    - https://www.hvwinterthur.ch/         → Weiterleitung zur Vereinswebsite
    - https://www.hvwinterthur.ch/programm → Programmseite
+   - https://www.hvwinterthur.ch/impressum.html
+   - https://www.hvwinterthur.ch/datenschutz.html
 4. Eventfrog: Domain www.hvwinterthur.ch für das Embed freischalten.
 
 Hinweis: Die übrige Prototyp-Website gehört NICHT in diesen Upload.

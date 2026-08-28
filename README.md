@@ -124,14 +124,14 @@ Der frühere Plesk-Cron auf `giger-straehl.ch`
 https://www.hvwinterthur.ch/programm
 ```
 
-### Halbjahresprogramm (PDF)
+### Programm (PDF)
 
 Auf der Soft-Launch-Programmseite gibt es einen Download des aktuellen
 Programms (A4, druckbar: kompakter Kopf mit den drei Museen, dann alle
 Anlässe ab Druckdatum bis zur letzten Veranstaltung):
 
 ```
-https://www.hvwinterthur.ch/programm/HalbJahresprogramm.pdf
+https://www.hvwinterthur.ch/programm/Programm.pdf
 ```
 
 Beim Speichern heisst die Datei `Programm HVW MM.JJJJ bis MM.JJJJ.pdf`
@@ -141,7 +141,7 @@ Erzeugung aus Eventfrog (alle drei Org-IDs):
 
 ```bash
 pip install -r scripts/requirements-pdf.txt
-EVENTFROG_API_KEY=… python3 scripts/generate-halbjahresprogramm-pdf.py
+EVENTFROG_API_KEY=… python3 scripts/generate-programm-pdf.py
 ```
 
 Beim Soft-Launch-Deploy wird das PDF in GitHub Actions frisch erzeugt,

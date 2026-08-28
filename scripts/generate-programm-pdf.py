@@ -15,8 +15,8 @@ API-Key:
   EVENTFROG_API_KEY oder Datei cronjobs/eventfrog_api_key
 
 Usage:
-  EVENTFROG_API_KEY=... python3 scripts/generate-halbjahresprogramm-pdf.py
-  python3 scripts/generate-halbjahresprogramm-pdf.py -o programm/HalbJahresprogramm.pdf
+  EVENTFROG_API_KEY=... python3 scripts/generate-programm-pdf.py
+  python3 scripts/generate-programm-pdf.py -o programm/Programm.pdf
 """
 
 from __future__ import print_function
@@ -54,7 +54,7 @@ from reportlab.platypus import (
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SCRIPT_DIR)
-DEFAULT_OUTPUT = os.path.join(ROOT_DIR, "programm", "HalbJahresprogramm.pdf")
+DEFAULT_OUTPUT = os.path.join(ROOT_DIR, "programm", "Programm.pdf")
 DEFAULT_LOGO = os.path.join(ROOT_DIR, "images", "hvw-logo.png")
 DEFAULT_ORG_IDS = ["4936116", "5116588", "5137433"]
 MUSEUM_PHOTOS = [
@@ -354,7 +354,7 @@ def download_image_as_jpeg(url, cache_dir, max_edge=900):
         response = requests.get(
             url,
             timeout=45,
-            headers={"User-Agent": "HVW-halbjahresprogramm-pdf/1.0"},
+            headers={"User-Agent": "HVW-programm-pdf/1.0"},
         )
         response.raise_for_status()
         im = PILImage.open(io.BytesIO(response.content))
@@ -721,7 +721,7 @@ def write_pdf(path, events, locations_by_id, image_paths, year, period_label, lo
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="Halbjahresprogramm-PDF aus Eventfrog")
+    parser = argparse.ArgumentParser(description="Programm-PDF aus Eventfrog")
     parser.add_argument("-o", "--output", default=DEFAULT_OUTPUT)
     parser.add_argument("--org-ids", default=",".join(DEFAULT_ORG_IDS))
     parser.add_argument("--logo", default=DEFAULT_LOGO)

@@ -21,6 +21,10 @@ Options -Indexes
   # /programm und /programm.html → /programm/
   RewriteRule ^programm$ /programm/ [L,R=301]
   RewriteRule ^programm\.html$ /programm/ [L,R=301]
+
+  # Altes Halbjahresprogramm-PDF → fortlaufendes Programm
+  RewriteRule ^programm/HalbJahresprogramm\.pdf$ /programm/Programm.pdf [L,R=301]
+  RewriteRule ^programm/HalbJahresprogramm\.json$ /programm/Programm.json [L,R=301]
 </IfModule>
 
 <IfModule mod_headers.c>
