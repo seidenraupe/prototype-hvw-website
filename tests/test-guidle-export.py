@@ -15,6 +15,7 @@ from eventfrog_to_coucou import (  # noqa: E402
     copy_guidle_export,
     home_events_output_paths,
     pick_event_image,
+    write_home_events_files,
 )
 
 
@@ -44,9 +45,9 @@ def main():
 
     paths = home_events_output_paths("/web")
     expected_paths = [
+        "/web/home-events.json",
         "/web/data/home-events.json",
         "/web/vorschau/data/home-events.json",
-        "/web/home-events.json",
     ]
     if paths != expected_paths:
         raise SystemExit("home-events paths mismatch: {0}".format(paths))
@@ -56,6 +57,16 @@ def main():
     )
     if image != "https://cdn.example/a.jpg":
         raise SystemExit("pick_event_image mismatch: {0}".format(image))
+
+    payload = {"generatedAt": "2026-08-29T00:00:00Z", "events": [{"id": "1"}]}
+    with tempfile.TemporaryDirectory() as tmp:
+        written = write_home_events_files(tmp, payload)
+        if len(written) != 3:
+            raise SystemExit("expected 3 home-events paths, got {0}".format(written))
+        for path in written:
+            with open(path, encoding="utf-8") as f:
+                if json.load(f) != payload:
+                    raise SystemExit("home-events content mismatch in {0}".format(path))
 
     print("guidle export copy ok")
 

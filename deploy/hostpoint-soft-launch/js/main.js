@@ -1,6 +1,6 @@
 /**
  * Historischer Verein Winterthur — Prototyp
- * Event-Karten aus /data/home-events.json (nächtlicher Eventfrog-Export auf Hostpoint).
+ * Event-Karten aus /home-events.json (Hostpoint-Cron, wie Coucou/MuS).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -90,11 +90,30 @@ async function loadHomeEvents() {
   await renderEvents(container, { limit: 3 });
 }
 
+/**
+ * Live und Vorschau: Hostpoint-Datei im Webroot (Cron).
+ * Lokal: Fallback auf data/home-events.json aus dem Repo.
+ */
+async function loadHomeEventsJson() {
+  const urls = ['/home-events.json', '/data/home-events.json', 'data/home-events.json'];
+  let lastError = null;
+  for (const url of urls) {
+    try {
+      const response = await fetch(url, { cache: 'no-cache' });
+      if (response.ok) {
+        return response.json();
+      }
+      lastError = new Error('HTTP ' + response.status);
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError || new Error('home-events.json fehlt');
+}
+
 async function renderEvents(container, { limit = 3 } = {}) {
   try {
-    const response = await fetch('/data/home-events.json', { cache: 'no-cache' });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
+    const data = await loadHomeEventsJson();
     const todayZurich = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Zurich' });
     const events = (Array.isArray(data.events) ? data.events : [])
       .filter((event) => String(event.begin || '').slice(0, 10) >= todayZurich)
