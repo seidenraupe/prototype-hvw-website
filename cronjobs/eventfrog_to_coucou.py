@@ -15,10 +15,9 @@ Was macht dieses Skript?
        dieselbe Datei als guidle_export.json dupliziert. Dateiname und Org-IDs
        sind per Umgebungsvariable steuerbar (siehe unten) – z.B. mus_export.json
        nur für Museum Schaffen (OrgID 5116588); dann keine Guidle-Kopie.
-    5. Optional: schreibt parallel 'home-events.json' mit den nächsten
-       3 kommenden Veranstaltungen (Titelseiten-Auszug). Auf Hostpoint
-       ist das ausgeschaltet (HVW_WRITE_HOME_EVENTS=0): der Cron schreibt
-       coucou_export.json, guidle_export.json bzw. mus_export.json.
+    5. Schreibt parallel 'data/home-events.json' (nächste 3 Anlässe) für die
+       Titelseite. Auf Hostpoint zusätzlich nach vorschau/data/. mus_export
+       überspringt das.
 
 Voraussetzungen:
     pip install -r requirements.txt   # bzw. pip install --user requests
@@ -41,7 +40,6 @@ Pfad-Hinweis:
 Umgebungsvariablen (optional):
     HVW_ORG_IDS          Kommagetrennte Eventfrog-Org-IDs (Default: alle HVW)
     HVW_EXPORT_FILENAME  Dateiname im Webroot (Default: coucou_export.json)
-    HVW_WRITE_HOME_EVENTS  0 = kein home-events.json
     HVW_HTTPDOCS_DIR     Expliziter Webroot
 
 Beschreibung in beiden Exporten (coucou_export.json und mus_export.json):
@@ -118,11 +116,6 @@ HVW_HOME_EVENT_LIMIT = 3
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def env_flag_enabled(name, default="1"):
-    raw = os.environ.get(name, default).strip().lower()
-    return raw not in ("0", "false", "no", "off")
-
-
 def resolve_org_ids():
     """Org-IDs aus HVW_ORG_IDS (kommagetrennt) oder DEFAULT_ORG_IDS."""
     raw = os.environ.get("HVW_ORG_IDS", "").strip()
@@ -170,6 +163,68 @@ def copy_guidle_export(export_path):
     dest = os.path.join(os.path.dirname(export_path), GUIDLE_EXPORT_FILENAME)
     shutil.copy2(export_path, dest)
     return dest
+
+
+def home_events_output_paths(httpdocs_dir):
+    """Ziele für den Titelseiten-Auszug (öffentlich + Vorschau)."""
+    return [
+        os.path.join(httpdocs_dir, "data", "home-events.json"),
+        os.path.join(httpdocs_dir, "vorschau", "data", "home-events.json"),
+        os.path.join(httpdocs_dir, "home-events.json"),
+    ]
+
+
+def pick_event_image(event):
+    """Bild-URL aus dem Eventfrog-Event, sonst leer."""
+    emblem = event.get("emblemToShow")
+    if isinstance(emblem, dict):
+        url = emblem.get("url") or ""
+        if str(url).startswith("http"):
+            return url.split("?")[0]
+    image = event.get("image")
+    if isinstance(image, dict):
+        url = image.get("url") or ""
+        if str(url).startswith("http"):
+            return url.split("?")[0]
+    if isinstance(image, str) and image.startswith("http"):
+        return image.split("?")[0]
+    for key in ("imageUrl", "imageURL", "flyerUrl", "thumbnailUrl"):
+        url = event.get(key) or ""
+        if isinstance(url, str) and url.startswith("http"):
+            return url.split("?")[0]
+    return ""
+
+
+def fetch_og_image(event_url):
+    """og:image der Eventseite, falls die API kein Bild liefert."""
+    if not event_url or not str(event_url).startswith("http"):
+        return ""
+    try:
+        response = requests.get(
+            event_url,
+            timeout=20,
+            headers={"User-Agent": "HVW-home-events/1.0"},
+        )
+        if response.status_code != 200:
+            return ""
+        html = response.text
+        match = re.search(
+            r'property=["\']og:image["\']\s+content=["\']([^"\']+)',
+            html,
+            re.I,
+        )
+        if not match:
+            match = re.search(
+                r'content=["\']([^"\']+)["\']\s+property=["\']og:image["\']',
+                html,
+                re.I,
+            )
+        url = (match.group(1).strip() if match else "")
+        if url.startswith("http"):
+            return url.split("?")[0]
+    except requests.exceptions.RequestException:
+        return ""
+    return ""
 
 
 # Geheimer Key-File neben dem Skript (ausserhalb vom Webroot, nicht im Git)
@@ -610,23 +665,29 @@ def build_home_event(event, locations_by_id):
         location_label = event.get("organizerName") or ""
 
     return {
-        "id": event.get("id"),
+        "id": str(event.get("id") or ""),
         "title": pick_lang(event.get("title")) or "",
         "begin": event.get("begin") or "",
         "url": event.get("url") or "",
         "organizerName": event.get("organizerName") or "",
         "location": location_label,
+        "image": pick_event_image(event),
     }
 
 
 def build_home_events_payload(events, locations_by_id, limit=HVW_HOME_EVENT_LIMIT):
     """Payload für home-events.json: { generatedAt, events: [...] }."""
     next_events = select_upcoming_events(events, limit=limit)
+    items = []
+    for event in next_events:
+        item = build_home_event(event, locations_by_id)
+        if not item.get("image") and item.get("url"):
+            item["image"] = fetch_og_image(item["url"])
+        items.append(item)
     return {
         "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "events": [
-            build_home_event(event, locations_by_id) for event in next_events
-        ],
+        "source": "eventfrog-hostpoint-cron",
+        "events": items,
     }
 
 
@@ -637,8 +698,6 @@ def main():
     org_ids = resolve_org_ids()
     httpdocs_dir = resolve_httpdocs_dir()
     export_path = resolve_export_path(httpdocs_dir)
-    home_output_path = os.path.join(httpdocs_dir, "home-events.json")
-    write_home_events = env_flag_enabled("HVW_WRITE_HOME_EVENTS", default="1")
 
     api_key = load_api_key()
     if not api_key:
@@ -750,19 +809,25 @@ def main():
         )
     print("Bitte insbesondere die 'category'-Zuordnung stichprobenartig prüfen.")
 
-    if not write_home_events:
-        print("home-events.json übersprungen (HVW_WRITE_HOME_EVENTS aus).")
+    if os.path.basename(export_path) != DEFAULT_EXPORT_FILENAME:
+        print("home-events.json übersprungen (nicht Coucou-Export).")
         return
 
-    # Kompakter Auszug für die Titelseite hvwinterthur.ch
     try:
         home_payload = build_home_events_payload(events, locations_by_id)
-        with open(home_output_path, "w", encoding="utf-8") as f:
-            json.dump(home_payload, f, ensure_ascii=False, indent=2)
-            f.write("\n")
+        written = []
+        for home_output_path in home_events_output_paths(httpdocs_dir):
+            directory = os.path.dirname(home_output_path)
+            if directory and not os.path.isdir(directory):
+                os.makedirs(directory)
+            with open(home_output_path, "w", encoding="utf-8") as f:
+                json.dump(home_payload, f, ensure_ascii=False, indent=2)
+                f.write("\n")
+            written.append(home_output_path)
         print(
-            "{0} kommende Event(s) für die Titelseite gespeichert in '{1}'.".format(
-                len(home_payload.get("events", [])), home_output_path
+            "{0} kommende Event(s) für die Titelseite gespeichert in: {1}.".format(
+                len(home_payload.get("events", [])),
+                ", ".join("'{0}'".format(p) for p in written),
             )
         )
     except Exception as exc:

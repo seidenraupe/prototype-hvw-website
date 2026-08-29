@@ -271,6 +271,7 @@ jobs:
           echo "rsync interne Vorschau → ${SSH_USER}@${host}:${target}vorschau/"
           rsync -avz --delete \
             --exclude 'data/content-live.json' \
+            --exclude 'data/home-events.json' \
             --exclude 'redaktion/storage/content-draft.json' \
             --exclude 'redaktion/storage/access-emails.json' \
             --exclude 'redaktion/storage/otp.json' \
