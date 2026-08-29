@@ -1,6 +1,6 @@
 /**
  * Historischer Verein Winterthur — Prototyp
- * Event-Karten aus data/home-events.json (statischer Eventfrog-Auszug).
+ * Event-Karten aus /data/home-events.json (nächtlicher Eventfrog-Export auf Hostpoint).
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -92,10 +92,13 @@ async function loadHomeEvents() {
 
 async function renderEvents(container, { limit = 3 } = {}) {
   try {
-    const response = await fetch('data/home-events.json', { cache: 'no-cache' });
+    const response = await fetch('/data/home-events.json', { cache: 'no-cache' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-    const events = Array.isArray(data.events) ? data.events.slice(0, limit) : [];
+    const todayZurich = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Zurich' });
+    const events = (Array.isArray(data.events) ? data.events : [])
+      .filter((event) => String(event.begin || '').slice(0, 10) >= todayZurich)
+      .slice(0, limit);
 
     if (!events.length) {
       container.innerHTML = statusMessage('Aktuell sind keine Veranstaltungen geplant.');

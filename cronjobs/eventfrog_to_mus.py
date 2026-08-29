@@ -25,7 +25,6 @@ import os
 # Muss VOR dem Import von eventfrog_to_coucou gesetzt werden (Config zur Laufzeit).
 os.environ["HVW_ORG_IDS"] = "5116588"
 os.environ["HVW_EXPORT_FILENAME"] = "mus_export.json"
-os.environ["HVW_WRITE_HOME_EVENTS"] = "0"
 
 from eventfrog_to_coucou import main  # noqa: E402
 
