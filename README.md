@@ -21,7 +21,7 @@ Raster **Mobile First**:
 
 Platzhalterbilder tragen den Wasserzeichen-Vermerk **«finales Bild fehlt»**.
 
-Datenquelle Titelseite: `/data/home-events.json` (nächtlich auf Hostpoint aus Eventfrog).
+Datenquelle Titelseite: `/home-events.json` (eigener Hostpoint-Cron, wie Coucou/MuS).
 
 ## SEO & GEO
 
@@ -115,7 +115,7 @@ Der frühere Plesk-Cron auf `giger-straehl.ch`
   - `https://www.hvwinterthur.ch/coucou_export.json` (Coucou, alle Org-IDs)
   - `https://www.hvwinterthur.ch/guidle_export.json` (Kopie von Coucou, für Guidle)
   - `https://www.hvwinterthur.ch/mus_export.json` (Museum Schaffen, OrgID 5116588)
-  - `https://www.hvwinterthur.ch/data/home-events.json` (Titelseite, nächste 3 Anlässe)
+  - `https://www.hvwinterthur.ch/home-events.json` (Titelseite, nächste 3 Anlässe; eigener Cron)
 - Täglich nur auf Hostpoint (Cronjobs Manager), nicht über GitHub Actions
 - Soft-Launch-Deploy löscht die Export-JSONs nicht (`rsync --exclude`)
 - Skript-Updates nach Hostpoint: Action `deploy-cronjobs.yml` (bei Änderungen an `cronjobs/`)
@@ -201,15 +201,15 @@ scripts/            Eventfrog-Fetch / Hostpoint-Build
 
 ## Eventfrog aktualisieren
 
-Die nächtlichen JSON-Exporte (`coucou_export.json`, `guidle_export.json`, `mus_export.json`, `data/home-events.json`) laufen
-**nur** auf Hostpoint, siehe `cronjobs/README.md`. Es gibt keinen GitHub-Cron
-mehr, der Event-JSON ins Repository schreibt.
+Die nächtlichen JSON-Exporte (`coucou_export.json`, `guidle_export.json`, `home-events.json`, `mus_export.json`) laufen
+**nur** als Hostpoint-Crons, siehe `cronjobs/README.md`. GitHub erzeugt diese Dateien nicht.
 
 Der API-Key liegt nicht im Repository-Code. Die Agenda-Seite (`agenda.html`) nutzt
 zusätzlich das öffentliche Eventfrog-Widget (iframe + `embed.js`); dessen Widget-Key in der URL
 ist kein API-Secret und muss im HTML stehen.
 
-Optional, nur für den Prototyp der Startseite:
+Live und Vorschau laden `/home-events.json` vom Hostpoint-Cron (`eventfrog_to_home.py`).
+Optional, nur lokal ohne Hostpoint:
 
 ```bash
 EVENTFROG_API_KEY=<key> node scripts/fetch-eventfrog-events.mjs

@@ -8,7 +8,7 @@ Migriert von Kreativ Media (`giger-straehl.ch` / Plesk).
 |---|---|---|
 | Coucou-Export | `eventfrog_to_coucou.py` | `https://www.hvwinterthur.ch/coucou_export.json` (alle Org-IDs) |
 | Guidle-Kopie | *(dieselbe Coucou-Datei)* | `https://www.hvwinterthur.ch/guidle_export.json` |
-| Titelseite | *(Coucou-Job, nächste 3 Anlässe)* | `https://www.hvwinterthur.ch/data/home-events.json` |
+| Titelseite | `eventfrog_to_home.py` | `https://www.hvwinterthur.ch/home-events.json` (nächste 3 Anlässe) |
 | Museum Schaffen | `eventfrog_to_mus.py` | `https://www.hvwinterthur.ch/mus_export.json` (nur OrgID `5116588`) |
 
 Beide JSON-Exports nutzen **dasselbe Coucou-Record-Layout**, inkl. Kurz- und
@@ -16,9 +16,8 @@ Langbeschreibung (`description`, `description_long`, `description_html`).
 `mus_export.json` holt die Agentur von museumschaffen.ch von hvwinterthur.ch ab.
 
 Die früheren GitHub-Crons (Coucou-Export und Homepage-Events im Repo) sind
-entfernt. Auf Hostpoint entstehen **coucou_export.json** (danach 1:1 als
-**guidle_export.json** kopiert), **data/home-events.json** für die Titelseite
-und **mus_export.json**.
+entfernt. Alle vier JSON-Dateien entstehen **nur** auf Hostpoint, je als
+eigener Cron (Coucou inkl. Guidle-Kopie, Titelseite, Museum Schaffen).
 
 ## Hostpoint-Einrichtung
 
@@ -33,6 +32,7 @@ Zielordner (ausserhalb des öffentlichen Webroots):
 Inhalt:
 
 - `eventfrog_to_coucou.py`
+- `eventfrog_to_home.py`
 - `eventfrog_to_mus.py`
 - `requirements.txt`
 - `eventfrog_api_key` (lokal aus `.example` erzeugen, **nicht** committen)
@@ -80,13 +80,27 @@ Befehl:
 cd /home/zozuhosa/cronjobs && /usr/local/bin/python eventfrog_to_mus.py >/dev/null 2>&1
 ```
 
+#### Titelseite (`home-events.json`)
+
+| Feld | Wert |
+|---|---|
+| Minute | `10` |
+| Hour | `3` |
+| Day / Month / Weekday | `*` |
+
+Befehl:
+
+```bash
+cd /home/zozuhosa/cronjobs && /usr/local/bin/python eventfrog_to_home.py >/dev/null 2>&1
+```
+
 ### 4. Abnehmer-URLs
 
 | Abnehmer | URL |
 |---|---|
 | Coucou | `https://www.hvwinterthur.ch/coucou_export.json` |
 | Guidle | `https://www.hvwinterthur.ch/guidle_export.json` |
-| Titelseite | `https://www.hvwinterthur.ch/data/home-events.json` |
+| Titelseite | `https://www.hvwinterthur.ch/home-events.json` |
 | museumschaffen.ch (Agentur) | `https://www.hvwinterthur.ch/mus_export.json` |
 
 Alten Cron auf Kreativ Media deaktivieren, sobald Coucou umgestellt ist.
@@ -96,10 +110,11 @@ Alten Cron auf Kreativ Media deaktivieren, sobald Coucou umgestellt ist.
 ```bash
 cd ~/cronjobs
 /usr/local/bin/python eventfrog_to_coucou.py
+/usr/local/bin/python eventfrog_to_home.py
 /usr/local/bin/python eventfrog_to_mus.py
 curl -sI https://www.hvwinterthur.ch/coucou_export.json
 curl -sI https://www.hvwinterthur.ch/guidle_export.json
-curl -sI https://www.hvwinterthur.ch/data/home-events.json
+curl -sI https://www.hvwinterthur.ch/home-events.json
 curl -sI https://www.hvwinterthur.ch/mus_export.json
 ```
 

@@ -1,6 +1,6 @@
 """
-Eventfrog API -> Coucou-Export + HVW-Titelseiten-Auszug
-=======================================================
+Eventfrog API -> Coucou-Export (und Guidle-Kopie)
+================================================
 
 Was macht dieses Skript?
     1. Ruft über die Eventfrog Public API v1 alle Events der angegebenen
@@ -15,9 +15,8 @@ Was macht dieses Skript?
        dieselbe Datei als guidle_export.json dupliziert. Dateiname und Org-IDs
        sind per Umgebungsvariable steuerbar (siehe unten) – z.B. mus_export.json
        nur für Museum Schaffen (OrgID 5116588); dann keine Guidle-Kopie.
-    5. Schreibt parallel 'data/home-events.json' (nächste 3 Anlässe) für die
-       Titelseite. Auf Hostpoint zusätzlich nach vorschau/data/. mus_export
-       überspringt das.
+    Die Titelseite (home-events.json) läuft als eigener Cron:
+       eventfrog_to_home.py — nicht über dieses Skript.
 
 Voraussetzungen:
     pip install -r requirements.txt   # bzw. pip install --user requests
@@ -51,6 +50,8 @@ Beschreibung in beiden Exporten (coucou_export.json und mus_export.json):
     https://www.hvwinterthur.ch/coucou_export.json
     https://www.hvwinterthur.ch/guidle_export.json
     https://www.hvwinterthur.ch/mus_export.json
+    https://www.hvwinterthur.ch/home-events.json
+    https://www.hvwinterthur.ch/data/home-events.json
 
 Bekannte Einschränkungen (siehe Kommentare weiter unten im Code):
     - "category" wird über den Rubrik-NAMEN auf die Coucou-Kategorie-IDs
@@ -168,10 +169,24 @@ def copy_guidle_export(export_path):
 def home_events_output_paths(httpdocs_dir):
     """Ziele für den Titelseiten-Auszug (öffentlich + Vorschau)."""
     return [
+        os.path.join(httpdocs_dir, "home-events.json"),
         os.path.join(httpdocs_dir, "data", "home-events.json"),
         os.path.join(httpdocs_dir, "vorschau", "data", "home-events.json"),
-        os.path.join(httpdocs_dir, "home-events.json"),
     ]
+
+
+def write_home_events_files(httpdocs_dir, payload):
+    """Schreibt den Titelseiten-Auszug an die öffentlichen Hostpoint-Pfade."""
+    written = []
+    for home_output_path in home_events_output_paths(httpdocs_dir):
+        directory = os.path.dirname(home_output_path)
+        if directory and not os.path.isdir(directory):
+            os.makedirs(directory)
+        with open(home_output_path, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+            f.write("\n")
+        written.append(home_output_path)
+    return written
 
 
 def pick_event_image(event):
@@ -808,33 +823,6 @@ def main():
             )
         )
     print("Bitte insbesondere die 'category'-Zuordnung stichprobenartig prüfen.")
-
-    if os.path.basename(export_path) != DEFAULT_EXPORT_FILENAME:
-        print("home-events.json übersprungen (nicht Coucou-Export).")
-        return
-
-    try:
-        home_payload = build_home_events_payload(events, locations_by_id)
-        written = []
-        for home_output_path in home_events_output_paths(httpdocs_dir):
-            directory = os.path.dirname(home_output_path)
-            if directory and not os.path.isdir(directory):
-                os.makedirs(directory)
-            with open(home_output_path, "w", encoding="utf-8") as f:
-                json.dump(home_payload, f, ensure_ascii=False, indent=2)
-                f.write("\n")
-            written.append(home_output_path)
-        print(
-            "{0} kommende Event(s) für die Titelseite gespeichert in: {1}.".format(
-                len(home_payload.get("events", [])),
-                ", ".join("'{0}'".format(p) for p in written),
-            )
-        )
-    except Exception as exc:
-        print(
-            "Warnung: home-events.json konnte nicht geschrieben werden "
-            "({0}: {1}).".format(type(exc).__name__, exc)
-        )
 
 
 if __name__ == "__main__":

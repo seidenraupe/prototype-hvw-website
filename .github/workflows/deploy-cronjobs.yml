@@ -81,10 +81,13 @@ jobs:
             fi
             echo "--- einmaliger Testlauf Coucou ---"
             /usr/local/bin/python eventfrog_to_coucou.py
+            echo "--- einmaliger Testlauf Titelseite ---"
+            /usr/local/bin/python eventfrog_to_home.py
             echo "--- einmaliger Testlauf Museum Schaffen ---"
             /usr/local/bin/python eventfrog_to_mus.py
             ls -la "$HOME/www/hvwinterthur.ch/coucou_export.json" \
                    "$HOME/www/hvwinterthur.ch/guidle_export.json" \
+                   "$HOME/www/hvwinterthur.ch/home-events.json" \
                    "$HOME/www/hvwinterthur.ch/data/home-events.json" \
                    "$HOME/www/hvwinterthur.ch/mus_export.json" 2>/dev/null || true
           '
@@ -92,5 +95,6 @@ jobs:
           rm -f "$keyfile"
           echo "Cronjobs nach ${SSH_USER}@${host}:~/cronjobs/ deployed."
           echo "Hostpoint Cronjobs Manager:"
-          echo "  Coucou:  cd /home/${SSH_USER}/cronjobs && /usr/local/bin/python eventfrog_to_coucou.py >/dev/null 2>&1"
-          echo "  Museum:  cd /home/${SSH_USER}/cronjobs && /usr/local/bin/python eventfrog_to_mus.py >/dev/null 2>&1"
+          echo "  Coucou:     cd /home/${SSH_USER}/cronjobs && /usr/local/bin/python eventfrog_to_coucou.py >/dev/null 2>&1"
+          echo "  Titelseite: cd /home/${SSH_USER}/cronjobs && /usr/local/bin/python eventfrog_to_home.py >/dev/null 2>&1"
+          echo "  Museum:     cd /home/${SSH_USER}/cronjobs && /usr/local/bin/python eventfrog_to_mus.py >/dev/null 2>&1"
