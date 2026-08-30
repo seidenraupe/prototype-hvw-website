@@ -47,15 +47,27 @@
     return page || "index.html";
   }
 
+  function normText(value) {
+    return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function sameText(a, b) {
+    return normText(a) === normText(b);
+  }
+
+  function draftViewFields() {
+    return Object.assign({}, liveFields, draftFields);
+  }
+
   function currentFields() {
-    return Object.assign({}, draftFields, view === "draft" ? collectFields() : {});
+    return Object.assign({}, liveFields, draftFields, view === "draft" ? collectFields() : {});
   }
 
   function allChanges() {
     const current = currentFields();
     const list = [];
     Object.keys(schema).forEach((id) => {
-      if (String(current[id] || "") !== String(liveFields[id] || "")) {
+      if (!sameText(current[id], liveFields[id])) {
         list.push({
           id,
           label: fieldMeta(id).label,
@@ -104,9 +116,8 @@
 
   function fieldValue(el) {
     const rich = el.getAttribute("data-content-rich") === "1";
-    return rich
-      ? window.hvwSanitizeRich(el.innerHTML)
-      : (el.textContent || "").replace(/\s+/g, " ").trim();
+    const raw = rich ? window.hvwSanitizeRich(el.innerHTML) : el.textContent || "";
+    return normText(raw);
   }
 
   function collectFields() {
@@ -121,7 +132,7 @@
     const editing = view === "draft";
     document.querySelectorAll("[data-content]").forEach((el) => {
       const id = el.getAttribute("data-content");
-      const changed = editing && fieldValue(el) !== String(liveFields[id] || "");
+      const changed = editing && !sameText(fieldValue(el), liveFields[id]);
       const accepted = changed && acceptedIds.has(id);
       el.classList.toggle("hvw-changed", changed && !accepted);
       el.classList.toggle("hvw-accepted", accepted);
@@ -148,7 +159,7 @@
   }
 
   function applyCurrent() {
-    const fields = view === "live" ? liveFields : draftFields;
+    const fields = view === "live" ? liveFields : draftViewFields();
     window.hvwApplyContent(fields);
     document.body.classList.toggle("hvw-editing", view === "draft");
     document.querySelectorAll("[data-content]").forEach((el) => {
@@ -415,7 +426,7 @@
   }
 
   async function saveDraft(quiet) {
-    const fields = Object.assign({}, draftFields, collectFields());
+    const fields = Object.assign({}, liveFields, draftFields, collectFields());
     try {
       const data = await api("save", { method: "POST", headers: csrfHeaders(), body: JSON.stringify({ fields }) });
       draftFields = fields;
@@ -464,25 +475,19 @@
   }
 
   function showDiff() {
-    const current = Object.assign({}, draftFields, collectFields());
-    const rows = [];
-    Object.keys(schema).forEach((id) => {
-      const a = String(liveFields[id] || "");
-      const b = String(current[id] || "");
-      if (a === b) return;
-      const label = fieldMeta(id).label;
-      rows.push(
+    const rows = allChanges().map((item) => {
+      return (
         "<article class=\"hvw-diff-item\" data-jump=\"" +
-          escapeHtml(id) +
-          "\"><h3>" +
-          escapeHtml(label) +
-          "</h3><p class=\"hvw-diff-old\">" +
-          escapeHtml(strip(a)) +
-          "</p><p class=\"hvw-diff-new\">" +
-          escapeHtml(strip(b)) +
-          "</p><p><button type=\"button\" class=\"hvw-diff-jump\" data-jump-id=\"" +
-          escapeHtml(id) +
-          "\">Zur Stelle</button></p></article>"
+        escapeHtml(item.id) +
+        "\"><h3>" +
+        escapeHtml(item.label) +
+        "</h3><p class=\"hvw-diff-old\">" +
+        escapeHtml(strip(item.live)) +
+        "</p><p class=\"hvw-diff-new\">" +
+        escapeHtml(strip(item.draft)) +
+        "</p><p><button type=\"button\" class=\"hvw-diff-jump\" data-jump-id=\"" +
+        escapeHtml(item.id) +
+        "\">Zur Stelle</button></p></article>"
       );
     });
     $("#hvw-diff-body").innerHTML = rows.length
