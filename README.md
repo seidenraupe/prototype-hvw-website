@@ -229,8 +229,10 @@ Die Seite `mitmachen.html` bettet das Webling-Mitgliedschaftsformular als **ifra
 
 ## Texte redigieren (ohne Layout zu ändern)
 
-Auf Startseite, Über uns und Museen sind ausgewählte Texte als Felder hinterlegt
-(`data-content`). Layout, Navigation, Agenda (Eventfrog) und das Webling-Formular
+Auf Startseite, Agenda, Museen, Über uns, Mitmachen, Publikationen, Sammlung
+und Stimmen sind ausgewählte Texte als Felder hinterlegt (`data-content`) —
+einschliesslich der Einleitungen unter den Titeln und der Rückblick-Karten
+auf der Agenda. Layout, Navigation, Eventfrog-Embed und das Webling-Formular
 bleiben fest.
 
 Ablauf: **anmelden → auf der echten Seite klicken → Entwurf speichern → Freigabe
