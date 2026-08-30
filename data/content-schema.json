@@ -251,6 +251,230 @@
       "max": 400,
       "rich": true,
       "multiline": true
+    },
+    "agenda.intro": {
+      "label": "Agenda · Einleitung",
+      "page": "agenda.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "agenda.rueckblick.intro": {
+      "label": "Agenda · Rückblick Einleitung",
+      "page": "agenda.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "mitmachen.intro": {
+      "label": "Mitmachen · Einleitung",
+      "page": "mitmachen.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "mitmachen.anmeldung.lead": {
+      "label": "Mitmachen · Text unter Anmeldeformular",
+      "page": "mitmachen.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    },
+    "publikationen.intro": {
+      "label": "Publikationen · Einleitung",
+      "page": "publikationen.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "sammlung.intro": {
+      "label": "Sammlung · Einleitung",
+      "page": "sammlung.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "sammlung.katalog.lead": {
+      "label": "Sammlung · Text unter Digitaler Katalog",
+      "page": "sammlung.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "zitate.intro": {
+      "label": "Stimmen · Einleitung",
+      "page": "zitate.html",
+      "max": 320,
+      "rich": true,
+      "multiline": true
+    },
+    "agenda.rueckblick.1.kicker": {
+      "label": "Agenda · Rückblick 1 · Kategorie",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.1.title": {
+      "label": "Agenda · Rückblick 1 · Titel",
+      "page": "agenda.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.1.body": {
+      "label": "Agenda · Rückblick 1 · Text",
+      "page": "agenda.html",
+      "max": 320,
+      "rich": true,
+      "multiline": true
+    },
+    "agenda.rueckblick.1.location": {
+      "label": "Agenda · Rückblick 1 · Ort",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.2.kicker": {
+      "label": "Agenda · Rückblick 2 · Kategorie",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.2.title": {
+      "label": "Agenda · Rückblick 2 · Titel",
+      "page": "agenda.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.2.body": {
+      "label": "Agenda · Rückblick 2 · Text",
+      "page": "agenda.html",
+      "max": 320,
+      "rich": true,
+      "multiline": true
+    },
+    "agenda.rueckblick.2.location": {
+      "label": "Agenda · Rückblick 2 · Ort",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.3.kicker": {
+      "label": "Agenda · Rückblick 3 · Kategorie",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.3.title": {
+      "label": "Agenda · Rückblick 3 · Titel",
+      "page": "agenda.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.3.body": {
+      "label": "Agenda · Rückblick 3 · Text",
+      "page": "agenda.html",
+      "max": 320,
+      "rich": true,
+      "multiline": true
+    },
+    "agenda.rueckblick.3.location": {
+      "label": "Agenda · Rückblick 3 · Ort",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.4.kicker": {
+      "label": "Agenda · Rückblick 4 · Kategorie",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.4.title": {
+      "label": "Agenda · Rückblick 4 · Titel",
+      "page": "agenda.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.4.body": {
+      "label": "Agenda · Rückblick 4 · Text",
+      "page": "agenda.html",
+      "max": 320,
+      "rich": true,
+      "multiline": true
+    },
+    "agenda.rueckblick.4.location": {
+      "label": "Agenda · Rückblick 4 · Ort",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.5.kicker": {
+      "label": "Agenda · Rückblick 5 · Kategorie",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.5.title": {
+      "label": "Agenda · Rückblick 5 · Titel",
+      "page": "agenda.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.5.body": {
+      "label": "Agenda · Rückblick 5 · Text",
+      "page": "agenda.html",
+      "max": 320,
+      "rich": true,
+      "multiline": true
+    },
+    "agenda.rueckblick.5.location": {
+      "label": "Agenda · Rückblick 5 · Ort",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.6.kicker": {
+      "label": "Agenda · Rückblick 6 · Kategorie",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.6.title": {
+      "label": "Agenda · Rückblick 6 · Titel",
+      "page": "agenda.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "agenda.rueckblick.6.body": {
+      "label": "Agenda · Rückblick 6 · Text",
+      "page": "agenda.html",
+      "max": 320,
+      "rich": true,
+      "multiline": true
+    },
+    "agenda.rueckblick.6.location": {
+      "label": "Agenda · Rückblick 6 · Ort",
+      "page": "agenda.html",
+      "max": 60,
+      "rich": false,
+      "multiline": false
     }
   }
 }
