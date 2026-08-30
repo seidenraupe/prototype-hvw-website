@@ -48,15 +48,55 @@ def merge_live_fields(
     return out, {"kept": kept, "added": added, "extra": max(0, len(remote) - kept)}
 
 
+def norm_text(value: str) -> str:
+    return " ".join(str(value or "").split())
+
+
+# Neue data-content-Felder vom 30.08.2026: Startwerte, keine Redaktionsarbeit.
+# Entwurf nur zurücksetzen, wenn der Text noch dem Seed/Live entspricht
+# (inkl. reiner HTML-Leerzeichen). Andere Entwurfsfelder bleiben unangetastet.
+INITIAL_SEED_FIELD_IDS = {
+    "agenda.intro",
+    "agenda.rueckblick.intro",
+    "mitmachen.intro",
+    "mitmachen.anmeldung.lead",
+    "publikationen.intro",
+    "sammlung.intro",
+    "sammlung.katalog.lead",
+    "zitate.intro",
+    *(
+        f"agenda.rueckblick.{n}.{part}"
+        for n in range(1, 7)
+        for part in ("kicker", "title", "body", "location")
+    ),
+}
+
+
+def looks_like_initial_seed(draft_val: str, live_val: str, seed_val: str) -> bool:
+    draft_n = norm_text(draft_val)
+    return draft_n == "" or draft_n == norm_text(live_val) or draft_n == norm_text(seed_val)
+
+
 def merge_draft_fields(
-    ids: list[str], live: dict[str, str], remote_draft: dict[str, str]
+    ids: list[str],
+    live: dict[str, str],
+    remote_draft: dict[str, str],
+    seed: dict[str, str] | None = None,
 ) -> dict[str, str]:
+    seed = seed or {}
     out = dict(remote_draft)
     for field_id in ids:
-        if field_id in remote_draft:
-            out[field_id] = remote_draft[field_id]
+        live_val = live.get(field_id, "")
+        if field_id not in remote_draft:
+            out[field_id] = live_val
+            continue
+        draft_val = remote_draft[field_id]
+        if field_id in INITIAL_SEED_FIELD_IDS and looks_like_initial_seed(
+            draft_val, live_val, seed.get(field_id, "")
+        ):
+            out[field_id] = live_val
         else:
-            out[field_id] = live.get(field_id, "")
+            out[field_id] = draft_val
     return out
 
 
@@ -81,6 +121,21 @@ def selftest() -> None:
     assert draft["a"] == "entwurf-a"
     assert draft["b"] == "seed-b"
     assert draft["c"] == "seed-c"
+
+    seed_intro = "Alle Veranstaltungen des Historischen Vereins Winterthur."
+    live_intro = seed_intro
+    html_intro = "  Alle Veranstaltungen\n          des Historischen Vereins Winterthur.  "
+    draft_reset = merge_draft_fields(
+        ["agenda.intro", "ueber-uns.intro"],
+        {"agenda.intro": live_intro, "ueber-uns.intro": "Vorstand überarbeitet."},
+        {
+            "agenda.intro": html_intro,
+            "ueber-uns.intro": "Vorstand überarbeitet — Entwurf.",
+        },
+        {"agenda.intro": seed_intro, "ueber-uns.intro": "Alter Startwert."},
+    )
+    assert draft_reset["agenda.intro"] == live_intro
+    assert draft_reset["ueber-uns.intro"] == "Vorstand überarbeitet — Entwurf."
     print("selftest ok")
 
 
@@ -117,7 +172,9 @@ def main() -> int:
 
     if args.out_draft:
         remote_draft_doc = load_json(args.remote_draft)
-        draft_fields = merge_draft_fields(ids, live_fields, field_map(remote_draft_doc))
+        draft_fields = merge_draft_fields(
+            ids, live_fields, field_map(remote_draft_doc), seed_fields
+        )
         draft_out = dict(remote_draft_doc) if remote_draft_doc else {}
         draft_out.setdefault("status", "clean")
         draft_out["fields"] = draft_fields

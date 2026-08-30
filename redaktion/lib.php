@@ -248,14 +248,23 @@ function hvw_draft(): array
     return $data;
 }
 
+function hvw_norm_text(string $value): string
+{
+    $collapsed = preg_replace('/\s+/u', ' ', $value);
+    return trim(is_string($collapsed) ? $collapsed : $value);
+}
+
 function hvw_diff(array $draftFields, array $liveFields): array
 {
     $schema = hvw_schema();
     $changes = [];
     foreach ($schema as $id => $meta) {
         $a = (string) ($liveFields[$id] ?? '');
-        $b = (string) ($draftFields[$id] ?? '');
-        if ($a !== $b) {
+        if (!array_key_exists($id, $draftFields)) {
+            continue;
+        }
+        $b = (string) $draftFields[$id];
+        if (hvw_norm_text($a) !== hvw_norm_text($b)) {
             $changes[] = [
                 'id' => $id,
                 'label' => $meta['label'] ?? $id,
