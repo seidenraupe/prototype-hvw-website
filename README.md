@@ -113,6 +113,7 @@ Der frühere Plesk-Cron auf `giger-straehl.ch`
 - Skripte: `cronjobs/` (siehe `cronjobs/README.md`)
 - Öffentliche Dateien:
   - `https://www.hvwinterthur.ch/coucou_export.json` (Coucou, alle Org-IDs)
+  - `https://www.hvwinterthur.ch/coucou` (tabellarische Kontrolle des aktuellen Exports)
   - `https://www.hvwinterthur.ch/guidle_export.json` (Kopie von Coucou, für Guidle)
   - `https://www.hvwinterthur.ch/mus_export.json` (Museum Schaffen, OrgID 5116588)
   - `https://www.hvwinterthur.ch/home-events.json` (Titelseite, nächste 3 Anlässe; eigener Cron)

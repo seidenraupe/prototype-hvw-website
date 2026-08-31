@@ -11,6 +11,7 @@ Programm:   https://www.hvwinterthur.ch/programm  (Newsletter / Direktlink)
 3. Prüfen:
    - https://www.hvwinterthur.ch/         → Weiterleitung zur Vereinswebsite
    - https://www.hvwinterthur.ch/programm → Programmseite
+   - https://www.hvwinterthur.ch/coucou → Coucou-JSON-Kontrolle
    - https://www.hvwinterthur.ch/impressum.html
    - https://www.hvwinterthur.ch/datenschutz.html
    - https://www.hvwinterthur.ch/Statuten.pdf

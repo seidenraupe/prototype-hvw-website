@@ -22,6 +22,9 @@ Options -Indexes
   RewriteRule ^programm$ /programm/ [L,R=301]
   RewriteRule ^programm\.html$ /programm/ [L,R=301]
 
+  # /coucou → /coucou/ (Coucou-JSON-Kontrolle)
+  RewriteRule ^coucou$ /coucou/ [L,R=301]
+
   # Altes Halbjahresprogramm-PDF → fortlaufendes Programm
   RewriteRule ^programm/HalbJahresprogramm\.pdf$ /programm/Programm.pdf [L,R=301]
   RewriteRule ^programm/HalbJahresprogramm\.json$ /programm/Programm.json [L,R=301]

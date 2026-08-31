@@ -254,3 +254,173 @@ body.hvw-has-login-invite {
 #hvw-login-invite a:hover {
   background: #e8e8e8;
 }
+
+/* Coucou-Export-Kontrolle */
+.coucou-table {
+  border-collapse: collapse;
+}
+
+.coucou-table th,
+.coucou-table td {
+  border-bottom: 1px solid var(--hvw-ink);
+  vertical-align: top;
+  padding: 0.85rem 0.9rem;
+}
+
+.coucou-table thead th {
+  background: var(--hvw-fog);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.coucou-table tbody tr:last-child th,
+.coucou-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.coucou-table td:first-child {
+  width: 11rem;
+}
+
+.coucou-thumb {
+  position: relative;
+  display: block;
+  width: 10rem;
+  aspect-ratio: 4 / 3;
+  padding: 0;
+  border: 1px solid var(--hvw-ink);
+  background: #2f2f2f;
+  cursor: pointer;
+}
+
+.coucou-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coucou-thumb__hint {
+  position: absolute;
+  right: 0.35rem;
+  bottom: 0.35rem;
+  padding: 0.15rem 0.4rem;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.coucou-ext {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--hvw-mute);
+}
+
+.coucou-extra p {
+  margin: 0 0 0.35rem;
+}
+
+.coucou-extra span {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hvw-mute);
+}
+
+.coucou-overlay[hidden] {
+  display: none !important;
+}
+
+.coucou-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+
+.coucou-overlay__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.72);
+  cursor: pointer;
+}
+
+.coucou-overlay__panel {
+  position: relative;
+  z-index: 1;
+  max-width: min(72rem, 100%);
+  max-height: calc(100vh - 2.5rem);
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #fff;
+  padding: 1rem 1rem 1.25rem;
+}
+
+.coucou-overlay__close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 2;
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--hvw-ink);
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.coucou-overlay__figure {
+  position: relative;
+  margin: 0;
+  background: #111;
+}
+
+.coucou-overlay__figure img {
+  display: block;
+  max-width: min(90vw, 1100px);
+  max-height: 72vh;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+}
+
+.coucou-overlay__info {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  margin: 0;
+  padding: 0.45rem 0.7rem;
+  background: rgba(0, 0, 0, 0.82);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.coucou-overlay__title {
+  margin: 0.85rem 2.5rem 0 0;
+  font-weight: 600;
+}
+
+.coucou-overlay__url {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: var(--hvw-mute);
+  word-break: break-all;
+}
+
+body.coucou-overlay-open {
+  overflow: hidden;
+}
