@@ -38,6 +38,9 @@ fi
 cp "${ROOT}/Statuten.pdf" "${OUT}/Statuten.pdf"
 cp "${ROOT}/programm/index.html" "${OUT}/programm/index.html"
 cp "${ROOT}/programm/.htaccess" "${OUT}/programm/.htaccess"
+mkdir -p "${OUT}/coucou"
+cp "${ROOT}/coucou/index.html" "${OUT}/coucou/index.html"
+cp "${ROOT}/coucou/.htaccess" "${OUT}/coucou/.htaccess"
 if [[ -f "${ROOT}/programm/Programm.pdf" ]]; then
   cp "${ROOT}/programm/Programm.pdf" "${OUT}/programm/Programm.pdf"
 fi
@@ -49,6 +52,7 @@ cp "${ROOT}/js/tailwind-config.js" "${OUT}/js/tailwind-config.js"
 cp "${ROOT}/js/analytics.js" "${OUT}/js/analytics.js"
 cp "${ROOT}/js/main.js" "${OUT}/js/main.js"
 cp "${ROOT}/js/programm-download.js" "${OUT}/js/programm-download.js"
+cp "${ROOT}/js/coucou-preview.js" "${OUT}/js/coucou-preview.js"
 cp "${ROOT}/data/analytics.json" "${OUT}/data/analytics.json"
 cp "${ROOT}/images/hvw-logo.png" "${OUT}/images/hvw-logo.png"
 for f in favicon.ico favicon-32.png favicon-192.png apple-touch-icon.png; do
@@ -71,6 +75,7 @@ Programm:   https://www.hvwinterthur.ch/programm  (Newsletter / Direktlink)
 3. Prüfen:
    - https://www.hvwinterthur.ch/         → Weiterleitung zur Vereinswebsite
    - https://www.hvwinterthur.ch/programm → Programmseite
+   - https://www.hvwinterthur.ch/coucou → Coucou-JSON-Kontrolle
    - https://www.hvwinterthur.ch/impressum.html
    - https://www.hvwinterthur.ch/datenschutz.html
    - https://www.hvwinterthur.ch/Statuten.pdf

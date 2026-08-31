@@ -99,6 +99,7 @@ cd /home/zozuhosa/cronjobs && /usr/local/bin/python eventfrog_to_home.py >/dev/n
 | Abnehmer | URL |
 |---|---|
 | Coucou | `https://www.hvwinterthur.ch/coucou_export.json` |
+| Coucou-Kontrolle | `https://www.hvwinterthur.ch/coucou` |
 | Guidle | `https://www.hvwinterthur.ch/guidle_export.json` |
 | Titelseite | `https://www.hvwinterthur.ch/home-events.json` |
 | museumschaffen.ch (Agentur) | `https://www.hvwinterthur.ch/mus_export.json` |
