@@ -61,6 +61,12 @@ jobs:
       - name: Soft-Launch-Paket bauen
         run: ./scripts/build-hostpoint-soft-launch.sh
 
+      - name: Statuten-PDF im Paket prüfen
+        run: |
+          set -euo pipefail
+          test -s deploy/hostpoint-soft-launch/Statuten.pdf
+          echo "Soft-Launch enthält Statuten.pdf ($(wc -c < deploy/hostpoint-soft-launch/Statuten.pdf) Bytes) → Hostpoint /Statuten.pdf"
+
       - name: Interne Vorschau bauen
         env:
           MAIL_SMTP_HOST: ${{ secrets.MAIL_SMTP_HOST }}
@@ -73,6 +79,8 @@ jobs:
           set -euo pipefail
           chmod +x ./scripts/build-hostpoint-vorschau.sh
           ./scripts/build-hostpoint-vorschau.sh
+          test -s deploy/hostpoint-vorschau/Statuten.pdf
+          echo "Vorschau enthält Statuten.pdf → Hostpoint /vorschau/Statuten.pdf"
           python3 - <<'PY'
           import json, os, pathlib
           host = os.environ.get("MAIL_SMTP_HOST") or "smtp.mail.hostpoint.ch"
