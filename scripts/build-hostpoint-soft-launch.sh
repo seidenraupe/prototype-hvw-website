@@ -31,6 +31,11 @@ cp "${ROOT}/.htaccess" "${OUT}/.htaccess"
 cp "${ROOT}/robots.txt" "${OUT}/robots.txt"
 cp "${ROOT}/impressum.html" "${OUT}/impressum.html"
 cp "${ROOT}/datenschutz.html" "${OUT}/datenschutz.html"
+if [[ ! -f "${ROOT}/Statuten.pdf" ]]; then
+  echo "Statuten.pdf fehlt — Deploy auf Hostpoint wäre unvollständig." >&2
+  exit 1
+fi
+cp "${ROOT}/Statuten.pdf" "${OUT}/Statuten.pdf"
 cp "${ROOT}/programm/index.html" "${OUT}/programm/index.html"
 cp "${ROOT}/programm/.htaccess" "${OUT}/programm/.htaccess"
 if [[ -f "${ROOT}/programm/Programm.pdf" ]]; then
@@ -68,6 +73,7 @@ Programm:   https://www.hvwinterthur.ch/programm  (Newsletter / Direktlink)
    - https://www.hvwinterthur.ch/programm → Programmseite
    - https://www.hvwinterthur.ch/impressum.html
    - https://www.hvwinterthur.ch/datenschutz.html
+   - https://www.hvwinterthur.ch/Statuten.pdf
 4. Eventfrog: Domain www.hvwinterthur.ch für das Embed freischalten.
 
 Hinweis: Die übrige Prototyp-Website gehört NICHT in diesen Upload.

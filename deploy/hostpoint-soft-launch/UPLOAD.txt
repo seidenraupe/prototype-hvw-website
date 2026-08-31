@@ -13,6 +13,7 @@ Programm:   https://www.hvwinterthur.ch/programm  (Newsletter / Direktlink)
    - https://www.hvwinterthur.ch/programm → Programmseite
    - https://www.hvwinterthur.ch/impressum.html
    - https://www.hvwinterthur.ch/datenschutz.html
+   - https://www.hvwinterthur.ch/Statuten.pdf
 4. Eventfrog: Domain www.hvwinterthur.ch für das Embed freischalten.
 
 Hinweis: Die übrige Prototyp-Website gehört NICHT in diesen Upload.

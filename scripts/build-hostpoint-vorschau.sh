@@ -26,6 +26,11 @@ copy_dir "${ROOT}/js" "${OUT}/js"
 copy_dir "${ROOT}/images" "${OUT}/images"
 copy_dir "${ROOT}/data" "${OUT}/data"
 cp "${ROOT}/data/content-live.json" "${OUT}/data/content-live.seed.json"
+if [[ ! -f "${ROOT}/Statuten.pdf" ]]; then
+  echo "Statuten.pdf fehlt — Vorschau auf Hostpoint wäre unvollständig." >&2
+  exit 1
+fi
+cp "${ROOT}/Statuten.pdf" "${OUT}/Statuten.pdf"
 copy_dir "${ROOT}/programm" "${OUT}/programm"
 copy_dir "${ROOT}/zugang" "${OUT}/zugang"
 

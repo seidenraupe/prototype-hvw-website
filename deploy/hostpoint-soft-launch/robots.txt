@@ -6,6 +6,7 @@ Allow: /programm/
 Allow: /programm.html
 Allow: /impressum.html
 Allow: /datenschutz.html
+Allow: /Statuten.pdf
 Allow: /css/
 Allow: /js/
 Allow: /data/
