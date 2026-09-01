@@ -3,7 +3,14 @@
  * Eventbilder mit Overlay (Dateiformat + Pixelgrösse).
  */
 (function () {
-  const JSON_URL = document.body.getAttribute("data-export-json") || "/coucou_export.json";
+  function resolveJsonUrl() {
+    if (window.HVW_EXPORT_JSON) return String(window.HVW_EXPORT_JSON);
+    const fromBody = document.body && document.body.getAttribute("data-export-json");
+    if (fromBody) return fromBody;
+    const path = (location.pathname || "").replace(/\/+$/, "") || "/";
+    if (path === "/mus" || path.endsWith("/mus")) return "/mus_export.json";
+    return "/coucou_export.json";
+  }
   const HIDDEN_IN_EXTRA = new Set([
     "image",
     "title",
@@ -225,6 +232,7 @@
   }
 
   async function boot() {
+    const JSON_URL = resolveJsonUrl();
     const meta = $("coucou-meta");
     const status = $("coucou-status");
     bindOverlay();
@@ -236,13 +244,19 @@
       const data = await res.json();
       const events = Array.isArray(data) ? data : [];
       const modified = formatStamp(res.headers.get("Last-Modified"));
+      let loadedPath = JSON_URL;
+      try {
+        loadedPath = new URL(res.url || JSON_URL, location.href).pathname;
+      } catch (_err) {}
       meta.innerHTML =
-        "<strong>" +
+        "Geladen: <code>" +
+        escapeHtml(loadedPath) +
+        "</code> · <strong>" +
         events.length +
-        " Events</strong> in der aktuellen Datei" +
+        " Events</strong>" +
         (modified ? " · Stand Hostpoint: " + escapeHtml(modified) : "") +
         ' · <a href="' +
-        JSON_URL +
+        escapeHtml(JSON_URL) +
         '" class="underline underline-offset-2">JSON öffnen</a>';
       status.textContent = "Bild anklicken: Overlay mit Dateiformat und Pixelgrösse.";
       renderRows(events);
