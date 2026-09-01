@@ -25,6 +25,9 @@ Options -Indexes
   # /coucou → /coucou/ (Coucou-JSON-Kontrolle)
   RewriteRule ^coucou$ /coucou/ [L,R=301]
 
+  # /mus → /mus/ (Museum-Schaffen-JSON-Kontrolle)
+  RewriteRule ^mus$ /mus/ [L,R=301]
+
   # Altes Halbjahresprogramm-PDF → fortlaufendes Programm
   RewriteRule ^programm/HalbJahresprogramm\.pdf$ /programm/Programm.pdf [L,R=301]
   RewriteRule ^programm/HalbJahresprogramm\.json$ /programm/Programm.json [L,R=301]

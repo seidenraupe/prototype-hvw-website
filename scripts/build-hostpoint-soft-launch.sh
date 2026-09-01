@@ -41,6 +41,9 @@ cp "${ROOT}/programm/.htaccess" "${OUT}/programm/.htaccess"
 mkdir -p "${OUT}/coucou"
 cp "${ROOT}/coucou/index.html" "${OUT}/coucou/index.html"
 cp "${ROOT}/coucou/.htaccess" "${OUT}/coucou/.htaccess"
+mkdir -p "${OUT}/mus"
+cp "${ROOT}/mus/index.html" "${OUT}/mus/index.html"
+cp "${ROOT}/mus/.htaccess" "${OUT}/mus/.htaccess"
 if [[ -f "${ROOT}/programm/Programm.pdf" ]]; then
   cp "${ROOT}/programm/Programm.pdf" "${OUT}/programm/Programm.pdf"
 fi
@@ -76,6 +79,7 @@ Programm:   https://www.hvwinterthur.ch/programm  (Newsletter / Direktlink)
    - https://www.hvwinterthur.ch/         → Weiterleitung zur Vereinswebsite
    - https://www.hvwinterthur.ch/programm → Programmseite
    - https://www.hvwinterthur.ch/coucou → Coucou-JSON-Kontrolle
+   - https://www.hvwinterthur.ch/mus → MuS-JSON-Kontrolle
    - https://www.hvwinterthur.ch/impressum.html
    - https://www.hvwinterthur.ch/datenschutz.html
    - https://www.hvwinterthur.ch/Statuten.pdf

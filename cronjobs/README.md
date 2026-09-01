@@ -103,6 +103,7 @@ cd /home/zozuhosa/cronjobs && /usr/local/bin/python eventfrog_to_home.py >/dev/n
 | Guidle | `https://www.hvwinterthur.ch/guidle_export.json` |
 | Titelseite | `https://www.hvwinterthur.ch/home-events.json` |
 | museumschaffen.ch (Agentur) | `https://www.hvwinterthur.ch/mus_export.json` |
+| MuS-Kontrolle | `https://www.hvwinterthur.ch/mus` |
 
 Alten Cron auf Kreativ Media deaktivieren, sobald Coucou umgestellt ist.
 
