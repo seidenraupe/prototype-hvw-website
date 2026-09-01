@@ -154,6 +154,48 @@
       "rich": true,
       "multiline": false
     },
+    "ueber-uns.vorstand.person4": {
+      "label": "Über uns · Vorstand Person 4",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": true,
+      "multiline": false
+    },
+    "ueber-uns.vorstand.person5": {
+      "label": "Über uns · Vorstand Person 5",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": true,
+      "multiline": false
+    },
+    "ueber-uns.vorstand.person6": {
+      "label": "Über uns · Vorstand Person 6",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": true,
+      "multiline": false
+    },
+    "ueber-uns.vorstand.person7": {
+      "label": "Über uns · Vorstand Person 7",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": true,
+      "multiline": false
+    },
+    "ueber-uns.vorstand.person8": {
+      "label": "Über uns · Vorstand Person 8",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": true,
+      "multiline": false
+    },
+    "ueber-uns.vorstand.person9": {
+      "label": "Über uns · Vorstand Person 9",
+      "page": "ueber-uns.html",
+      "max": 120,
+      "rich": true,
+      "multiline": false
+    },
     "ueber-uns.vorstand.note": {
       "label": "Über uns · Hinweis unter dem Vorstand",
       "page": "ueber-uns.html",
