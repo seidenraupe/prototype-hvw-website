@@ -33,6 +33,7 @@ fi
 cp "${ROOT}/Statuten.pdf" "${OUT}/Statuten.pdf"
 copy_dir "${ROOT}/programm" "${OUT}/programm"
 copy_dir "${ROOT}/coucou" "${OUT}/coucou"
+copy_dir "${ROOT}/mus" "${OUT}/mus"
 copy_dir "${ROOT}/zugang" "${OUT}/zugang"
 
 mkdir -p "${OUT}/redaktion/storage"

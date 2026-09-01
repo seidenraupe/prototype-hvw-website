@@ -116,6 +116,7 @@ Der frühere Plesk-Cron auf `giger-straehl.ch`
   - `https://www.hvwinterthur.ch/coucou` (tabellarische Kontrolle des aktuellen Exports)
   - `https://www.hvwinterthur.ch/guidle_export.json` (Kopie von Coucou, für Guidle)
   - `https://www.hvwinterthur.ch/mus_export.json` (Museum Schaffen, OrgID 5116588)
+  - `https://www.hvwinterthur.ch/mus` (tabellarische Kontrolle des MuS-Exports)
   - `https://www.hvwinterthur.ch/home-events.json` (Titelseite, nächste 3 Anlässe; eigener Cron)
 - Täglich nur auf Hostpoint (Cronjobs Manager), nicht über GitHub Actions
 - Soft-Launch-Deploy löscht die Export-JSONs nicht (`rsync --exclude`)

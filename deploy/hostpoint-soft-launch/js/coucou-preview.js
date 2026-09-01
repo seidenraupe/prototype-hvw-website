@@ -3,7 +3,7 @@
  * Eventbilder mit Overlay (Dateiformat + Pixelgrösse).
  */
 (function () {
-  const JSON_URL = "/coucou_export.json";
+  const JSON_URL = document.body.getAttribute("data-export-json") || "/coucou_export.json";
   const HIDDEN_IN_EXTRA = new Set([
     "image",
     "title",
@@ -188,9 +188,7 @@
       const format = formatFromUrl(src);
       infoEl.textContent = overlayInfoText(format, null);
       const size = await loadImageSize(src);
-      if ($("coucou-overlay-image").src !== src && $("coucou-overlay-image").getAttribute("src") !== src) {
-        return;
-      }
+      if (overlay.hidden) return;
       infoEl.textContent = overlayInfoText(format, size);
       overlay.querySelector(".coucou-overlay__close").focus();
     }
@@ -251,7 +249,9 @@
     } catch (err) {
       meta.textContent = "Export konnte nicht geladen werden.";
       status.textContent =
-        "Die Datei /coucou_export.json fehlt lokal oder ist nicht erreichbar. Auf Hostpoint schreibt sie der nächtliche Cron.";
+        "Die Datei " +
+        JSON_URL +
+        " fehlt lokal oder ist nicht erreichbar. Auf Hostpoint schreibt sie der nächtliche Cron.";
       $("coucou-rows").innerHTML =
         '<tr><td colspan="9" class="p-6 text-hvw-mute">' +
         escapeHtml(err.message || "unbekannter Fehler") +

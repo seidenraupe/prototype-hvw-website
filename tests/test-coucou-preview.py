@@ -17,8 +17,10 @@ if 'id="coucou-overlay-info"' not in html:
     raise SystemExit("Overlay-Info fehlt")
 if "/js/coucou-preview.js" not in html:
     raise SystemExit("coucou-preview.js nicht eingebunden")
+if "data-export-json" not in js and 'getAttribute("data-export-json")' not in js:
+    raise SystemExit("JS liest data-export-json nicht")
 if "coucou_export.json" not in js:
-    raise SystemExit("JS lädt coucou_export.json nicht")
+    raise SystemExit("JS-Fallback für coucou_export.json fehlt")
 if "naturalWidth" not in js:
     raise SystemExit("Pixelgrösse wird nicht aus dem Bild gelesen")
 if not re.search(r"RewriteRule \^coucou\$ /coucou/", htaccess):

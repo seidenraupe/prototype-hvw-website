@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Coucou-Export — Historischer Verein Winterthur</title>
-  <meta name="description" content="Kontrolle des aktuellen Coucou-JSON-Exports des Historischen Vereins Winterthur.">
+  <title>MuS-Export — Historischer Verein Winterthur</title>
+  <meta name="description" content="Kontrolle des aktuellen Museum-Schaffen-JSON-Exports des Historischen Vereins Winterthur.">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <link rel="canonical" href="https://www.hvwinterthur.ch/coucou">
+  <link rel="canonical" href="https://www.hvwinterthur.ch/mus">
   <meta name="theme-color" content="#1a1a1a">
   <link rel="icon" href="/images/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/images/favicon-32.png" sizes="32x32">
@@ -24,7 +24,7 @@
     }
   </style>
 </head>
-<body class="bg-hvw-paper font-sans text-base text-hvw-ink antialiased" data-export-json="/coucou_export.json">
+<body class="bg-hvw-paper font-sans text-base text-hvw-ink antialiased" data-export-json="/mus_export.json">
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[200] focus:bg-white focus:px-4 focus:py-3 focus:shadow">Zum Inhalt springen</a>
 
   <header class="border-b border-hvw-ink bg-white">
@@ -32,7 +32,7 @@
       <a href="/programm/" class="shrink-0 no-underline" aria-label="Historischer Verein Winterthur — Programm">
         <img src="/images/hvw-logo.png" alt="historischer verein winterthur" width="715" height="163" class="h-12 w-auto md:h-16">
       </a>
-      <p class="text-sm font-semibold uppercase tracking-[0.08em] text-hvw-mute">Coucou-Export</p>
+      <p class="text-sm font-semibold uppercase tracking-[0.08em] text-hvw-mute">MuS-Export</p>
     </div>
   </header>
 
@@ -40,11 +40,11 @@
     <header class="border-b border-hvw-ink py-10 md:py-14">
       <div class="mx-auto max-w-site px-5 md:px-8">
         <p class="mb-2 text-sm font-semibold uppercase tracking-[0.08em] text-hvw-mute">Kontrolle</p>
-        <h1 class="text-3xl font-semibold uppercase tracking-wide md:text-4xl">Coucou JSON</h1>
+        <h1 class="text-3xl font-semibold uppercase tracking-wide md:text-4xl">MuS JSON</h1>
         <p class="mt-4 max-w-2xl text-lg text-hvw-mute">
           Aktueller Stand von
-          <a href="/coucou_export.json" class="underline underline-offset-2">/coucou_export.json</a>
-          — die Datei, die Coucou nachts vom Hostpoint abholt.
+          <a href="/mus_export.json" class="underline underline-offset-2">/mus_export.json</a>
+          — die Datei, die Museum Schaffen nachts vom Hostpoint abholt (OrgID 5116588).
         </p>
         <p id="coucou-meta" class="mt-4 text-sm text-hvw-mute">Lade Export…</p>
       </div>
@@ -52,7 +52,7 @@
 
     <section class="py-10 md:py-14" aria-labelledby="coucou-heading">
       <div class="mx-auto max-w-site px-5 md:px-8">
-        <h2 id="coucou-heading" class="sr-only">Events im Coucou-Export</h2>
+        <h2 id="coucou-heading" class="sr-only">Events im MuS-Export</h2>
         <p id="coucou-status" class="mb-6 text-hvw-mute" role="status"></p>
         <div class="coucou-table-wrap overflow-x-auto border border-hvw-ink bg-white">
           <table class="coucou-table min-w-full text-left text-sm">
@@ -122,7 +122,7 @@
     </div>
     <div class="mx-auto mt-10 flex max-w-site flex-wrap justify-between gap-3 border-t border-hvw-ink/15 px-5 pt-6 text-sm text-hvw-mute md:px-8">
       <span>© 2026 Historischer Verein Winterthur</span>
-      <span>www.hvwinterthur.ch/coucou</span>
+      <span>www.hvwinterthur.ch/mus</span>
     </div>
   </footer>
   <script src="/js/coucou-preview.js" defer></script>
