@@ -5,6 +5,7 @@ Eventfrog → mus_export.json (Museum Schaffen / museumschaffen.ch)
 
 Gleiches Record-Layout wie coucou_export.json (Coucou-Schnittstelle 1.4),
 aber nur Events der Eventfrog-Organisation 5116588 (Museum Schaffen).
+Attraktionen (Öffnungszeiten) werden wie im Coucou-Export weggelassen.
 
 Beschreibung (wie coucou_export.json):
     description       Kurzbeschreibung
