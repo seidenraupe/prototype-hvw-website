@@ -62,12 +62,15 @@ Bekannte Einschränkungen (siehe Kommentare weiter unten im Code):
       Coucou-Doku die zulässige Alternative.
     - "weekdays", "fee_options" und "attachments" liefert die Eventfrog
       Public API in diesem Schema nicht und bleiben daher leer.
+    - Eventfrog-Attraktionen (Öffnungszeiten, z.B. Museum täglich) werden
+      vor dem Export entfernt. Nur Veranstaltungen bleiben im JSON.
 """
 
 import json
 import os
 import re
 import shutil
+from collections import defaultdict
 from datetime import datetime, timezone
 
 import requests
@@ -348,6 +351,159 @@ def get_all_events(org_ids, api_key):
         page += 1
 
     return all_events
+
+
+# Eventfrog unterscheidet Veranstaltung (type=default) und Attraktion
+# (type=attractionOriginal / attractionInstance). Attraktionen haben
+# Öffnungszeiten; die Public API liefert daraus oft einen Eintrag pro Tag.
+# Coucou/MuS/Guidle sollen nur Veranstaltungen enthalten.
+ATTRACTION_TYPE_VALUES = frozenset(
+    (
+        "attraction",
+        "attractionoriginal",
+        "attractioninstance",
+        "attraktion",
+    )
+)
+
+# Bekannte Museums-Öffnungszeiten, falls die Public API kein type-Feld liefert.
+EXCLUDED_ATTRACTION_TITLES = frozenset(
+    (
+        "erinnerungstank haldengut",
+    )
+)
+
+# Serie gilt als explodierte Öffnungszeit (nicht als Vortragsreihe):
+# mindestens so viele Tage, an mindestens so vielen Wochentagen, kaum Wochenende.
+OPENING_HOURS_MIN_DATES = 5
+OPENING_HOURS_MIN_WEEKDAYS = 4
+OPENING_HOURS_MAX_WEEKEND_RATIO = 0.15
+
+
+def normalize_event_title(event):
+    """Titel klein, zusammengeschoben – für Vergleich und Filterlisten."""
+    if not isinstance(event, dict):
+        return ""
+    title = event.get("title")
+    if isinstance(title, dict):
+        title = pick_lang(title)
+    if not title:
+        return ""
+    return re.sub(r"\s+", " ", str(title).strip().lower())
+
+
+def _normalize_event_type(value):
+    if value is None:
+        return ""
+    return re.sub(r"[\s_-]+", "", str(value).strip().lower())
+
+
+def _event_begin_date(event):
+    """Kalendertag des Event-Starts oder None."""
+    if not isinstance(event, dict):
+        return None
+    begin = event.get("begin")
+    dt = _parse_iso(begin) if begin else None
+    if dt is not None:
+        return dt.date() if hasattr(dt, "date") else dt
+
+    raw = event.get("date") or ""
+    text = str(raw).strip()[:10]
+    if len(text) == 10 and text[4] in "-/" and text[7] in "-/":
+        try:
+            return datetime.strptime(text.replace("/", "-"), "%Y-%m-%d").date()
+        except (ValueError, TypeError):
+            return None
+    return None
+
+
+def is_attraction_event(event):
+    """True, wenn das Eventfrog-Objekt eine Attraktion / Öffnungszeit ist.
+
+    Organizer-API-Felder (type, attractionId) werden mitgelesen, auch wenn
+    die Public-API-Doku sie nicht auflistet. Zusätzlich: bekannte Titel.
+    """
+    if not isinstance(event, dict):
+        return False
+
+    event_type = _normalize_event_type(
+        event.get("type") or event.get("eventType")
+    )
+    if event_type in ATTRACTION_TYPE_VALUES:
+        return True
+
+    attraction_id = event.get("attractionId")
+    if attraction_id not in (None, "", 0, "0"):
+        return True
+    if event.get("attraction") is True or event.get("isAttraction") is True:
+        return True
+
+    url = str(event.get("url") or "").lower()
+    if any(
+        part in url
+        for part in ("/attraktionen/", "/attractions/", "/attraction/")
+    ):
+        return True
+
+    return normalize_event_title(event) in EXCLUDED_ATTRACTION_TITLES
+
+
+def opening_hours_attraction_titles(events):
+    """Titel, die wie täglich explodierte Museums-Öffnungszeiten aussehen.
+
+    Eine echte Veranstaltungsreihe (Käfele, Vortrag, Führung) hat wenige
+    Termine. Attraktionen erscheinen oft an fast jedem Werktag zur gleichen
+    Uhrzeit.
+    """
+    buckets = defaultdict(lambda: {"dates": set(), "weekdays": set(), "weekend": 0})
+    for event in events or []:
+        title = normalize_event_title(event)
+        if not title:
+            continue
+        day = _event_begin_date(event)
+        if day is None:
+            continue
+        time_start = ""
+        if event.get("begin"):
+            time_start = iso_to_time_str(event.get("begin")) or ""
+        elif event.get("time_start"):
+            time_start = str(event.get("time_start") or "")
+        key = (title, time_start)
+        buckets[key]["dates"].add(day)
+        weekday = day.weekday()
+        buckets[key]["weekdays"].add(weekday)
+        if weekday >= 5:
+            buckets[key]["weekend"] += 1
+
+    titles = set(EXCLUDED_ATTRACTION_TITLES)
+    for (title, _time), info in buckets.items():
+        dates = info["dates"]
+        if len(dates) < OPENING_HOURS_MIN_DATES:
+            continue
+        if len(info["weekdays"]) < OPENING_HOURS_MIN_WEEKDAYS:
+            continue
+        weekend_ratio = float(info["weekend"]) / float(len(dates))
+        if weekend_ratio > OPENING_HOURS_MAX_WEEKEND_RATIO:
+            continue
+        titles.add(title)
+    return titles
+
+
+def filter_attraction_events(events):
+    """Entfernt Attraktionen/Öffnungszeiten, behält Veranstaltungen.
+
+    Gibt (veranstaltungen, anzahl_entfernt) zurück.
+    """
+    excluded_titles = opening_hours_attraction_titles(events)
+    kept = []
+    skipped = 0
+    for event in events or []:
+        title = normalize_event_title(event)
+        if is_attraction_event(event) or title in excluded_titles:
+            skipped += 1
+            continue
+        kept.append(event)
+    return kept, skipped
 
 
 def get_rubrics(api_key):
@@ -740,7 +896,15 @@ def main():
         print(exc)
         return
 
-    print("{0} Event(s) gefunden. Lade Rubriken und Locations ...".format(len(events)))
+    print("{0} Event(s) von der API. Filtere Attraktionen/Öffnungszeiten ...".format(len(events)))
+    events, skipped_attractions = filter_attraction_events(events)
+    if skipped_attractions:
+        print(
+            "{0} Attraktion(en)/Öffnungszeit(en) entfernt, {1} Veranstaltung(en) bleiben.".format(
+                skipped_attractions, len(events)
+            )
+        )
+    print("{0} Veranstaltung(en). Lade Rubriken und Locations ...".format(len(events)))
 
     try:
         rubrics_by_id = get_rubrics(api_key)

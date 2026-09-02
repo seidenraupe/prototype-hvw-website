@@ -4,6 +4,7 @@ Eventfrog → home-events.json (Titelseite)
 ========================================
 
 Eigener Hostpoint-Cron — unabhängig von GitHub und vom Coucou-/MuS-Export.
+Attraktionen (Öffnungszeiten) werden wie im Coucou-Export weggelassen.
 
 Schreibt die nächsten 3 Anlässe aller HVW-Org-IDs nach:
     https://www.hvwinterthur.ch/home-events.json
@@ -22,6 +23,7 @@ from eventfrog_to_coucou import (
     API_KEY_ENV_NAME,
     API_KEY_FILE,
     build_home_events_payload,
+    filter_attraction_events,
     get_all_events,
     get_locations,
     load_api_key,
@@ -60,7 +62,15 @@ def main():
         print(exc)
         return
 
-    print("{0} Event(s) gefunden. Lade Locations ...".format(len(events)))
+    print("{0} Event(s) von der API. Filtere Attraktionen/Öffnungszeiten ...".format(len(events)))
+    events, skipped_attractions = filter_attraction_events(events)
+    if skipped_attractions:
+        print(
+            "{0} Attraktion(en)/Öffnungszeit(en) entfernt, {1} Veranstaltung(en) bleiben.".format(
+                skipped_attractions, len(events)
+            )
+        )
+    print("{0} Veranstaltung(en). Lade Locations ...".format(len(events)))
 
     all_location_ids = set()
     for event in events:
