@@ -25,6 +25,9 @@ copy_dir "${ROOT}/css" "${OUT}/css"
 copy_dir "${ROOT}/js" "${OUT}/js"
 copy_dir "${ROOT}/images" "${OUT}/images"
 copy_dir "${ROOT}/data" "${OUT}/data"
+mkdir -p "${OUT}/data/uploads"
+rm -f "${OUT}/data/uploads/"*.jpg "${OUT}/data/uploads/"*.jpeg \
+      "${OUT}/data/uploads/"*.png "${OUT}/data/uploads/"*.webp
 cp "${ROOT}/data/content-live.json" "${OUT}/data/content-live.seed.json"
 if [[ ! -f "${ROOT}/Statuten.pdf" ]]; then
   echo "Statuten.pdf fehlt — Vorschau auf Hostpoint wäre unvollständig." >&2

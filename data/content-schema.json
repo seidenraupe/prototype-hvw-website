@@ -350,6 +350,15 @@
       "rich": true,
       "multiline": true
     },
+    "agenda.rueckblick.1.image": {
+      "label": "Agenda · Rückblick 1 · Bild",
+      "page": "agenda.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
     "agenda.rueckblick.1.kicker": {
       "label": "Agenda · Rückblick 1 · Kategorie",
       "page": "agenda.html",
@@ -377,6 +386,15 @@
       "max": 60,
       "rich": false,
       "multiline": false
+    },
+    "agenda.rueckblick.2.image": {
+      "label": "Agenda · Rückblick 2 · Bild",
+      "page": "agenda.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
     },
     "agenda.rueckblick.2.kicker": {
       "label": "Agenda · Rückblick 2 · Kategorie",
@@ -406,6 +424,15 @@
       "rich": false,
       "multiline": false
     },
+    "agenda.rueckblick.3.image": {
+      "label": "Agenda · Rückblick 3 · Bild",
+      "page": "agenda.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
     "agenda.rueckblick.3.kicker": {
       "label": "Agenda · Rückblick 3 · Kategorie",
       "page": "agenda.html",
@@ -433,6 +460,15 @@
       "max": 60,
       "rich": false,
       "multiline": false
+    },
+    "agenda.rueckblick.4.image": {
+      "label": "Agenda · Rückblick 4 · Bild",
+      "page": "agenda.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
     },
     "agenda.rueckblick.4.kicker": {
       "label": "Agenda · Rückblick 4 · Kategorie",
@@ -462,6 +498,15 @@
       "rich": false,
       "multiline": false
     },
+    "agenda.rueckblick.5.image": {
+      "label": "Agenda · Rückblick 5 · Bild",
+      "page": "agenda.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
     "agenda.rueckblick.5.kicker": {
       "label": "Agenda · Rückblick 5 · Kategorie",
       "page": "agenda.html",
@@ -489,6 +534,15 @@
       "max": 60,
       "rich": false,
       "multiline": false
+    },
+    "agenda.rueckblick.6.image": {
+      "label": "Agenda · Rückblick 6 · Bild",
+      "page": "agenda.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
     },
     "agenda.rueckblick.6.kicker": {
       "label": "Agenda · Rückblick 6 · Kategorie",

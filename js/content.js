@@ -31,6 +31,22 @@
     return wrap.innerHTML;
   }
 
+  function applyImageFields(fields) {
+    if (!fields) return;
+    document.querySelectorAll("[data-content-image]").forEach((el) => {
+      const id = el.getAttribute("data-content-image");
+      if (!id || !Object.prototype.hasOwnProperty.call(fields, id)) return;
+      const fallback = el.getAttribute("data-content-image-fallback") || "";
+      const raw = String(fields[id] || "").trim();
+      const src = raw || fallback;
+      const img = el.querySelector("img");
+      if (img && src) {
+        if (img.getAttribute("src") !== src) img.setAttribute("src", src);
+      }
+      el.classList.toggle("has-photo", Boolean(raw));
+    });
+  }
+
   function applyFields(fields) {
     if (!fields) return;
     document.querySelectorAll("[data-content]").forEach((el) => {
@@ -41,6 +57,7 @@
       if (rich) el.innerHTML = sanitizeRich(value);
       else el.textContent = String(value || "").replace(/\s+/g, " ").trim();
     });
+    applyImageFields(fields);
   }
 
   async function loadLive() {

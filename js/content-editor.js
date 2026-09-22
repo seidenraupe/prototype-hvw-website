@@ -81,7 +81,23 @@
   }
 
   function fieldEl(id) {
-    return document.querySelector('[data-content="' + String(id).replace(/"/g, "") + '"]');
+    const safe = String(id).replace(/"/g, "");
+    return (
+      document.querySelector('[data-content="' + safe + '"]') ||
+      document.querySelector('[data-content-image="' + safe + '"]')
+    );
+  }
+
+  function isImageField(id) {
+    const meta = fieldMeta(id);
+    return meta.type === "image";
+  }
+
+  function imageFieldValue(el) {
+    const img = el.querySelector("img");
+    const fallback = el.getAttribute("data-content-image-fallback") || "";
+    const src = img ? img.getAttribute("src") || "" : "";
+    return src && src !== fallback ? src : "";
   }
 
   function clip(html, max) {
@@ -125,28 +141,39 @@
     document.querySelectorAll("[data-content]").forEach((el) => {
       out[el.getAttribute("data-content")] = fieldValue(el);
     });
+    document.querySelectorAll("[data-content-image]").forEach((el) => {
+      out[el.getAttribute("data-content-image")] = imageFieldValue(el);
+    });
     return out;
   }
 
-  function markChangedFields() {
+  function markFieldState(el, id, currentValue) {
     const editing = view === "draft";
+    const changed = editing && !sameText(currentValue, liveFields[id]);
+    const accepted = changed && acceptedIds.has(id);
+    el.classList.toggle("hvw-changed", changed && !accepted);
+    el.classList.toggle("hvw-accepted", accepted);
+    if (accepted) {
+      el.setAttribute("title", "Angenommen — wird mit «Live schalten» öffentlich");
+      el.setAttribute("data-change-hint", "Angenommen");
+    } else if (changed) {
+      el.setAttribute("title", "Geändert — noch nicht öffentlich, wartet auf Freigabe");
+      el.setAttribute("data-change-hint", "Geändert — zur Freigabe");
+    } else {
+      el.removeAttribute("title");
+      el.removeAttribute("data-change-hint");
+      acceptedIds.delete(id);
+    }
+  }
+
+  function markChangedFields() {
     document.querySelectorAll("[data-content]").forEach((el) => {
       const id = el.getAttribute("data-content");
-      const changed = editing && !sameText(fieldValue(el), liveFields[id]);
-      const accepted = changed && acceptedIds.has(id);
-      el.classList.toggle("hvw-changed", changed && !accepted);
-      el.classList.toggle("hvw-accepted", accepted);
-      if (accepted) {
-        el.setAttribute("title", "Angenommen — wird mit «Live schalten» öffentlich");
-        el.setAttribute("data-change-hint", "Angenommen");
-      } else if (changed) {
-        el.setAttribute("title", "Geändert — noch nicht öffentlich, wartet auf Freigabe");
-        el.setAttribute("data-change-hint", "Geändert — zur Freigabe");
-      } else {
-        el.removeAttribute("title");
-        el.removeAttribute("data-change-hint");
-        acceptedIds.delete(id);
-      }
+      markFieldState(el, id, fieldValue(el));
+    });
+    document.querySelectorAll("[data-content-image]").forEach((el) => {
+      const id = el.getAttribute("data-content-image");
+      markFieldState(el, id, imageFieldValue(el));
     });
     persistAccepted();
     updateReviewDock();
@@ -168,11 +195,14 @@
       el.classList.toggle("hvw-editable", canEdit);
       el.spellcheck = true;
     });
+    document.querySelectorAll("[data-content-image]").forEach((el) => {
+      el.classList.toggle("hvw-image-editable", view === "draft");
+    });
     markChangedFields();
   }
 
   function fieldMeta(id) {
-    return schema[id] || { label: id, max: 400, rich: false, multiline: true };
+    return schema[id] || { label: id, max: 400, rich: false, multiline: true, type: "text" };
   }
 
   function updateCounter() {
@@ -324,7 +354,7 @@
     if (!changes.length) return;
     syncReviewIndex(changes);
     const item = changes[reviewIndex];
-    if (!confirm("Diese Änderung rückgängig machen und den Live-Text wiederherstellen?")) return;
+    if (!confirm("Diese Änderung rückgängig machen und den Live-Stand wiederherstellen?")) return;
     draftFields[item.id] = liveFields[item.id] || "";
     acceptedIds.delete(item.id);
     persistAccepted();
@@ -358,8 +388,13 @@
       open === 0
         ? "Alle angenommen — jetzt live schalten"
         : open + " noch offen";
-    $("#hvw-review-old").textContent = clip(item.live, 140) || "—";
-    $("#hvw-review-new").textContent = clip(item.draft, 140) || "—";
+    if (isImageField(item.id)) {
+      $("#hvw-review-old").textContent = item.live ? "hochgeladenes Bild" : "Platzhalter";
+      $("#hvw-review-new").textContent = item.draft ? "hochgeladenes Bild" : "Platzhalter";
+    } else {
+      $("#hvw-review-old").textContent = clip(item.live, 140) || "—";
+      $("#hvw-review-new").textContent = clip(item.draft, 140) || "—";
+    }
     const otherPage = item.page && item.page !== currentPageName();
     $("#hvw-review-page").textContent = otherPage ? "andere Seite — «Zur Stelle» wechseln" : "";
     $("#hvw-btn-accept").disabled = otherPage || acceptedIds.has(item.id);
@@ -450,7 +485,7 @@
       persistAccepted();
       sessionStorage.removeItem(REVIEW_KEY);
       markChangedFields();
-      toast("Freigegeben — die Texte sind live.");
+      toast("Freigegeben — die Änderungen sind live.");
       updateBar();
     } catch (err) {
       toast(err.message, true);
@@ -476,15 +511,25 @@
 
   function showDiff() {
     const rows = allChanges().map((item) => {
+      const oldText = isImageField(item.id)
+        ? item.live
+          ? "hochgeladenes Bild"
+          : "Platzhalter"
+        : strip(item.live);
+      const newText = isImageField(item.id)
+        ? item.draft
+          ? "hochgeladenes Bild"
+          : "Platzhalter"
+        : strip(item.draft);
       return (
         "<article class=\"hvw-diff-item\" data-jump=\"" +
         escapeHtml(item.id) +
         "\"><h3>" +
         escapeHtml(item.label) +
         "</h3><p class=\"hvw-diff-old\">" +
-        escapeHtml(strip(item.live)) +
+        escapeHtml(oldText) +
         "</p><p class=\"hvw-diff-new\">" +
-        escapeHtml(strip(item.draft)) +
+        escapeHtml(newText) +
         "</p><p><button type=\"button\" class=\"hvw-diff-jump\" data-jump-id=\"" +
         escapeHtml(item.id) +
         "\">Zur Stelle</button></p></article>"
@@ -630,6 +675,69 @@
     });
   }
 
+  function ensureImageControls(el) {
+    if (el.querySelector(".hvw-image-tools")) return;
+    const tools = document.createElement("div");
+    tools.className = "hvw-image-tools";
+    tools.innerHTML =
+      '<label class="hvw-image-upload">Bild hochladen<input type="file" accept="image/jpeg,image/png,image/webp" hidden></label>' +
+      '<button type="button" class="hvw-image-clear">Platzhalter</button>';
+    el.appendChild(tools);
+    const input = tools.querySelector('input[type="file"]');
+    const clear = tools.querySelector(".hvw-image-clear");
+    input.addEventListener("change", () => {
+      const file = input.files && input.files[0];
+      input.value = "";
+      if (file) uploadImage(el, file);
+    });
+    clear.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = el.getAttribute("data-content-image");
+      const fallback = el.getAttribute("data-content-image-fallback") || "";
+      const img = el.querySelector("img");
+      if (img) img.setAttribute("src", fallback);
+      el.classList.remove("has-photo");
+      draftFields[id] = "";
+      acceptedIds.delete(id);
+      persistAccepted();
+      markDirty();
+    });
+  }
+
+  async function uploadImage(el, file) {
+    const id = el.getAttribute("data-content-image");
+    if (!id) return;
+    if (!/image\/(jpeg|png|webp)/i.test(file.type)) {
+      toast("Bitte ein JPG-, PNG- oder WebP-Bild wählen.", true);
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      toast("Das Bild darf höchstens 8 MB haben.", true);
+      return;
+    }
+    const body = new FormData();
+    body.append("field", id);
+    body.append("file", file);
+    try {
+      const data = await api("upload-image", {
+        method: "POST",
+        headers: { "X-CSRF-Token": session && session.csrf ? session.csrf : "" },
+        body,
+      });
+      draftFields = Object.assign({}, draftFields, { [id]: data.url });
+      window.hvwApplyContent({ [id]: data.url });
+      acceptedIds.delete(id);
+      persistAccepted();
+      dirty = false;
+      markChangedFields();
+      updateBar();
+      toast("Bild im Entwurf gespeichert. Noch nicht öffentlich.");
+    } catch (err) {
+      toast(err.message, true);
+    }
+  }
+
   function bindFields() {
     document.querySelectorAll("[data-content]").forEach((el) => {
       el.addEventListener("focus", () => {
@@ -657,6 +765,9 @@
         if (view !== "draft") return;
         e.stopPropagation();
       });
+    });
+    document.querySelectorAll("[data-content-image]").forEach((el) => {
+      ensureImageControls(el);
     });
     document.addEventListener(
       "click",

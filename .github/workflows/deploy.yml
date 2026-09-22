@@ -280,6 +280,10 @@ jobs:
             --exclude 'data/content-live.json' \
             --exclude 'data/home-events.json' \
             --exclude 'home-events.json' \
+            --exclude 'data/uploads/*.jpg' \
+            --exclude 'data/uploads/*.jpeg' \
+            --exclude 'data/uploads/*.png' \
+            --exclude 'data/uploads/*.webp' \
             --exclude 'redaktion/storage/content-draft.json' \
             --exclude 'redaktion/storage/access-emails.json' \
             --exclude 'redaktion/storage/otp.json' \
@@ -322,7 +326,7 @@ jobs:
             -o IdentitiesOnly=yes \
             -o StrictHostKeyChecking=no \
             "${SSH_USER}@${host}" \
-            "mkdir -p '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rwX '${target}vorschau/data' '${target}vorschau/redaktion/storage' && chmod u+rw '${target}vorschau/data/content-live.json' '${target}vorschau/redaktion/storage/content-draft.json' '${target}vorschau/redaktion/storage/access-emails.json' '${target}vorschau/redaktion/storage/otp.json' '${target}vorschau/redaktion/storage/zugang-secret.txt' 2>/dev/null || true"
+            "mkdir -p '${target}vorschau/data/uploads' '${target}vorschau/redaktion/storage' && chmod u+rwX '${target}vorschau/data' '${target}vorschau/data/uploads' '${target}vorschau/redaktion/storage' && chmod u+rw '${target}vorschau/data/content-live.json' '${target}vorschau/redaktion/storage/content-draft.json' '${target}vorschau/redaktion/storage/access-emails.json' '${target}vorschau/redaktion/storage/otp.json' '${target}vorschau/redaktion/storage/zugang-secret.txt' 2>/dev/null || true"
 
           rm -f "$keyfile"
           echo "Deploy abgeschlossen (Soft-Launch + /vorschau/)."

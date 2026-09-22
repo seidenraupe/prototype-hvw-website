@@ -9,7 +9,9 @@ define('HVW_ROOT', dirname(__DIR__));
 define('HVW_SCHEMA', HVW_ROOT . '/data/content-schema.json');
 define('HVW_LIVE', HVW_ROOT . '/data/content-live.json');
 define('HVW_DRAFT', __DIR__ . '/storage/content-draft.json');
+define('HVW_UPLOADS', HVW_ROOT . '/data/uploads');
 define('HVW_ALLOWED_TAGS', ['strong', 'em', 'u', 'br']);
+define('HVW_IMAGE_PLACEHOLDER', 'images/placeholder-event-1.svg');
 
 function hvw_cookie_path(): string
 {
@@ -173,6 +175,49 @@ function hvw_sanitize_plain(string $html): string
     return $text;
 }
 
+function hvw_is_image_field(array $meta): bool
+{
+    return ($meta['type'] ?? '') === 'image';
+}
+
+function hvw_is_optional_field(array $meta): bool
+{
+    return !empty($meta['optional']) || hvw_is_image_field($meta);
+}
+
+function hvw_sanitize_image_path(string $value): string
+{
+    $value = hvw_sanitize_plain($value);
+    if ($value === '') {
+        return '';
+    }
+    $value = str_replace('\\', '/', $value);
+    if (str_contains($value, '..') || str_starts_with($value, '/') || str_contains($value, ':')) {
+        return '';
+    }
+    if (preg_match('#^images/placeholder-event-[1-6]\.svg$#', $value)) {
+        return $value;
+    }
+    if (preg_match('#^data/uploads/rueckblick-[1-6]-[a-z0-9]+\.(jpe?g|png|webp)$#', $value)) {
+        return $value;
+    }
+    return '';
+}
+
+function hvw_image_slot(string $id): ?int
+{
+    if (preg_match('/^agenda\.rueckblick\.([1-6])\.image$/', $id, $m)) {
+        return (int) $m[1];
+    }
+    return null;
+}
+
+function hvw_image_public_url(string $rel): string
+{
+    $rel = ltrim(str_replace('\\', '/', $rel), '/');
+    return $rel;
+}
+
 function hvw_seed_fields(): array
 {
     $path = HVW_ROOT . '/data/content-live.seed.json';
@@ -213,10 +258,17 @@ function hvw_normalize_fields(array $incoming, ?array $fallback = null): array
         }
         $raw = (string) $incoming[$id];
         $rich = !empty($meta['rich']);
-        $value = $rich ? hvw_sanitize_rich($raw) : hvw_sanitize_plain($raw);
+        if (hvw_is_image_field($meta)) {
+            $value = hvw_sanitize_image_path($raw);
+            if ($raw !== '' && $value === '') {
+                $errors[] = ($meta['label'] ?? $id) . ' hat einen ungültigen Bildpfad.';
+            }
+        } else {
+            $value = $rich ? hvw_sanitize_rich($raw) : hvw_sanitize_plain($raw);
+        }
         $len = hvw_plain_len($value);
         $max = (int) ($meta['max'] ?? 400);
-        if ($len < 1) {
+        if ($len < 1 && !hvw_is_optional_field($meta)) {
             $errors[] = ($meta['label'] ?? $id) . ' darf nicht leer sein.';
         } elseif ($len > $max) {
             $errors[] = ($meta['label'] ?? $id) . " ist zu lang ({$len} von {$max} Zeichen).";
