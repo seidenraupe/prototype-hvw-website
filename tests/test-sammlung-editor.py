@@ -55,7 +55,9 @@ if schema["fields"]["sammlung.intro"].get("max") != 400:
     raise SystemExit("sammlung.intro muss 400 Zeichen erlauben")
 if schema["fields"]["sammlung.katalog.lead"].get("max") != 400:
     raise SystemExit("sammlung.katalog.lead muss 400 Zeichen erlauben")
-if "sammlung.objekt" not in merge:
-    raise SystemExit("Merge muss neue Sammlungsfelder seeden")
+if "EDITORIAL_PREFIXES" not in merge or "sammlung.objekt." not in merge:
+    raise SystemExit("Merge muss Sammlungsfelder als Redaktions-Inhalt behandeln")
+if "promoted_from_draft" not in merge:
+    raise SystemExit("Merge muss Entwürfe in leere Live-Felder übernehmen")
 
 print("sammlung editor lightbox ok")
