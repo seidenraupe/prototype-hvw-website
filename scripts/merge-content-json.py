@@ -38,9 +38,49 @@ GIT_WINS_FIELD_IDS = {
     *(f"ueber-uns.vorstand.person{n}" for n in range(1, 10)),
 }
 
+# Redaktionell gepflegte Karten: nie per INITIAL_SEED-Reset überschreiben.
+EDITORIAL_PREFIXES = ("sammlung.objekt.", "agenda.rueckblick.")
+
+# Zu wenig Remote-Daten → kein Live-Reset aus Git (verhindert Datenverlust bei fehlendem rsync).
+MIN_REMOTE_FIELD_COUNT = 10
+
+
+def is_editorial_content_field(field_id: str) -> bool:
+    return field_id.startswith(EDITORIAL_PREFIXES)
+
+
+def apply_deploy_overrides(
+    live: dict[str, str],
+    ids: list[str],
+    seed: dict[str, str],
+    remote_draft: dict[str, str],
+) -> tuple[dict[str, str], dict[str, int]]:
+    out = dict(live)
+    forced = 0
+    for field_id in GIT_WINS_FIELD_IDS:
+        if field_id not in ids or field_id not in seed:
+            continue
+        out[field_id] = seed[field_id]
+        forced += 1
+    promoted = 0
+    for field_id in ids:
+        if not is_editorial_content_field(field_id):
+            continue
+        if out.get(field_id, "").strip():
+            continue
+        draft_v = remote_draft.get(field_id, "")
+        if not draft_v.strip():
+            continue
+        out[field_id] = draft_v
+        promoted += 1
+    return out, {"forced_from_git": forced, "promoted_from_draft": promoted}
+
 
 def merge_live_fields(
-    ids: list[str], seed: dict[str, str], remote: dict[str, str]
+    ids: list[str],
+    seed: dict[str, str],
+    remote: dict[str, str],
+    remote_draft: dict[str, str] | None = None,
 ) -> tuple[dict[str, str], dict[str, int]]:
     """Remote gewinnt, sobald ein Feld dort existiert. Seed nur für neue IDs."""
     out = dict(remote)
@@ -53,18 +93,13 @@ def merge_live_fields(
         else:
             out[field_id] = seed.get(field_id, "")
             added += 1
-    forced = 0
-    for field_id in GIT_WINS_FIELD_IDS:
-        if field_id not in ids:
-            continue
-        if field_id in seed:
-            out[field_id] = seed[field_id]
-            forced += 1
+    remote_draft = remote_draft or {}
+    out, override_stats = apply_deploy_overrides(out, ids, seed, remote_draft)
     return out, {
         "kept": kept,
         "added": added,
         "extra": max(0, len(remote) - kept),
-        "forced_from_git": forced,
+        **override_stats,
     }
 
 
@@ -84,17 +119,6 @@ INITIAL_SEED_FIELD_IDS = {
     "sammlung.intro",
     "sammlung.katalog.lead",
     "zitate.intro",
-    *(
-        f"agenda.rueckblick.{n}.{part}"
-        for n in range(1, 7)
-        for part in ("image", "kicker", "title", "body", "location")
-    ),
-    *(
-        f"sammlung.objekt.{n}.{part}"
-        for n in range(1, 7)
-        for part in ("image", "title", "body")
-    ),
-    *(f"ueber-uns.vorstand.person{n}" for n in range(1, 10)),
 }
 
 
@@ -189,9 +213,36 @@ def main() -> int:
     ids = schema_ids(load_json(args.schema))
     seed_doc = load_json(args.seed)
     remote_live_doc = load_json(args.remote_live)
+    remote_draft_doc = load_json(args.remote_draft) if args.remote_draft else {}
     seed_fields = field_map(seed_doc)
     remote_live = field_map(remote_live_doc)
-    live_fields, stats = merge_live_fields(ids, seed_fields, remote_live)
+    remote_draft = field_map(remote_draft_doc)
+
+    if len(remote_live) < MIN_REMOTE_FIELD_COUNT:
+        print(
+            f"content-live merge: Remote zu klein ({len(remote_live)} Felder) — "
+            "kein Zurücksetzen aus Git; nur fehlende Felder ergänzen und Overrides.",
+            file=sys.stderr,
+        )
+        live_fields = dict(remote_live)
+        added = 0
+        for field_id in ids:
+            if field_id not in live_fields:
+                live_fields[field_id] = seed_fields.get(field_id, "")
+                added += 1
+        live_fields, override_stats = apply_deploy_overrides(
+            live_fields, ids, seed_fields, remote_draft
+        )
+        stats = {
+            "kept": len(remote_live),
+            "added": added,
+            "extra": 0,
+            **override_stats,
+        }
+    else:
+        live_fields, stats = merge_live_fields(
+            ids, seed_fields, remote_live, remote_draft
+        )
 
     live_out = dict(remote_live_doc) if remote_live_doc else dict(seed_doc)
     live_out["fields"] = live_fields
@@ -200,9 +251,8 @@ def main() -> int:
     write_json(args.out_live, live_out)
 
     if args.out_draft:
-        remote_draft_doc = load_json(args.remote_draft)
         draft_fields = merge_draft_fields(
-            ids, live_fields, field_map(remote_draft_doc), seed_fields
+            ids, live_fields, remote_draft, seed_fields
         )
         draft_out = dict(remote_draft_doc) if remote_draft_doc else {}
         draft_out.setdefault("status", "clean")
@@ -212,7 +262,8 @@ def main() -> int:
     print(
         f"content-live merge: {stats['kept']} Felder von der Redaktion behalten, "
         f"{stats['added']} neue aus Git ergänzt, {stats['extra']} zusätzliche Server-Felder belassen, "
-        f"{stats.get('forced_from_git', 0)} aus Git erzwungen."
+        f"{stats.get('forced_from_git', 0)} aus Git erzwungen, "
+        f"{stats.get('promoted_from_draft', 0)} aus Entwurf übernommen (Live war leer)."
     )
     return 0
 
