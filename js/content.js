@@ -28,7 +28,10 @@
       });
     };
     walk(wrap);
-    return wrap.innerHTML;
+    let html = wrap.innerHTML;
+    html = html.replace(/^(?:\s|<br\s*\/?>)+/i, "");
+    html = html.replace(/(?:\s|<br\s*\/?>)+$/i, "");
+    return html.trim();
   }
 
   function applyImageFields(fields) {
@@ -86,7 +89,7 @@
     }
   }
 
-  const EDITOR_ASSET_V = "20260922-sammlung";
+  const EDITOR_ASSET_V = "20260922-vorstand";
 
   function loadEditor() {
     if (!document.querySelector('link[href*="css/content-editor.css"]')) {

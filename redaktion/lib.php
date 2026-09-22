@@ -165,6 +165,8 @@ function hvw_sanitize_rich(string $html): string
     $html = preg_replace('/<(strong|em|u|br)\b[^>]*>/i', '<$1>', $html) ?? $html;
     $html = preg_replace('/<\/(strong|em|u)\b[^>]*>/i', '</$1>', $html) ?? $html;
     $html = preg_replace('/<br\s*\/?>/i', '<br>', $html) ?? $html;
+    $html = preg_replace('/^(?:\s|<br\s*\/?>)+/i', '', $html) ?? $html;
+    $html = preg_replace('/(?:\s|<br\s*\/?>)+$/i', '', $html) ?? $html;
     return trim($html);
 }
 
