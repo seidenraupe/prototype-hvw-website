@@ -5,4 +5,6 @@ redaktion/storage/access-emails.json
 redaktion/storage/otp.json
 redaktion/storage/zugang-secret.txt
 redaktion/storage/*.log
+data/uploads/*
+!data/uploads/.htaccess
 deploy/hostpoint-vorschau/

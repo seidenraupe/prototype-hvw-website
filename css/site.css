@@ -128,7 +128,12 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   transition: transform 0.45s ease;
+}
+
+.event-card__media.has-photo .event-card__watermark {
+  display: none;
 }
 
 .event-card:hover .event-card__media img,

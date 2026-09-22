@@ -352,9 +352,68 @@ body.hvw-editing [data-content].hvw-accepted::after {
   pointer-events: none;
 }
 
-body.hvw-editing [data-content].hvw-review-current {
+body.hvw-editing [data-content].hvw-review-current,
+body.hvw-editing [data-content-image].hvw-review-current {
   outline: 3px solid #47a1fb;
   outline-offset: 5px;
+}
+
+body.hvw-editing [data-content-image].hvw-image-editable {
+  outline: 1px dashed rgba(26, 26, 26, 0.35);
+  outline-offset: 3px;
+}
+
+body.hvw-editing [data-content-image].hvw-changed {
+  outline: 2px solid #c05612;
+  outline-offset: 4px;
+}
+
+body.hvw-editing [data-content-image].hvw-changed::after {
+  content: attr(data-change-hint);
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 3;
+  padding: 0.15rem 0.45rem;
+  background: #c05612;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.hvw-image-tools {
+  display: none;
+}
+
+body.hvw-editing .hvw-image-editable .hvw-image-tools {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.hvw-image-tools .hvw-image-upload,
+.hvw-image-tools .hvw-image-clear {
+  min-height: 2.25rem;
+  padding: 0 0.7rem;
+  border: 1px solid #1a1a1a;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.hvw-image-tools .hvw-image-upload:hover,
+.hvw-image-tools .hvw-image-clear:hover {
+  background: #f4f1ea;
 }
 
 .hvw-diff-jump {

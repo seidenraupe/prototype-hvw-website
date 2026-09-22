@@ -21,7 +21,7 @@ if extra_live:
 html_ids = set()
 for path in ROOT.glob("*.html"):
     text = path.read_text(encoding="utf-8")
-    html_ids.update(re.findall(r'data-content="([^"]+)"', text))
+    html_ids.update(re.findall(r'data-content(?:-image)?="([^"]+)"', text))
 
 missing_html = sorted(schema_ids - html_ids)
 orphan_html = sorted(html_ids - schema_ids)
@@ -35,7 +35,8 @@ for field_id, meta in schema["fields"].items():
     plain = re.sub(r"<[^>]+>", "", value)
     plain = re.sub(r"\s+", " ", plain).strip()
     max_len = int(meta["max"])
-    if len(plain) < 1:
+    optional = bool(meta.get("optional")) or meta.get("type") == "image"
+    if len(plain) < 1 and not optional:
         raise SystemExit(f"{field_id} ist leer")
     if len(plain) > max_len:
         raise SystemExit(f"{field_id} zu lang: {len(plain)}/{max_len}")

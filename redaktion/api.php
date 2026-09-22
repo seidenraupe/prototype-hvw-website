@@ -119,6 +119,108 @@ if ($action === 'publish' && $method === 'POST') {
     hvw_json(['ok' => true, 'updatedAt' => $now]);
 }
 
+if ($action === 'upload-image' && $method === 'POST') {
+    $user = hvw_require_user();
+    hvw_require_csrf();
+    $fieldId = trim((string) ($_POST['field'] ?? ''));
+    $schema = hvw_schema();
+    $meta = $schema[$fieldId] ?? null;
+    $slot = hvw_image_slot($fieldId);
+    if (!$meta || !hvw_is_image_field($meta) || $slot === null) {
+        hvw_json(['ok' => false, 'error' => 'Dieses Feld nimmt kein Bild entgegen.'], 400);
+    }
+    if (empty($_FILES['file']) || !is_array($_FILES['file'])) {
+        hvw_json(['ok' => false, 'error' => 'Bitte ein Bild auswählen.'], 400);
+    }
+    $file = $_FILES['file'];
+    if ((int) ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+        hvw_json(['ok' => false, 'error' => 'Das Bild konnte nicht hochgeladen werden.'], 400);
+    }
+    $size = (int) ($file['size'] ?? 0);
+    if ($size < 32 || $size > 8 * 1024 * 1024) {
+        hvw_json(['ok' => false, 'error' => 'Das Bild muss zwischen 1 KB und 8 MB liegen.'], 400);
+    }
+    $tmp = (string) ($file['tmp_name'] ?? '');
+    if ($tmp === '' || !is_uploaded_file($tmp)) {
+        hvw_json(['ok' => false, 'error' => 'Ungültige Datei.'], 400);
+    }
+    $info = @getimagesize($tmp);
+    if (!is_array($info) || empty($info[0]) || empty($info[1])) {
+        hvw_json(['ok' => false, 'error' => 'Nur JPG, PNG oder WebP sind erlaubt.'], 400);
+    }
+    $mime = (string) ($info['mime'] ?? '');
+    $src = null;
+    if ($mime === 'image/jpeg' && function_exists('imagecreatefromjpeg')) {
+        $src = @imagecreatefromjpeg($tmp);
+    } elseif ($mime === 'image/png' && function_exists('imagecreatefrompng')) {
+        $src = @imagecreatefrompng($tmp);
+    } elseif ($mime === 'image/webp' && function_exists('imagecreatefromwebp')) {
+        $src = @imagecreatefromwebp($tmp);
+    }
+    if (!$src) {
+        hvw_json(['ok' => false, 'error' => 'Das Bildformat wird auf dem Server nicht unterstützt.'], 400);
+    }
+
+    $srcW = imagesx($src);
+    $srcH = imagesy($src);
+    $targetW = 1200;
+    $targetH = 900;
+    $srcRatio = $srcW / max(1, $srcH);
+    $targetRatio = $targetW / $targetH;
+    if ($srcRatio > $targetRatio) {
+        $cropH = $srcH;
+        $cropW = (int) round($srcH * $targetRatio);
+        $cropX = (int) floor(($srcW - $cropW) / 2);
+        $cropY = 0;
+    } else {
+        $cropW = $srcW;
+        $cropH = (int) round($srcW / $targetRatio);
+        $cropX = 0;
+        $cropY = (int) floor(($srcH - $cropH) / 2);
+    }
+    $dst = imagecreatetruecolor($targetW, $targetH);
+    if ($dst === false) {
+        imagedestroy($src);
+        hvw_json(['ok' => false, 'error' => 'Bild konnte nicht verarbeitet werden.'], 500);
+    }
+    imagecopyresampled($dst, $src, 0, 0, $cropX, $cropY, $targetW, $targetH, $cropW, $cropH);
+    imagedestroy($src);
+
+    if (!is_dir(HVW_UPLOADS) && !mkdir(HVW_UPLOADS, 0775, true) && !is_dir(HVW_UPLOADS)) {
+        imagedestroy($dst);
+        hvw_json(['ok' => false, 'error' => 'Upload-Ordner fehlt.'], 500);
+    }
+    $name = 'rueckblick-' . $slot . '-' . bin2hex(random_bytes(4)) . '.jpg';
+    $abs = HVW_UPLOADS . '/' . $name;
+    $ok = imagejpeg($dst, $abs, 86);
+    imagedestroy($dst);
+    if (!$ok || !is_file($abs)) {
+        hvw_json(['ok' => false, 'error' => 'Das Bild konnte nicht gespeichert werden.'], 500);
+    }
+
+    $rel = 'data/uploads/' . $name;
+    $draft = hvw_draft();
+    $fields = is_array($draft['fields'] ?? null) ? $draft['fields'] : [];
+    $fields[$fieldId] = $rel;
+    $normalized = hvw_normalize_fields($fields);
+    $now = gmdate('Y-m-d\TH:i:s\Z');
+    $draft = [
+        'updatedAt' => $now,
+        'updatedBy' => $user['id'],
+        'status' => 'draft',
+        'fields' => $normalized,
+    ];
+    hvw_write_json(HVW_DRAFT, $draft);
+    $live = hvw_live();
+    hvw_json([
+        'ok' => true,
+        'field' => $fieldId,
+        'url' => $rel,
+        'updatedAt' => $now,
+        'changes' => hvw_diff($normalized, $live['fields'] ?? []),
+    ]);
+}
+
 if ($action === 'discard' && $method === 'POST') {
     $user = hvw_require_user();
     hvw_require_csrf();

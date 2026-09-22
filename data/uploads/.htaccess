@@ -1,0 +1,4 @@
+# Hochgeladene Rückblick-Bilder ausliefern, PHP nicht ausführen.
+<FilesMatch "\.(?i:php[0-9]?|phtml|phar)$">
+  Require all denied
+</FilesMatch>
