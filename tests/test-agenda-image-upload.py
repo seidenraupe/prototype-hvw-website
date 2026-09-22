@@ -35,11 +35,22 @@ if "object-fit: cover" not in css or "object-position: center" not in css:
     raise SystemExit("Kartenbild muss formatfüllend und zentriert beschnitten werden")
 if ".event-card__media.has-photo .event-card__watermark" not in css:
     raise SystemExit("Wasserzeichen nach Upload ausblenden fehlt")
+if "body.hvw-editing [data-content-image] .hvw-image-tools" not in css:
+    raise SystemExit("Upload-Buttons müssen im Redaktionsmodus über dem Bild liegen")
+
+if agenda.count("hvw-image-tools") < 6:
+    raise SystemExit("agenda.html muss die Upload-Buttons in allen 6 Karten enthalten")
+if 'js/content.js?v=' not in agenda:
+    raise SystemExit("agenda.html muss content.js cache-frei laden")
 
 if 'data-content-image' not in content_js or "applyImageFields" not in content_js:
     raise SystemExit("content.js wendet Bildfelder nicht an")
 if "upload-image" not in editor_js or "hvw-image-upload" not in editor_js:
     raise SystemExit("Editor hat keinen Bild-Upload")
+if "bindImageTools" not in editor_js:
+    raise SystemExit("Editor muss Upload-Buttons per Delegation binden")
+if 'content-editor.js?v=' not in content_js:
+    raise SystemExit("Editor-Skript muss cache-frei geladen werden")
 if "imagecopyresampled" not in api or "targetW = 1200" not in api or "targetH = 900" not in api:
     raise SystemExit("API schneidet nicht zentriert auf 4:3 / 1200×900")
 if "hvw_sanitize_image_path" not in lib or "hvw_is_optional_field" not in lib:
@@ -54,5 +65,12 @@ if not htaccess.is_file():
     raise SystemExit("data/uploads/.htaccess fehlt")
 if "Require all denied" not in htaccess.read_text(encoding="utf-8"):
     raise SystemExit("Upload-Ordner muss PHP verbieten")
+
+serve = (ROOT / "zugang/serve.php").read_text(encoding="utf-8")
+if "Cache-Control: no-store" not in serve:
+    raise SystemExit("Vorschau-HTML darf nicht aus dem Browser-Cache kommen")
+vorschau_ht = (ROOT / "deploy/vorschau.htaccess").read_text(encoding="utf-8")
+if "Cache-Control" not in vorschau_ht:
+    raise SystemExit("vorschau.htaccess muss JS/CSS ohne Cache ausliefern")
 
 print("agenda image upload ok")

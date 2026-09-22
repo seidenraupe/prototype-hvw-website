@@ -387,14 +387,20 @@ body.hvw-editing [data-content-image].hvw-changed::after {
   display: none;
 }
 
-body.hvw-editing .hvw-image-editable .hvw-image-tools {
+body.hvw-editing [data-content-image] .hvw-image-tools {
   position: absolute;
-  right: 0.5rem;
-  bottom: 0.5rem;
-  z-index: 4;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0.6rem 0.85rem;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
+  pointer-events: auto;
 }
 
 .hvw-image-tools .hvw-image-upload,

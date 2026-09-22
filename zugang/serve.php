@@ -143,6 +143,9 @@ function hvw_zugang_dispatch(): void
     }
     header('Content-Type: ' . $mime);
     header('X-Content-Type-Options: nosniff');
+    if (in_array($ext, ['html', 'json', 'js', 'css'], true)) {
+        header('Cache-Control: no-store, max-age=0');
+    }
     readfile($full);
 }
 

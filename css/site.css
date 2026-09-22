@@ -120,11 +120,14 @@ body {
 
 .event-card__media {
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   background: #2f2f2f;
 }
 
 .event-card__media img {
+  position: relative;
+  z-index: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -141,13 +144,59 @@ body {
   transform: scale(1.04);
 }
 
+body.hvw-editing .event-card:hover .event-card__media img,
+body.hvw-editing .event-card:focus-within .event-card__media img {
+  transform: none;
+}
+
 .event-card__watermark {
   position: absolute;
   inset: 0;
+  z-index: 1;
   display: grid;
   place-items: center;
   pointer-events: none;
   background: linear-gradient(135deg, rgba(26,26,26,0.15), rgba(26,26,26,0.35));
+}
+
+/* Im Redaktionsmodus immer über dem Bild, nicht hinter Wasserzeichen/Hover-Zoom. */
+.hvw-image-tools {
+  display: none;
+}
+
+body.hvw-editing [data-content-image] .hvw-image-tools {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0.6rem 0.85rem;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
+  pointer-events: auto;
+}
+
+body.hvw-editing [data-content-image] .hvw-image-upload,
+body.hvw-editing [data-content-image] .hvw-image-clear {
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
+  border: 1px solid #1a1a1a;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+body.hvw-editing [data-content-image] .hvw-image-upload:hover,
+body.hvw-editing [data-content-image] .hvw-image-clear:hover {
+  background: #f4f1ea;
 }
 
 .event-card__watermark span {
