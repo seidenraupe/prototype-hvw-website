@@ -86,7 +86,7 @@
     }
   }
 
-  const EDITOR_ASSET_V = "20260922-img";
+  const EDITOR_ASSET_V = "20260922-sammlung";
 
   function loadEditor() {
     if (!document.querySelector('link[href*="css/content-editor.css"]')) {

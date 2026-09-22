@@ -125,8 +125,8 @@ if ($action === 'upload-image' && $method === 'POST') {
     $fieldId = trim((string) ($_POST['field'] ?? ''));
     $schema = hvw_schema();
     $meta = $schema[$fieldId] ?? null;
-    $slot = hvw_image_slot($fieldId);
-    if (!$meta || !hvw_is_image_field($meta) || $slot === null) {
+    $info = hvw_image_info($fieldId);
+    if (!$meta || !hvw_is_image_field($meta) || $info === null) {
         hvw_json(['ok' => false, 'error' => 'Dieses Feld nimmt kein Bild entgegen.'], 400);
     }
     if (empty($_FILES['file']) || !is_array($_FILES['file'])) {
@@ -190,7 +190,7 @@ if ($action === 'upload-image' && $method === 'POST') {
         imagedestroy($dst);
         hvw_json(['ok' => false, 'error' => 'Upload-Ordner fehlt.'], 500);
     }
-    $name = 'rueckblick-' . $slot . '-' . bin2hex(random_bytes(4)) . '.jpg';
+    $name = $info['prefix'] . '-' . $info['slot'] . '-' . bin2hex(random_bytes(4)) . '.jpg';
     $abs = HVW_UPLOADS . '/' . $name;
     $ok = imagejpeg($dst, $abs, 86);
     imagedestroy($dst);

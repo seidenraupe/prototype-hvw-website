@@ -343,6 +343,144 @@
       "rich": true,
       "multiline": true
     },
+    "sammlung.objekt.1.image": {
+      "label": "Sammlung · Objekt 1 · Bild",
+      "page": "sammlung.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "sammlung.objekt.1.title": {
+      "label": "Sammlung · Objekt 1 · Titel",
+      "page": "sammlung.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "sammlung.objekt.1.body": {
+      "label": "Sammlung · Objekt 1 · Text",
+      "page": "sammlung.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "sammlung.objekt.2.image": {
+      "label": "Sammlung · Objekt 2 · Bild",
+      "page": "sammlung.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "sammlung.objekt.2.title": {
+      "label": "Sammlung · Objekt 2 · Titel",
+      "page": "sammlung.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "sammlung.objekt.2.body": {
+      "label": "Sammlung · Objekt 2 · Text",
+      "page": "sammlung.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "sammlung.objekt.3.image": {
+      "label": "Sammlung · Objekt 3 · Bild",
+      "page": "sammlung.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "sammlung.objekt.3.title": {
+      "label": "Sammlung · Objekt 3 · Titel",
+      "page": "sammlung.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "sammlung.objekt.3.body": {
+      "label": "Sammlung · Objekt 3 · Text",
+      "page": "sammlung.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "sammlung.objekt.4.image": {
+      "label": "Sammlung · Objekt 4 · Bild",
+      "page": "sammlung.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "sammlung.objekt.4.title": {
+      "label": "Sammlung · Objekt 4 · Titel",
+      "page": "sammlung.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "sammlung.objekt.4.body": {
+      "label": "Sammlung · Objekt 4 · Text",
+      "page": "sammlung.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "sammlung.objekt.5.image": {
+      "label": "Sammlung · Objekt 5 · Bild",
+      "page": "sammlung.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "sammlung.objekt.5.title": {
+      "label": "Sammlung · Objekt 5 · Titel",
+      "page": "sammlung.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "sammlung.objekt.5.body": {
+      "label": "Sammlung · Objekt 5 · Text",
+      "page": "sammlung.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
+    "sammlung.objekt.6.image": {
+      "label": "Sammlung · Objekt 6 · Bild",
+      "page": "sammlung.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "sammlung.objekt.6.title": {
+      "label": "Sammlung · Objekt 6 · Titel",
+      "page": "sammlung.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "sammlung.objekt.6.body": {
+      "label": "Sammlung · Objekt 6 · Text",
+      "page": "sammlung.html",
+      "max": 280,
+      "rich": true,
+      "multiline": true
+    },
     "zitate.intro": {
       "label": "Stimmen · Einleitung",
       "page": "zitate.html",
