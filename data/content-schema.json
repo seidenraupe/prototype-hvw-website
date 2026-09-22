@@ -131,7 +131,8 @@
       "page": "ueber-uns.html",
       "max": 280,
       "rich": true,
-      "multiline": true
+      "multiline": true,
+      "optional": true
     },
     "ueber-uns.vorstand.person1": {
       "label": "Über uns · Vorstand Person 1",
@@ -201,7 +202,8 @@
       "page": "ueber-uns.html",
       "max": 220,
       "rich": true,
-      "multiline": true
+      "multiline": true,
+      "optional": true
     },
     "ueber-uns.faq.q1": {
       "label": "Über uns · Frage 1",
