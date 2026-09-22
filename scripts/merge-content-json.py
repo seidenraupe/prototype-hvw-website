@@ -69,6 +69,11 @@ INITIAL_SEED_FIELD_IDS = {
         for n in range(1, 7)
         for part in ("image", "kicker", "title", "body", "location")
     ),
+    *(
+        f"sammlung.objekt.{n}.{part}"
+        for n in range(1, 7)
+        for part in ("image", "title", "body")
+    ),
     *(f"ueber-uns.vorstand.person{n}" for n in range(4, 10)),
 }
 

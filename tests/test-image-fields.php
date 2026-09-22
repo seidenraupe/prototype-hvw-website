@@ -22,6 +22,23 @@ if (hvw_image_slot('agenda.rueckblick.4.image') !== 4) {
     fwrite(STDERR, "Slot-Erkennung fehlgeschlagen\n");
     exit(1);
 }
+if (hvw_image_slot('sammlung.objekt.2.image') !== 2) {
+    fwrite(STDERR, "Sammlung-Slot fehlgeschlagen\n");
+    exit(1);
+}
+$info = hvw_image_info('sammlung.objekt.5.image');
+if (!$info || $info['prefix'] !== 'sammlung' || $info['slot'] !== 5) {
+    fwrite(STDERR, "Sammlung image-info fehlgeschlagen\n");
+    exit(1);
+}
+if (hvw_sanitize_image_path('data/uploads/sammlung-1-aabbccdd.jpg') !== 'data/uploads/sammlung-1-aabbccdd.jpg') {
+    fwrite(STDERR, "Sammlung-Upload-Pfad wurde verworfen\n");
+    exit(1);
+}
+if (hvw_sanitize_image_path('images/sammlung-ausstellung.jpg') !== 'images/sammlung-ausstellung.jpg') {
+    fwrite(STDERR, "Sammlungs-Startbild muss erlaubt bleiben\n");
+    exit(1);
+}
 if (hvw_image_slot('agenda.rueckblick.1.title') !== null) {
     fwrite(STDERR, "Titel darf kein Bild-Slot sein\n");
     exit(1);

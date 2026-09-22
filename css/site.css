@@ -478,3 +478,64 @@ body.hvw-has-login-invite {
 body.coucou-overlay-open {
   overflow: hidden;
 }
+
+body:not(.hvw-editing) [data-lightbox]:has(img:not([src*="placeholder"])) {
+  cursor: zoom-in;
+}
+
+.hvw-lightbox[hidden] {
+  display: none !important;
+}
+
+.hvw-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+
+.hvw-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.84);
+  cursor: pointer;
+}
+
+.hvw-lightbox__figure {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  max-width: min(96vw, 1400px);
+  max-height: calc(100vh - 2.5rem);
+}
+
+.hvw-lightbox__figure img {
+  display: block;
+  max-width: min(96vw, 1400px);
+  max-height: calc(100vh - 2.5rem);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  background: #111;
+}
+
+.hvw-lightbox__close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 2;
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
+  border: 1px solid #fff;
+  background: #fff;
+  color: #1a1a1a;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+body.hvw-lightbox-open {
+  overflow: hidden;
+}

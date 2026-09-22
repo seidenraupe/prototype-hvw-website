@@ -198,18 +198,33 @@ function hvw_sanitize_image_path(string $value): string
     if (preg_match('#^images/placeholder-event-[1-6]\.svg$#', $value)) {
         return $value;
     }
-    if (preg_match('#^data/uploads/rueckblick-[1-6]-[a-z0-9]+\.(jpe?g|png|webp)$#', $value)) {
+    if (preg_match('#^images/placeholder-sammlung-[1-3]\.svg$#', $value)) {
+        return $value;
+    }
+    if (preg_match('#^images/sammlung-(ausstellung|titelbild|house)\.jpg$#', $value)) {
+        return $value;
+    }
+    if (preg_match('#^data/uploads/(rueckblick|sammlung)-[1-6]-[a-z0-9]+\.(jpe?g|png|webp)$#', $value)) {
         return $value;
     }
     return '';
 }
 
-function hvw_image_slot(string $id): ?int
+function hvw_image_info(string $id): ?array
 {
     if (preg_match('/^agenda\.rueckblick\.([1-6])\.image$/', $id, $m)) {
-        return (int) $m[1];
+        return ['prefix' => 'rueckblick', 'slot' => (int) $m[1]];
+    }
+    if (preg_match('/^sammlung\.objekt\.([1-6])\.image$/', $id, $m)) {
+        return ['prefix' => 'sammlung', 'slot' => (int) $m[1]];
     }
     return null;
+}
+
+function hvw_image_slot(string $id): ?int
+{
+    $info = hvw_image_info($id);
+    return $info['slot'] ?? null;
 }
 
 function hvw_image_public_url(string $rel): string
