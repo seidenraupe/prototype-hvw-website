@@ -86,16 +86,18 @@
     }
   }
 
+  const EDITOR_ASSET_V = "20260922-img";
+
   function loadEditor() {
-    if (!document.querySelector('link[href="css/content-editor.css"]')) {
+    if (!document.querySelector('link[href*="css/content-editor.css"]')) {
       const css = document.createElement("link");
       css.rel = "stylesheet";
-      css.href = "css/content-editor.css";
+      css.href = "css/content-editor.css?v=" + EDITOR_ASSET_V;
       document.head.appendChild(css);
     }
-    if (!document.querySelector('script[src="js/content-editor.js"]')) {
+    if (!document.querySelector('script[src*="js/content-editor.js"]')) {
       const script = document.createElement("script");
-      script.src = "js/content-editor.js";
+      script.src = "js/content-editor.js?v=" + EDITOR_ASSET_V;
       document.body.appendChild(script);
     }
   }

@@ -683,14 +683,25 @@
       '<label class="hvw-image-upload">Bild hochladen<input type="file" accept="image/jpeg,image/png,image/webp" hidden></label>' +
       '<button type="button" class="hvw-image-clear">Platzhalter</button>';
     el.appendChild(tools);
-    const input = tools.querySelector('input[type="file"]');
-    const clear = tools.querySelector(".hvw-image-clear");
-    input.addEventListener("change", () => {
+  }
+
+  function bindImageTools() {
+    if (document.documentElement.dataset.hvwImageTools === "1") return;
+    document.documentElement.dataset.hvwImageTools = "1";
+    document.addEventListener("change", (e) => {
+      const input = e.target;
+      if (!input || input.type !== "file") return;
+      if (!input.closest(".hvw-image-tools")) return;
+      const el = input.closest("[data-content-image]");
       const file = input.files && input.files[0];
       input.value = "";
-      if (file) uploadImage(el, file);
+      if (el && file) uploadImage(el, file);
     });
-    clear.addEventListener("click", (e) => {
+    document.addEventListener("click", (e) => {
+      const clear = e.target.closest && e.target.closest(".hvw-image-clear");
+      if (!clear) return;
+      const el = clear.closest("[data-content-image]");
+      if (!el || view !== "draft") return;
       e.preventDefault();
       e.stopPropagation();
       const id = el.getAttribute("data-content-image");
@@ -766,6 +777,7 @@
         e.stopPropagation();
       });
     });
+    bindImageTools();
     document.querySelectorAll("[data-content-image]").forEach((el) => {
       ensureImageControls(el);
     });
