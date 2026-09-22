@@ -126,10 +126,12 @@ body {
 }
 
 .event-card__media img {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 0;
   width: 100%;
   height: 100%;
+  max-width: none;
   object-fit: cover;
   object-position: center;
   transition: transform 0.45s ease;
@@ -245,15 +247,20 @@ input:focus-visible {
 
 /* Stimmen-Porträts: quadratisch, nicht an Texthöhe gestreckt */
 .stimmen-photo {
+  position: relative;
+  overflow: hidden;
   aspect-ratio: 1 / 1;
   align-self: start;
 }
 
 .stimmen-photo img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-width: none;
   object-fit: cover;
-  object-position: center top;
+  object-position: center;
 }
 
 /* Sticky Mobile-Bar */
@@ -351,9 +358,13 @@ body.hvw-has-login-invite {
 }
 
 .coucou-thumb img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-width: none;
   object-fit: cover;
+  object-position: center;
 }
 
 .coucou-thumb__hint {
