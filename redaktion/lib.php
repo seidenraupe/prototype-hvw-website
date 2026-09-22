@@ -221,6 +221,16 @@ function hvw_image_info(string $id): ?array
     return null;
 }
 
+function hvw_image_filename(array $slotInfo): string
+{
+    $prefix = (string) ($slotInfo['prefix'] ?? '');
+    $slot = (int) ($slotInfo['slot'] ?? 0);
+    if (!preg_match('/^(rueckblick|sammlung)$/', $prefix) || $slot < 1 || $slot > 6) {
+        return '';
+    }
+    return $prefix . '-' . $slot . '-' . bin2hex(random_bytes(4)) . '.jpg';
+}
+
 function hvw_image_slot(string $id): ?int
 {
     $info = hvw_image_info($id);

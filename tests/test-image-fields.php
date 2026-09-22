@@ -64,4 +64,29 @@ if ($normalized['agenda.rueckblick.2.image'] !== '') {
     exit(1);
 }
 
+$generated = hvw_image_filename(['prefix' => 'sammlung', 'slot' => 3]);
+if (!preg_match('#^sammlung-3-[a-z0-9]+\.jpg$#', $generated)) {
+    fwrite(STDERR, "Dateiname für Sammlung-Upload ist falsch: {$generated}\n");
+    exit(1);
+}
+if (hvw_sanitize_image_path('data/uploads/' . $generated) !== 'data/uploads/' . $generated) {
+    fwrite(STDERR, "erzeugter Sammlung-Pfad wurde als ungültig abgelehnt\n");
+    exit(1);
+}
+if (hvw_image_filename(['mime' => 'image/jpeg', 0 => 1200, 1 => 900]) !== '') {
+    fwrite(STDERR, "getimagesize-Array darf keinen Dateinamen erzeugen\n");
+    exit(1);
+}
+if (hvw_sanitize_image_path('data/uploads/--aabbccdd.jpg') !== '') {
+    fwrite(STDERR, "kaputter Upload-Name --hex.jpg muss abgelehnt werden\n");
+    exit(1);
+}
+
+$incoming['sammlung.objekt.1.body'] = str_repeat('a', 400);
+$normalized = hvw_normalize_fields($incoming, $incoming);
+if (strlen($normalized['sammlung.objekt.1.body']) !== 400) {
+    fwrite(STDERR, "400 Zeichen Sammlungstext wurden nicht übernommen\n");
+    exit(1);
+}
+
 echo "image fields php ok\n";

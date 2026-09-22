@@ -125,8 +125,8 @@ if ($action === 'upload-image' && $method === 'POST') {
     $fieldId = trim((string) ($_POST['field'] ?? ''));
     $schema = hvw_schema();
     $meta = $schema[$fieldId] ?? null;
-    $info = hvw_image_info($fieldId);
-    if (!$meta || !hvw_is_image_field($meta) || $info === null) {
+    $slotInfo = hvw_image_info($fieldId);
+    if (!$meta || !hvw_is_image_field($meta) || $slotInfo === null) {
         hvw_json(['ok' => false, 'error' => 'Dieses Feld nimmt kein Bild entgegen.'], 400);
     }
     if (empty($_FILES['file']) || !is_array($_FILES['file'])) {
@@ -144,11 +144,11 @@ if ($action === 'upload-image' && $method === 'POST') {
     if ($tmp === '' || !is_uploaded_file($tmp)) {
         hvw_json(['ok' => false, 'error' => 'Ungültige Datei.'], 400);
     }
-    $info = @getimagesize($tmp);
-    if (!is_array($info) || empty($info[0]) || empty($info[1])) {
+    $imageSize = @getimagesize($tmp);
+    if (!is_array($imageSize) || empty($imageSize[0]) || empty($imageSize[1])) {
         hvw_json(['ok' => false, 'error' => 'Nur JPG, PNG oder WebP sind erlaubt.'], 400);
     }
-    $mime = (string) ($info['mime'] ?? '');
+    $mime = (string) ($imageSize['mime'] ?? '');
     $src = null;
     if ($mime === 'image/jpeg' && function_exists('imagecreatefromjpeg')) {
         $src = @imagecreatefromjpeg($tmp);
@@ -190,7 +190,11 @@ if ($action === 'upload-image' && $method === 'POST') {
         imagedestroy($dst);
         hvw_json(['ok' => false, 'error' => 'Upload-Ordner fehlt.'], 500);
     }
-    $name = $info['prefix'] . '-' . $info['slot'] . '-' . bin2hex(random_bytes(4)) . '.jpg';
+    $name = hvw_image_filename($slotInfo);
+    if ($name === '') {
+        imagedestroy($dst);
+        hvw_json(['ok' => false, 'error' => 'Dieses Feld nimmt kein Bild entgegen.'], 400);
+    }
     $abs = HVW_UPLOADS . '/' . $name;
     $ok = imagejpeg($dst, $abs, 86);
     imagedestroy($dst);
