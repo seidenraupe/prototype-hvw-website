@@ -28,10 +28,10 @@
       });
     };
     walk(wrap);
-    let html = wrap.innerHTML;
-    html = html.replace(/^(?:\s|<br\s*\/?>)+/i, "");
-    html = html.replace(/(?:\s|<br\s*\/?>)+$/i, "");
-    return html.trim();
+    let cleaned = wrap.innerHTML;
+    cleaned = cleaned.replace(/^(?:\s|<br\s*\/?>)+/i, "");
+    cleaned = cleaned.replace(/(?:\s|<br\s*\/?>)+$/i, "");
+    return cleaned.trim();
   }
 
   function applyImageFields(fields) {
