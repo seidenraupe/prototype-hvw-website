@@ -19,5 +19,16 @@ if live["fields"]["ueber-uns.vorstand.person9"] != "<strong>Tobias Wanzenried</s
     raise SystemExit("person9 ohne Leerzeile in live.json")
 if live["fields"]["ueber-uns.vorstand.note"] != "":
     raise SystemExit("note muss leer sein")
+for n in range(1, 10):
+    key = f"ueber-uns.vorstand.person{n}"
+    val = live["fields"].get(key, "")
+    if "<strong>" not in val or "</strong>" not in val:
+        raise SystemExit(f"{key} braucht fetten Namen in live.json")
+    if val.strip().startswith("<br"):
+        raise SystemExit(f"{key} darf nicht mit br beginnen")
+
+merge = (ROOT / "scripts/merge-content-json.py").read_text(encoding="utf-8")
+if "GIT_WINS_FIELD_IDS" not in merge:
+    raise SystemExit("Deploy-Merge muss Vorstand aus Git erzwingen können")
 
 print("ueber uns vorstand ok")

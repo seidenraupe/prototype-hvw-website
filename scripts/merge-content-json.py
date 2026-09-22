@@ -31,6 +31,14 @@ def schema_ids(schema: dict[str, Any]) -> list[str]:
     return [str(k) for k in fields.keys()]
 
 
+# Bei Deploy: diese Felder aus Git (Seed) erzwingen — z. B. Formatierung der Vorstand-Legende.
+GIT_WINS_FIELD_IDS = {
+    "ueber-uns.vorstand.caption",
+    "ueber-uns.vorstand.note",
+    *(f"ueber-uns.vorstand.person{n}" for n in range(1, 10)),
+}
+
+
 def merge_live_fields(
     ids: list[str], seed: dict[str, str], remote: dict[str, str]
 ) -> tuple[dict[str, str], dict[str, int]]:
@@ -45,7 +53,19 @@ def merge_live_fields(
         else:
             out[field_id] = seed.get(field_id, "")
             added += 1
-    return out, {"kept": kept, "added": added, "extra": max(0, len(remote) - kept)}
+    forced = 0
+    for field_id in GIT_WINS_FIELD_IDS:
+        if field_id not in ids:
+            continue
+        if field_id in seed:
+            out[field_id] = seed[field_id]
+            forced += 1
+    return out, {
+        "kept": kept,
+        "added": added,
+        "extra": max(0, len(remote) - kept),
+        "forced_from_git": forced,
+    }
 
 
 def norm_text(value: str) -> str:
@@ -74,7 +94,7 @@ INITIAL_SEED_FIELD_IDS = {
         for n in range(1, 7)
         for part in ("image", "title", "body")
     ),
-    *(f"ueber-uns.vorstand.person{n}" for n in range(4, 10)),
+    *(f"ueber-uns.vorstand.person{n}" for n in range(1, 10)),
 }
 
 
@@ -93,6 +113,9 @@ def merge_draft_fields(
     out = dict(remote_draft)
     for field_id in ids:
         live_val = live.get(field_id, "")
+        if field_id in GIT_WINS_FIELD_IDS:
+            out[field_id] = live_val
+            continue
         if field_id not in remote_draft:
             out[field_id] = live_val
             continue
@@ -188,7 +211,8 @@ def main() -> int:
 
     print(
         f"content-live merge: {stats['kept']} Felder von der Redaktion behalten, "
-        f"{stats['added']} neue aus Git ergänzt, {stats['extra']} zusätzliche Server-Felder belassen."
+        f"{stats['added']} neue aus Git ergänzt, {stats['extra']} zusätzliche Server-Felder belassen, "
+        f"{stats.get('forced_from_git', 0)} aus Git erzwungen."
     )
     return 0
 
