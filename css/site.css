@@ -106,6 +106,12 @@ body {
 .event-card:nth-child(5) { animation-delay: 0.33s; }
 .event-card:nth-child(6) { animation-delay: 0.4s; }
 
+.event-card.event-card--sorted {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
 @keyframes event-card-in {
   to {
     opacity: 1;

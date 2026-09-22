@@ -42,6 +42,10 @@ if agenda.count("hvw-image-tools") < 6:
     raise SystemExit("agenda.html muss die Upload-Buttons in allen 6 Karten enthalten")
 if 'js/content.js?v=' not in agenda:
     raise SystemExit("agenda.html muss content.js cache-frei laden")
+if "data-rueckblick-grid" not in agenda:
+    raise SystemExit("Rückblick-Karten brauchen ein sortierbares Grid")
+if "rueckblick-date.js" not in agenda:
+    raise SystemExit("agenda.html muss die Datumssortierung laden")
 
 if 'data-content-image' not in content_js or "applyImageFields" not in content_js:
     raise SystemExit("content.js wendet Bildfelder nicht an")
@@ -51,6 +55,10 @@ if "bindImageTools" not in editor_js:
     raise SystemExit("Editor muss Upload-Buttons per Delegation binden")
 if 'content-editor.js?v=' not in content_js:
     raise SystemExit("Editor-Skript muss cache-frei geladen werden")
+if "hvwSortRueckblick" not in content_js:
+    raise SystemExit("content.js muss Rückblick-Karten nach Datum sortieren")
+if "hvwSortRueckblick" not in editor_js:
+    raise SystemExit("Editor muss nach Datum-Änderung neu sortieren")
 if "imagecopyresampled" not in api or "targetW = 1200" not in api or "targetH = 900" not in api:
     raise SystemExit("API schneidet nicht zentriert auf 4:3 / 1200×900")
 if "hvw_sanitize_image_path" not in lib or "hvw_is_optional_field" not in lib:

@@ -771,6 +771,10 @@
           el.innerHTML = window.hvwSanitizeRich(el.innerHTML);
         }
         markChangedFields();
+        const id = el.getAttribute("data-content") || "";
+        if (id.indexOf("agenda.rueckblick.") === 0 && id.slice(-7) === ".kicker") {
+          if (typeof window.hvwSortRueckblick === "function") window.hvwSortRueckblick();
+        }
       });
       el.addEventListener("click", (e) => {
         if (view !== "draft") return;
