@@ -304,22 +304,26 @@ jobs:
             "${SSH_USER}@${host}:${target}vorschau/redaktion/storage/content-draft.json" \
             "${merge_dir}/remote-draft.json" || true
 
-          python3 scripts/merge-content-json.py \
-            --schema data/content-schema.json \
-            --seed data/content-live.json \
-            --remote-live "${merge_dir}/remote-live.json" \
-            --remote-draft "${merge_dir}/remote-draft.json" \
-            --out-live "${merge_dir}/merged-live.json" \
-            --out-draft "${merge_dir}/merged-draft.json"
+          if [ -s "${merge_dir}/remote-live.json" ]; then
+            python3 scripts/merge-content-json.py \
+              --schema data/content-schema.json \
+              --seed data/content-live.json \
+              --remote-live "${merge_dir}/remote-live.json" \
+              --remote-draft "${merge_dir}/remote-draft.json" \
+              --out-live "${merge_dir}/merged-live.json" \
+              --out-draft "${merge_dir}/merged-draft.json"
 
-          rsync -avz \
-            -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
-            "${merge_dir}/merged-live.json" \
-            "${SSH_USER}@${host}:${target}vorschau/data/content-live.json"
-          rsync -avz \
-            -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
-            "${merge_dir}/merged-draft.json" \
-            "${SSH_USER}@${host}:${target}vorschau/redaktion/storage/content-draft.json"
+            rsync -avz \
+              -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
+              "${merge_dir}/merged-live.json" \
+              "${SSH_USER}@${host}:${target}vorschau/data/content-live.json"
+            rsync -avz \
+              -e "ssh -i ${keyfile} -p 22 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no" \
+              "${merge_dir}/merged-draft.json" \
+              "${SSH_USER}@${host}:${target}vorschau/redaktion/storage/content-draft.json"
+          else
+            echo "::warning::Kein content-live.json auf dem Server — Redaktions-Merge übersprungen (Daten bleiben unangetastet)."
+          fi
           rm -rf "${merge_dir}"
 
           ssh -i "$keyfile" -p 22 \
