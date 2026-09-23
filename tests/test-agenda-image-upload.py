@@ -26,6 +26,9 @@ for n in range(1, 7):
         raise SystemExit(f"{field} muss optional sein")
     if field not in live["fields"]:
         raise SystemExit(f"Live fehlt {field}")
+    body = f"agenda.rueckblick.{n}.body"
+    if schema["fields"][body].get("max") != 600:
+        raise SystemExit(f"{body} muss 600 Zeichen erlauben")
     if live["fields"][field] != "":
         raise SystemExit(f"{field} soll leer starten")
     if f'data-content-image="{field}"' not in agenda:
@@ -57,8 +60,8 @@ if "hvw_sanitize_image_path" not in lib or "hvw_is_optional_field" not in lib:
     raise SystemExit("lib.php fehlt Bild-Sanitisierung")
 if "data/uploads/*.jpg" not in deploy:
     raise SystemExit("Deploy darf hochgeladene Bilder nicht löschen")
-if '"image"' not in merge or "agenda.rueckblick" not in merge:
-    raise SystemExit("Merge muss neue Bildfelder seeden")
+if "agenda.rueckblick." not in merge:
+    raise SystemExit("Merge muss Agenda-Rückblick als Redaktionsfelder kennen")
 
 htaccess = ROOT / "data/uploads/.htaccess"
 if not htaccess.is_file():

@@ -516,7 +516,7 @@
     "agenda.rueckblick.1.body": {
       "label": "Agenda · Rückblick 1 · Text",
       "page": "agenda.html",
-      "max": 320,
+      "max": 600,
       "rich": true,
       "multiline": true
     },
@@ -553,7 +553,7 @@
     "agenda.rueckblick.2.body": {
       "label": "Agenda · Rückblick 2 · Text",
       "page": "agenda.html",
-      "max": 320,
+      "max": 600,
       "rich": true,
       "multiline": true
     },
@@ -590,7 +590,7 @@
     "agenda.rueckblick.3.body": {
       "label": "Agenda · Rückblick 3 · Text",
       "page": "agenda.html",
-      "max": 320,
+      "max": 600,
       "rich": true,
       "multiline": true
     },
@@ -627,7 +627,7 @@
     "agenda.rueckblick.4.body": {
       "label": "Agenda · Rückblick 4 · Text",
       "page": "agenda.html",
-      "max": 320,
+      "max": 600,
       "rich": true,
       "multiline": true
     },
@@ -664,7 +664,7 @@
     "agenda.rueckblick.5.body": {
       "label": "Agenda · Rückblick 5 · Text",
       "page": "agenda.html",
-      "max": 320,
+      "max": 600,
       "rich": true,
       "multiline": true
     },
@@ -701,7 +701,7 @@
     "agenda.rueckblick.6.body": {
       "label": "Agenda · Rückblick 6 · Text",
       "page": "agenda.html",
-      "max": 320,
+      "max": 600,
       "rich": true,
       "multiline": true
     },
