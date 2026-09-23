@@ -61,6 +61,7 @@
       else el.textContent = String(value || "").replace(/\s+/g, " ").trim();
     });
     applyImageFields(fields);
+    if (typeof window.hvwSortRueckblick === "function") window.hvwSortRueckblick();
   }
 
   async function loadLive() {
@@ -89,7 +90,7 @@
     }
   }
 
-  const EDITOR_ASSET_V = "20260922-vorstand";
+  const EDITOR_ASSET_V = "20260923-sort";
 
   function loadEditor() {
     if (!document.querySelector('link[href*="css/content-editor.css"]')) {
