@@ -771,6 +771,10 @@
           el.innerHTML = window.hvwSanitizeRich(el.innerHTML);
         }
         markChangedFields();
+        const fieldId = el.getAttribute("data-content") || "";
+        if (fieldId.endsWith(".kicker") && typeof window.hvwSortRueckblick === "function") {
+          window.hvwSortRueckblick();
+        }
       });
       el.addEventListener("click", (e) => {
         if (view !== "draft") return;
