@@ -3,11 +3,13 @@
  * Event-Karten aus /home-events.json (Hostpoint-Cron, wie Coucou/MuS).
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-  initNav();
-  initStimmenRandom();
-  loadHomeEvents();
-});
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initNav();
+    initStimmenRandom();
+    loadHomeEvents();
+  });
+}
 
 function initNav() {
   const toggle = document.querySelector('[data-nav-toggle]');
@@ -86,7 +88,8 @@ async function initStimmenRandom() {
 
 async function loadHomeEvents() {
   const container = document.getElementById('home-events');
-  if (!container) return;
+  const ticker = document.querySelector('.hvw-ticker');
+  if (!container && !ticker) return;
   await renderEvents(container, { limit: 3 });
 }
 
@@ -111,26 +114,60 @@ async function loadHomeEventsJson() {
   throw lastError || new Error('home-events.json fehlt');
 }
 
+function upcomingEvents(events, todayZurich) {
+  return (Array.isArray(events) ? events : [])
+    .filter((event) => String(event.begin || '').slice(0, 10) >= todayZurich)
+    .sort((a, b) => String(a.begin || '').localeCompare(String(b.begin || '')));
+}
+
+function tickerLabel(event) {
+  if (!event) return '';
+  const date = formatEventDate(event.begin);
+  const location = event.location || event.organizerName || '';
+  const title = event.title || '';
+  return [date, location, title].filter(Boolean).join(' · ');
+}
+
+function renderHomeTicker(event) {
+  const ticker = document.querySelector('.hvw-ticker');
+  const track = ticker ? ticker.querySelector('.hvw-ticker__track') : null;
+  if (!ticker || !track) return;
+  const label = tickerLabel(event);
+  if (!label) {
+    ticker.hidden = true;
+    track.textContent = '';
+    return;
+  }
+  ticker.hidden = false;
+  ticker.setAttribute('aria-label', label);
+  const repeats = 6;
+  const half = Array.from({ length: repeats }, () => `<span>${escapeHtml(label)}</span>`).join('');
+  track.innerHTML = half + half;
+}
+
 async function renderEvents(container, { limit = 3 } = {}) {
   try {
     const data = await loadHomeEventsJson();
     const todayZurich = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Zurich' });
-    const events = (Array.isArray(data.events) ? data.events : [])
-      .filter((event) => String(event.begin || '').slice(0, 10) >= todayZurich)
-      .slice(0, limit);
+    const events = upcomingEvents(data.events, todayZurich);
+    renderHomeTicker(events[0] || null);
+    const shown = events.slice(0, limit);
 
-    if (!events.length) {
+    if (!container) return;
+    if (!shown.length) {
       container.innerHTML = statusMessage('Aktuell sind keine Veranstaltungen geplant.');
       return;
     }
 
-    container.innerHTML = events
+    container.innerHTML = shown
       .map((event, index) => renderEventCard(event, index))
       .join('');
 
-    injectEventJsonLd(events);
+    injectEventJsonLd(shown);
   } catch (err) {
     console.error('Veranstaltungen konnten nicht geladen werden:', err);
+    renderHomeTicker(null);
+    if (!container) return;
     container.innerHTML = statusMessage(
       'Veranstaltungen konnten nicht geladen werden. Alle Termine finden Sie auf der Agenda-Seite.'
     );
@@ -265,7 +302,13 @@ function injectEventJsonLd(events) {
 }
 
 function escapeHtml(value) {
-  const div = document.createElement('div');
-  div.textContent = value == null ? '' : String(value);
-  return div.innerHTML;
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { upcomingEvents, tickerLabel, formatEventDate };
 }

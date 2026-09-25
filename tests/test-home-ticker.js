@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+const { upcomingEvents, tickerLabel } = require('../js/main.js');
+
+const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+const ticker = html.slice(html.indexOf('class="hvw-ticker'), html.indexOf('</header>'));
+assert.ok(ticker.includes('hvw-ticker'), 'Ticker bleibt vorhanden');
+assert.ok(!ticker.includes('Mitgliedschaft'), 'alter Tickertext Mitgliedschaft');
+assert.ok(!ticker.includes('Träger von Museum'), 'alter Tickertext Träger');
+assert.ok(!ticker.includes('museumschaffen.ch'), 'alter Tickertext Initiative');
+assert.ok(ticker.includes('aria-label="Nächste Veranstaltung"'), 'Ticker-Beschriftung');
+
+const css = fs.readFileSync(path.join(__dirname, '../css/site.css'), 'utf8');
+assert.ok(css.includes('font-size: 1.125rem'), 'Tickerschrift grösser');
+
+const events = [
+  { title: 'Später', begin: '2026-11-02T18:00:00+01:00', location: 'Lindengut' },
+  { title: 'Als Nächstes', begin: '2026-10-01T19:00:00+02:00', location: 'Museum Schaffen, Winterthur' },
+  { title: 'Vergangen', begin: '2026-08-01T10:00:00+02:00', location: 'Mörsburg' },
+];
+const next = upcomingEvents(events, '2026-09-25');
+assert.strictEqual(next[0].title, 'Als Nächstes');
+assert.strictEqual(next.length, 2);
+const label = tickerLabel(next[0]);
+assert.ok(label.includes('Als Nächstes'), label);
+assert.ok(label.includes('Museum Schaffen, Winterthur'), label);
+assert.ok(label.includes('01.10.2026'), label);
+assert.ok(!label.includes('Mitgliedschaft'), label);
+assert.strictEqual(tickerLabel(null), '');
+console.log('home ticker ok:', label);
