@@ -182,6 +182,33 @@ function hvw_is_image_field(array $meta): bool
     return ($meta['type'] ?? '') === 'image';
 }
 
+function hvw_is_url_field(array $meta): bool
+{
+    return ($meta['type'] ?? '') === 'url';
+}
+
+function hvw_sanitize_url(string $value): string
+{
+    $value = hvw_sanitize_plain($value);
+    if ($value === '' || !preg_match('#^https://#i', $value)) {
+        return '';
+    }
+    $parts = parse_url($value);
+    if (!is_array($parts) || empty($parts['host']) || isset($parts['user']) || isset($parts['pass'])) {
+        return '';
+    }
+    $host = (string) $parts['host'];
+    if (!preg_match('/^[\p{L}0-9.-]+$/u', $host) || !str_contains($host, '.')) {
+        return '';
+    }
+    $path = (string) ($parts['path'] ?? '');
+    if (str_contains($path, '..')) {
+        return '';
+    }
+    $query = isset($parts['query']) ? '?' . $parts['query'] : '';
+    return 'https://' . $host . $path . $query;
+}
+
 function hvw_is_optional_field(array $meta): bool
 {
     return !empty($meta['optional']) || hvw_is_image_field($meta);
@@ -212,7 +239,16 @@ function hvw_sanitize_image_path(string $value): string
     if (preg_match('#^images/museen/(museum-lindengut|schloss-moersburg|museum-schaffen)\.jpg$#', $value)) {
         return $value;
     }
+    if (preg_match('#^images/placeholder-partner\.svg$#', $value)) {
+        return $value;
+    }
+    if (preg_match('#^images/partner/(logo|bild)-(?:[1-9]|1[0-4])\.jpg$#', $value)) {
+        return $value;
+    }
     if (preg_match('#^data/uploads/(rueckblick|sammlung|lindengut|moersburg)-[1-6]-[a-z0-9]+\.(jpe?g|png|webp)$#', $value)) {
+        return $value;
+    }
+    if (preg_match('#^data/uploads/(partnerlogo|partnerbild)-(?:[1-9]|1[0-4])-[a-z0-9]+\.(jpe?g|png|webp)$#', $value)) {
         return $value;
     }
     return '';
@@ -229,6 +265,14 @@ function hvw_image_info(string $id): ?array
     if (preg_match('/^(lindengut|moersburg)\.bild\.([1-3])\.image$/', $id, $m)) {
         return ['prefix' => $m[1], 'slot' => (int) $m[2]];
     }
+    if (preg_match('/^partner\.([1-9]|1[0-4])\.(logo|image)$/', $id, $m)) {
+        $kind = $m[2] === 'logo' ? 'partnerlogo' : 'partnerbild';
+        return [
+            'prefix' => $kind,
+            'slot' => (int) $m[1],
+            'mode' => $m[2] === 'logo' ? 'contain' : 'cover',
+        ];
+    }
     return null;
 }
 
@@ -236,7 +280,8 @@ function hvw_image_filename(array $slotInfo): string
 {
     $prefix = (string) ($slotInfo['prefix'] ?? '');
     $slot = (int) ($slotInfo['slot'] ?? 0);
-    if (!preg_match('/^(rueckblick|sammlung|lindengut|moersburg)$/', $prefix) || $slot < 1 || $slot > 6) {
+    $maxSlot = str_starts_with($prefix, 'partner') ? 14 : 6;
+    if (!preg_match('/^(rueckblick|sammlung|lindengut|moersburg|partnerlogo|partnerbild)$/', $prefix) || $slot < 1 || $slot > $maxSlot) {
         return '';
     }
     return $prefix . '-' . $slot . '-' . bin2hex(random_bytes(4)) . '.jpg';
@@ -298,6 +343,11 @@ function hvw_normalize_fields(array $incoming, ?array $fallback = null): array
             $value = hvw_sanitize_image_path($raw);
             if ($raw !== '' && $value === '') {
                 $errors[] = ($meta['label'] ?? $id) . ' hat einen ungültigen Bildpfad.';
+            }
+        } elseif (hvw_is_url_field($meta)) {
+            $value = hvw_sanitize_url($raw);
+            if ($raw !== '' && $value === '') {
+                $errors[] = ($meta['label'] ?? $id) . ' hat eine ungültige Webadresse.';
             }
         } else {
             $value = $rich ? hvw_sanitize_rich($raw) : hvw_sanitize_plain($raw);

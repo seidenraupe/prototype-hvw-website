@@ -9,7 +9,7 @@ foreach (array_keys($live) as $id) {
     if (
         str_starts_with($id, 'agenda.')
         || str_starts_with($id, 'mitmachen.')
-        || str_starts_with($id, 'publikationen.')
+        || str_starts_with($id, 'partner.')
         || str_starts_with($id, 'sammlung.')
         || str_starts_with($id, 'zitate.')
     ) {
@@ -22,7 +22,7 @@ foreach ($changes as $change) {
     if (
         str_starts_with($change['id'], 'agenda.')
         || str_starts_with($change['id'], 'mitmachen.')
-        || str_starts_with($change['id'], 'publikationen.')
+        || str_starts_with($change['id'], 'partner.')
         || str_starts_with($change['id'], 'sammlung.')
         || str_starts_with($change['id'], 'zitate.')
     ) {

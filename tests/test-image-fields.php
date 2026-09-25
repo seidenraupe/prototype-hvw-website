@@ -49,6 +49,8 @@ $incoming = [];
 foreach ($schema as $id => $meta) {
     if (!empty($meta['type']) && $meta['type'] === 'image') {
         $incoming[$id] = '';
+    } elseif (($meta['type'] ?? '') === 'url') {
+        $incoming[$id] = 'https://www.hvwinterthur.ch/';
     } else {
         $incoming[$id] = 'Test';
     }
@@ -101,6 +103,33 @@ if (!preg_match('#^lindengut-2-[a-z0-9]+\.jpg$#', $generatedMuseum)) {
 }
 if (hvw_sanitize_image_path('data/uploads/' . $generatedMuseum) !== 'data/uploads/' . $generatedMuseum) {
     fwrite(STDERR, "Lindengut-Upload-Pfad abgelehnt\n");
+    exit(1);
+}
+
+$partner = hvw_image_info('partner.10.logo');
+if (!$partner || $partner['prefix'] !== 'partnerlogo' || $partner['slot'] !== 10 || ($partner['mode'] ?? '') !== 'contain') {
+    fwrite(STDERR, "Partner-Logo nicht erkannt\n");
+    exit(1);
+}
+$partnerName = hvw_image_filename($partner);
+if (!preg_match('#^partnerlogo-10-[a-z0-9]+\.jpg$#', $partnerName)) {
+    fwrite(STDERR, "Partner-Dateiname falsch: {$partnerName}\n");
+    exit(1);
+}
+if (hvw_sanitize_image_path('data/uploads/' . $partnerName) !== 'data/uploads/' . $partnerName) {
+    fwrite(STDERR, "Partner-Upload-Pfad abgelehnt\n");
+    exit(1);
+}
+if (hvw_sanitize_image_path('images/partner/logo-14.jpg') !== 'images/partner/logo-14.jpg') {
+    fwrite(STDERR, "Partner-Startlogo muss erlaubt bleiben\n");
+    exit(1);
+}
+if (hvw_sanitize_url('https://dorfmuseum-wülflingen.ch/') !== 'https://dorfmuseum-wülflingen.ch/') {
+    fwrite(STDERR, "Partner-URL mit Umlaut wurde verworfen\n");
+    exit(1);
+}
+if (hvw_sanitize_url('javascript:alert(1)') !== '' || hvw_sanitize_url('http://example.com') !== '') {
+    fwrite(STDERR, "unsichere URL wurde durchgelassen\n");
     exit(1);
 }
 

@@ -476,12 +476,572 @@
       "rich": true,
       "multiline": true
     },
-    "publikationen.intro": {
-      "label": "Publikationen · Einleitung",
-      "page": "publikationen.html",
+    "partner.intro": {
+      "label": "Partner · Einleitung",
+      "page": "partner.html",
       "max": 280,
       "rich": true,
       "multiline": true
+    },
+    "partner.1.name": {
+      "label": "Partner · Schloss Hegi · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.1.body": {
+      "label": "Partner · Schloss Hegi · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.1.url": {
+      "label": "Partner · Schloss Hegi · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.1.logo": {
+      "label": "Partner · Schloss Hegi · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.1.image": {
+      "label": "Partner · Schloss Hegi · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.2.name": {
+      "label": "Partner · Frauenstadtrundgang Winterthur · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.2.body": {
+      "label": "Partner · Frauenstadtrundgang Winterthur · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.2.url": {
+      "label": "Partner · Frauenstadtrundgang Winterthur · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.2.logo": {
+      "label": "Partner · Frauenstadtrundgang Winterthur · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.2.image": {
+      "label": "Partner · Frauenstadtrundgang Winterthur · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.3.name": {
+      "label": "Partner · Winterthur-Glossar · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.3.body": {
+      "label": "Partner · Winterthur-Glossar · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.3.url": {
+      "label": "Partner · Winterthur-Glossar · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.3.logo": {
+      "label": "Partner · Winterthur-Glossar · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.3.image": {
+      "label": "Partner · Winterthur-Glossar · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.4.name": {
+      "label": "Partner · Bildarchiv Winterthur · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.4.body": {
+      "label": "Partner · Bildarchiv Winterthur · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.4.url": {
+      "label": "Partner · Bildarchiv Winterthur · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.4.logo": {
+      "label": "Partner · Bildarchiv Winterthur · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.4.image": {
+      "label": "Partner · Bildarchiv Winterthur · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.5.name": {
+      "label": "Partner · Industriekultur Winterthur · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.5.body": {
+      "label": "Partner · Industriekultur Winterthur · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.5.url": {
+      "label": "Partner · Industriekultur Winterthur · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.5.logo": {
+      "label": "Partner · Industriekultur Winterthur · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.5.image": {
+      "label": "Partner · Industriekultur Winterthur · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.6.name": {
+      "label": "Partner · Industriekultur Schweiz · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.6.body": {
+      "label": "Partner · Industriekultur Schweiz · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.6.url": {
+      "label": "Partner · Industriekultur Schweiz · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.6.logo": {
+      "label": "Partner · Industriekultur Schweiz · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.6.image": {
+      "label": "Partner · Industriekultur Schweiz · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.7.name": {
+      "label": "Partner · SGTI · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.7.body": {
+      "label": "Partner · SGTI · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.7.url": {
+      "label": "Partner · SGTI · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.7.logo": {
+      "label": "Partner · SGTI · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.7.image": {
+      "label": "Partner · SGTI · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.8.name": {
+      "label": "Partner · Dampfzentrum Winterthur · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.8.body": {
+      "label": "Partner · Dampfzentrum Winterthur · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.8.url": {
+      "label": "Partner · Dampfzentrum Winterthur · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.8.logo": {
+      "label": "Partner · Dampfzentrum Winterthur · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.8.image": {
+      "label": "Partner · Dampfzentrum Winterthur · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.9.name": {
+      "label": "Partner · Sagi Reismühle Hegi · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.9.body": {
+      "label": "Partner · Sagi Reismühle Hegi · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.9.url": {
+      "label": "Partner · Sagi Reismühle Hegi · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.9.logo": {
+      "label": "Partner · Sagi Reismühle Hegi · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.9.image": {
+      "label": "Partner · Sagi Reismühle Hegi · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.10.name": {
+      "label": "Partner · Kehrseite Winterthur · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.10.body": {
+      "label": "Partner · Kehrseite Winterthur · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.10.url": {
+      "label": "Partner · Kehrseite Winterthur · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.10.logo": {
+      "label": "Partner · Kehrseite Winterthur · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.10.image": {
+      "label": "Partner · Kehrseite Winterthur · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.11.name": {
+      "label": "Partner · Stiftung SKKG · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.11.body": {
+      "label": "Partner · Stiftung SKKG · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.11.url": {
+      "label": "Partner · Stiftung SKKG · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.11.logo": {
+      "label": "Partner · Stiftung SKKG · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.11.image": {
+      "label": "Partner · Stiftung SKKG · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.12.name": {
+      "label": "Partner · Dorfmuseum Wülflingen · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.12.body": {
+      "label": "Partner · Dorfmuseum Wülflingen · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.12.url": {
+      "label": "Partner · Dorfmuseum Wülflingen · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.12.logo": {
+      "label": "Partner · Dorfmuseum Wülflingen · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.12.image": {
+      "label": "Partner · Dorfmuseum Wülflingen · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.13.name": {
+      "label": "Partner · museums.ch · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.13.body": {
+      "label": "Partner · museums.ch · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.13.url": {
+      "label": "Partner · museums.ch · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.13.logo": {
+      "label": "Partner · museums.ch · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.13.image": {
+      "label": "Partner · museums.ch · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.14.name": {
+      "label": "Partner · Netzwerk Kulturerbe Schweiz · Name",
+      "page": "partner.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "partner.14.body": {
+      "label": "Partner · Netzwerk Kulturerbe Schweiz · Text",
+      "page": "partner.html",
+      "max": 360,
+      "rich": true,
+      "multiline": true
+    },
+    "partner.14.url": {
+      "label": "Partner · Netzwerk Kulturerbe Schweiz · Link",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "url"
+    },
+    "partner.14.logo": {
+      "label": "Partner · Netzwerk Kulturerbe Schweiz · Logo",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "partner.14.image": {
+      "label": "Partner · Netzwerk Kulturerbe Schweiz · Bild",
+      "page": "partner.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
     },
     "sammlung.intro": {
       "label": "Sammlung · Einleitung",
