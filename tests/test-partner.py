@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Publikationen-Seite ist weg, Partner/Netzwerk verlinkt die 14 Organisationen."""
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,6 +41,12 @@ for html in ROOT.glob("*.html"):
         raise SystemExit(f"{html.name} verlinkt noch Publikationen")
     if 'href="partner.html"' not in text:
         raise SystemExit(f"{html.name} hat keinen Partner-Link")
+    nav = re.search(r'aria-label="Hauptnavigation">(.*?)</nav>', text, re.S)
+    if not nav:
+        raise SystemExit(f"{html.name} hat keine Hauptnavigation")
+    block = nav.group(1)
+    if block.find('href="sammlung.html"') > block.find('href="partner.html"'):
+        raise SystemExit(f"{html.name}: Partner steht noch vor Sammlung")
 
 schema = json.loads((ROOT / "data/content-schema.json").read_text(encoding="utf-8"))
 live = json.loads((ROOT / "data/content-live.json").read_text(encoding="utf-8"))
