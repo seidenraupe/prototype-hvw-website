@@ -2,7 +2,14 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const { upcomingEvents, tickerLabel, nextHeroIndex, HERO_SLIDER_MS } = require('../js/main.js');
+const {
+  upcomingEvents,
+  tickerLabel,
+  nextHeroIndex,
+  shuffleHeroOrder,
+  heroCreditLines,
+  HERO_SLIDER_MS,
+} = require('../js/main.js');
 
 const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
 const ticker = html.slice(html.indexOf('class="hvw-ticker'), html.indexOf('</header>'));
@@ -54,11 +61,22 @@ assert.strictEqual(withOpeningHours.length, 1);
 assert.strictEqual(withOpeningHours[0].title, 'Käfele mit der Kuratorin der Ausstellung');
 
 const hero = html.slice(html.indexOf('data-hero-slider'), html.indexOf('hvw-hero__shade'));
-assert.strictEqual((hero.match(/<img/g) || []).length, 3, 'drei Herobilder');
+assert.strictEqual((hero.match(/<img/g) || []).length, 5, 'fünf Herobilder');
 assert.ok(hero.includes('hero-textilfabrik.jpg'), 'Spinnerei');
 assert.ok(hero.includes('hero-schmiede.jpg'), 'Schmiede');
 assert.ok(hero.includes('hero-maschinenhalle.jpg'), 'Maschinenhalle');
-assert.strictEqual(HERO_SLIDER_MS, 10000);
-assert.strictEqual(nextHeroIndex(0, 3), 1);
-assert.strictEqual(nextHeroIndex(2, 3), 0);
+assert.ok(hero.includes('hero-textilmaschine.jpg'), 'Textilmaschine');
+assert.ok(hero.includes('hero-filmdreh.jpg'), 'Filmdreh');
+assert.ok(hero.includes('Heinz Baumann, Januar 1967, Winterthur'), 'Nachweis Maschinenhalle');
+assert.ok(hero.includes('Com_L16-0078-0003-0001'), 'Signatur Maschinenhalle');
+assert.strictEqual(HERO_SLIDER_MS, 5000);
+assert.strictEqual(nextHeroIndex(0, 5), 1);
+assert.strictEqual(nextHeroIndex(4, 5), 0);
+
+const shuffled = shuffleHeroOrder(5, () => 0);
+assert.deepStrictEqual(shuffled.slice().sort((a, b) => a - b), [0, 1, 2, 3, 4]);
+assert.notDeepStrictEqual(shuffled, [0, 1, 2, 3, 4]);
+const creditSlide = { getAttribute: () => 'A| B |' };
+assert.deepStrictEqual(heroCreditLines(creditSlide), ['A', 'B']);
+assert.deepStrictEqual(heroCreditLines({ getAttribute: () => '' }), []);
 console.log('home ticker ok:', label);
