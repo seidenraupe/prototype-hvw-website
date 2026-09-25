@@ -34,6 +34,11 @@ if [[ ! -f "${ROOT}/Statuten.pdf" ]]; then
   exit 1
 fi
 cp "${ROOT}/Statuten.pdf" "${OUT}/Statuten.pdf"
+if [[ ! -f "${ROOT}/Sammlungskonzept.pdf" ]]; then
+  echo "Sammlungskonzept.pdf fehlt — Vorschau auf Hostpoint wäre unvollständig." >&2
+  exit 1
+fi
+cp "${ROOT}/Sammlungskonzept.pdf" "${OUT}/Sammlungskonzept.pdf"
 copy_dir "${ROOT}/programm" "${OUT}/programm"
 copy_dir "${ROOT}/coucou" "${OUT}/coucou"
 copy_dir "${ROOT}/mus" "${OUT}/mus"
