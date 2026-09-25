@@ -4,6 +4,7 @@ import os
 import sys
 import types
 from datetime import datetime, timedelta
+from pathlib import Path
 
 fake_requests = types.ModuleType("requests")
 fake_requests.exceptions = types.SimpleNamespace(RequestException=Exception)
@@ -80,6 +81,22 @@ def main():
     ):
         raise SystemExit("bekannter Öffnungszeiten-Titel muss rausfallen")
 
+    if not is_attraction_event(
+        _event(
+            "Ausstellung: Erinnerungstank Haldengut",
+            "2026-09-25T10:00:00+02:00",
+        )
+    ):
+        raise SystemExit("Ausstellung-Präfix vor Erinnerungstank muss rausfallen")
+
+    if is_attraction_event(
+        _event(
+            "Käfele mit der Kuratorin der Ausstellung",
+            "2026-09-25T14:00:00+02:00",
+        )
+    ):
+        raise SystemExit("Käfele ist eine Veranstaltung, keine Öffnungszeit")
+
     if normalize_event_title(
         {"title": {"de": "  Erinnerungstank   Haldengut "}}
     ) not in EXCLUDED_ATTRACTION_TITLES:
@@ -105,6 +122,27 @@ def main():
     opening_titles = opening_hours_attraction_titles(opening)
     if "neue ausstellung" not in opening_titles:
         raise SystemExit("Werktags-Öffnungszeiten müssen als Attraktion erkannt werden")
+
+    def _open_days(start, count, weekdays, hour=10):
+        day = start
+        dates = []
+        while len(dates) < count:
+            if day.weekday() in weekdays:
+                dates.append(
+                    day.replace(hour=hour, minute=0, second=0).strftime(
+                        "%Y-%m-%dT%H:%M:%S+02:00"
+                    )
+                )
+            day += timedelta(days=1)
+        return dates
+
+    museum = [
+        _event("Ausstellung: Neue Schau", begin)
+        for begin in _open_days(datetime(2026, 9, 25), 15, {2, 3, 4, 5, 6})
+    ]
+    museum_titles = opening_hours_attraction_titles(museum)
+    if "ausstellung: neue schau" not in museum_titles:
+        raise SystemExit("Mi–So-Öffnungszeiten müssen als Attraktion erkannt werden")
 
     mixed = (
         [
@@ -164,6 +202,12 @@ def main():
                 skipped_coucou, len(kept_coucou)
             )
         )
+
+    pdf_source = (
+        Path(__file__).resolve().parents[1] / "scripts" / "generate-programm-pdf.py"
+    ).read_text(encoding="utf-8")
+    if "filter_attraction_events" not in pdf_source:
+        raise SystemExit("Programm-PDF filtert Öffnungszeiten nicht")
 
     print("attraction filter ok")
 

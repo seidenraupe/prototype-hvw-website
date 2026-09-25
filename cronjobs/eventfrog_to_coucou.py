@@ -374,10 +374,10 @@ EXCLUDED_ATTRACTION_TITLES = frozenset(
 )
 
 # Serie gilt als explodierte Öffnungszeit (nicht als Vortragsreihe):
-# mindestens so viele Tage, an mindestens so vielen Wochentagen, kaum Wochenende.
+# gleicher Titel an vielen Tagen und an mehreren Wochentagen, auch Sa/So.
+# Eine wöchentliche Reihe trifft nur einen Wochentag und bleibt deshalb drin.
 OPENING_HOURS_MIN_DATES = 5
 OPENING_HOURS_MIN_WEEKDAYS = 4
-OPENING_HOURS_MAX_WEEKEND_RATIO = 0.15
 
 
 def normalize_event_title(event):
@@ -445,17 +445,18 @@ def is_attraction_event(event):
     ):
         return True
 
-    return normalize_event_title(event) in EXCLUDED_ATTRACTION_TITLES
+    title = normalize_event_title(event)
+    return any(excluded in title for excluded in EXCLUDED_ATTRACTION_TITLES if excluded)
 
 
 def opening_hours_attraction_titles(events):
     """Titel, die wie täglich explodierte Museums-Öffnungszeiten aussehen.
 
     Eine echte Veranstaltungsreihe (Käfele, Vortrag, Führung) hat wenige
-    Termine. Attraktionen erscheinen oft an fast jedem Werktag zur gleichen
-    Uhrzeit.
+    Termine oder nur einen Wochentag. Ausstellungen mit täglicher Öffnung
+    stehen oft Mittwoch bis Sonntag zur gleichen Uhrzeit im Kalender.
     """
-    buckets = defaultdict(lambda: {"dates": set(), "weekdays": set(), "weekend": 0})
+    buckets = defaultdict(lambda: {"dates": set(), "weekdays": set()})
     for event in events or []:
         title = normalize_event_title(event)
         if not title:
@@ -470,10 +471,7 @@ def opening_hours_attraction_titles(events):
             time_start = str(event.get("time_start") or "")
         key = (title, time_start)
         buckets[key]["dates"].add(day)
-        weekday = day.weekday()
-        buckets[key]["weekdays"].add(weekday)
-        if weekday >= 5:
-            buckets[key]["weekend"] += 1
+        buckets[key]["weekdays"].add(day.weekday())
 
     titles = set(EXCLUDED_ATTRACTION_TITLES)
     for (title, _time), info in buckets.items():
@@ -481,9 +479,6 @@ def opening_hours_attraction_titles(events):
         if len(dates) < OPENING_HOURS_MIN_DATES:
             continue
         if len(info["weekdays"]) < OPENING_HOURS_MIN_WEEKDAYS:
-            continue
-        weekend_ratio = float(info["weekend"]) / float(len(dates))
-        if weekend_ratio > OPENING_HOURS_MAX_WEEKEND_RATIO:
             continue
         titles.add(title)
     return titles

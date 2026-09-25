@@ -29,4 +29,27 @@ assert.ok(label.includes('Museum Schaffen, Winterthur'), label);
 assert.ok(label.includes('01.10.2026'), label);
 assert.ok(!label.includes('Mitgliedschaft'), label);
 assert.strictEqual(tickerLabel(null), '');
+
+const withOpeningHours = upcomingEvents(
+  [
+    {
+      title: 'Ausstellung: Erinnerungstank Haldengut',
+      begin: '2026-09-25T10:00:00+02:00',
+      location: 'Museum Schaffen, Winterthur',
+    },
+    {
+      title: 'Käfele mit der Kuratorin der Ausstellung',
+      begin: '2026-09-25T14:00:00+02:00',
+      location: 'Museum Schaffen, Winterthur',
+    },
+    {
+      title: 'Ausstellung: Erinnerungstank Haldengut',
+      begin: '2026-09-26T10:00:00+02:00',
+      location: 'Museum Schaffen, Winterthur',
+    },
+  ],
+  '2026-09-25'
+);
+assert.strictEqual(withOpeningHours.length, 1);
+assert.strictEqual(withOpeningHours[0].title, 'Käfele mit der Kuratorin der Ausstellung');
 console.log('home ticker ok:', label);
