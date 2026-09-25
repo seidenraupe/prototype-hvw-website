@@ -12,6 +12,11 @@ const {
 } = require('../js/main.js');
 
 const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+const mitmachen = fs.readFileSync(path.join(__dirname, '../mitmachen.html'), 'utf8');
+assert.ok(!html.includes('Freund:in Museum Schaffen'), 'Titelseite ohne Freund:in Museum Schaffen');
+assert.ok(!mitmachen.includes('Freund:in Museum Schaffen'), 'Mitmachen ohne Freund:in Museum Schaffen');
+assert.ok(html.includes('lg:grid-cols-3'), 'Mitgliedschaft auf der Titelseite in drei Spalten');
+assert.ok(mitmachen.includes('id="jugend"') && mitmachen.includes('id="einzel"') && mitmachen.includes('id="paar"'), 'Jugend, Einzel und Paar bleiben');
 const ticker = html.slice(html.indexOf('class="hvw-ticker'), html.indexOf('</header>'));
 assert.ok(ticker.includes('hvw-ticker'), 'Ticker bleibt vorhanden');
 assert.ok(!ticker.includes('Mitgliedschaft'), 'alter Tickertext Mitgliedschaft');
