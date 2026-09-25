@@ -85,6 +85,21 @@ body {
   }
 }
 
+.hvw-hero__caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  max-width: min(28rem, 92vw);
+  margin: 0;
+  text-align: right;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(0, 0, 0, 0.55);
+}
+
 .hvw-hero__shade {
   position: absolute;
   inset: 0;
