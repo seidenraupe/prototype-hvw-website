@@ -50,6 +50,19 @@
     });
   }
 
+  function sanitizeUrl(value) {
+    const text = String(value || "").replace(/\s+/g, "").trim();
+    if (!/^https:\/\//i.test(text)) return "";
+    try {
+      const url = new URL(text);
+      if (url.protocol !== "https:" || url.username || url.password) return "";
+      if (!url.hostname || url.hostname.indexOf(".") < 0) return "";
+      return url.origin + url.pathname + url.search;
+    } catch (_err) {
+      return "";
+    }
+  }
+
   function applyFields(fields) {
     if (!fields) return;
     document.querySelectorAll("[data-content]").forEach((el) => {
@@ -59,6 +72,10 @@
       const value = fields[id];
       if (rich) el.innerHTML = sanitizeRich(value);
       else el.textContent = String(value || "").replace(/\s+/g, " ").trim();
+      if (el.hasAttribute("data-content-href")) {
+        const href = sanitizeUrl(el.textContent);
+        if (href) el.setAttribute("href", href);
+      }
     });
     applyImageFields(fields);
     if (typeof window.hvwSortRueckblick === "function") window.hvwSortRueckblick();
@@ -90,7 +107,7 @@
     }
   }
 
-  const EDITOR_ASSET_V = "20260923-sort";
+  const EDITOR_ASSET_V = "20260925-partner";
 
   function loadEditor() {
     if (!document.querySelector('link[href*="css/content-editor.css"]')) {
@@ -128,6 +145,7 @@
 
   window.hvwApplyContent = applyFields;
   window.hvwSanitizeRich = sanitizeRich;
+  window.hvwSanitizeUrl = sanitizeUrl;
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {

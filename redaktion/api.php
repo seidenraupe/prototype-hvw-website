@@ -163,27 +163,47 @@ if ($action === 'upload-image' && $method === 'POST') {
 
     $srcW = imagesx($src);
     $srcH = imagesy($src);
-    $targetW = 1200;
-    $targetH = 900;
-    $srcRatio = $srcW / max(1, $srcH);
-    $targetRatio = $targetW / $targetH;
-    if ($srcRatio > $targetRatio) {
-        $cropH = $srcH;
-        $cropW = (int) round($srcH * $targetRatio);
-        $cropX = (int) floor(($srcW - $cropW) / 2);
-        $cropY = 0;
+    $mode = (string) ($slotInfo['mode'] ?? 'cover');
+    if ($mode === 'contain') {
+        $targetW = 800;
+        $targetH = 480;
+        $dst = imagecreatetruecolor($targetW, $targetH);
+        if ($dst === false) {
+            imagedestroy($src);
+            hvw_json(['ok' => false, 'error' => 'Bild konnte nicht verarbeitet werden.'], 500);
+        }
+        $white = imagecolorallocate($dst, 255, 255, 255);
+        imagefilledrectangle($dst, 0, 0, $targetW, $targetH, $white);
+        $scale = min($targetW / max(1, $srcW), $targetH / max(1, $srcH), 1);
+        $dw = max(1, (int) round($srcW * $scale));
+        $dh = max(1, (int) round($srcH * $scale));
+        $dx = (int) floor(($targetW - $dw) / 2);
+        $dy = (int) floor(($targetH - $dh) / 2);
+        imagealphablending($dst, true);
+        imagecopyresampled($dst, $src, $dx, $dy, 0, 0, $dw, $dh, $srcW, $srcH);
     } else {
-        $cropW = $srcW;
-        $cropH = (int) round($srcW / $targetRatio);
-        $cropX = 0;
-        $cropY = (int) floor(($srcH - $cropH) / 2);
+        $targetW = 1200;
+        $targetH = 900;
+        $srcRatio = $srcW / max(1, $srcH);
+        $targetRatio = $targetW / $targetH;
+        if ($srcRatio > $targetRatio) {
+            $cropH = $srcH;
+            $cropW = (int) round($srcH * $targetRatio);
+            $cropX = (int) floor(($srcW - $cropW) / 2);
+            $cropY = 0;
+        } else {
+            $cropW = $srcW;
+            $cropH = (int) round($srcW / $targetRatio);
+            $cropX = 0;
+            $cropY = (int) floor(($srcH - $cropH) / 2);
+        }
+        $dst = imagecreatetruecolor($targetW, $targetH);
+        if ($dst === false) {
+            imagedestroy($src);
+            hvw_json(['ok' => false, 'error' => 'Bild konnte nicht verarbeitet werden.'], 500);
+        }
+        imagecopyresampled($dst, $src, 0, 0, $cropX, $cropY, $targetW, $targetH, $cropW, $cropH);
     }
-    $dst = imagecreatetruecolor($targetW, $targetH);
-    if ($dst === false) {
-        imagedestroy($src);
-        hvw_json(['ok' => false, 'error' => 'Bild konnte nicht verarbeitet werden.'], 500);
-    }
-    imagecopyresampled($dst, $src, 0, 0, $cropX, $cropY, $targetW, $targetH, $cropW, $cropH);
     imagedestroy($src);
 
     if (!is_dir(HVW_UPLOADS) && !mkdir(HVW_UPLOADS, 0775, true) && !is_dir(HVW_UPLOADS)) {

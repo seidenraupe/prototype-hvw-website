@@ -187,7 +187,7 @@ cronjobs/           Coucou- + Museum-Schaffen-Export für Hostpoint (täglich)
 index.html          Startseite mit Event-Karten (Prototyp)
 agenda.html         Agenda (Programm + Rückblick)
 museen.html         Museum Schaffen / Lindengut / Mörsburg
-publikationen.html  Neujahrsblatt & Schriften
+partner.html        Partner / Netzwerk
 sammlung.html       Ausgewählte Objekte
 zitate.html         Stimmen aus Winterthur
 ueber-uns.html      Verein + FAQ (GEO)

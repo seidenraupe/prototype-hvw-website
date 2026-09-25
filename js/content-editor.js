@@ -756,6 +756,10 @@
         updateCounter();
       });
       el.addEventListener("input", () => {
+        if (el.hasAttribute("data-content-href") && window.hvwSanitizeUrl) {
+          const href = window.hvwSanitizeUrl(el.textContent || "");
+          if (href) el.setAttribute("href", href);
+        }
         const id = el.getAttribute("data-content");
         if (acceptedIds.has(id)) {
           acceptedIds.delete(id);
