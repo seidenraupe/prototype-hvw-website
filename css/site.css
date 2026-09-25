@@ -33,12 +33,14 @@ body {
   overflow: hidden;
   white-space: nowrap;
   border-bottom: 1px solid var(--hvw-ink);
+  font-size: 1.125rem;
+  line-height: 1.4;
 }
 
 .hvw-ticker__track {
   display: inline-flex;
-  gap: 2.5rem;
-  padding: 0.55rem 0;
+  gap: 3rem;
+  padding: 0.75rem 0;
   animation: hvw-ticker 36s linear infinite;
 }
 
