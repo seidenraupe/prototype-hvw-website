@@ -114,9 +114,20 @@ async function loadHomeEventsJson() {
   throw lastError || new Error('home-events.json fehlt');
 }
 
+function isOpeningHoursListing(event) {
+  const title = String((event && event.title) || '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+  if (!title) return false;
+  if (title.includes('erinnerungstank haldengut')) return true;
+  return title.startsWith('ausstellung:');
+}
+
 function upcomingEvents(events, todayZurich) {
   return (Array.isArray(events) ? events : [])
     .filter((event) => String(event.begin || '').slice(0, 10) >= todayZurich)
+    .filter((event) => !isOpeningHoursListing(event))
     .sort((a, b) => String(a.begin || '').localeCompare(String(b.begin || '')));
 }
 
@@ -310,5 +321,5 @@ function escapeHtml(value) {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { upcomingEvents, tickerLabel, formatEventDate };
+  module.exports = { upcomingEvents, tickerLabel, formatEventDate, isOpeningHoursListing };
 }

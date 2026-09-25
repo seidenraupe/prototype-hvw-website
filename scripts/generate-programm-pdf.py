@@ -54,6 +54,8 @@ from reportlab.platypus import (
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SCRIPT_DIR)
+sys.path.insert(0, os.path.join(ROOT_DIR, "cronjobs"))
+from eventfrog_to_coucou import filter_attraction_events  # noqa: E402
 DEFAULT_OUTPUT = os.path.join(ROOT_DIR, "programm", "Programm.pdf")
 DEFAULT_LOGO = os.path.join(ROOT_DIR, "images", "hvw-logo.png")
 DEFAULT_ORG_IDS = ["4936116", "5116588", "5137433"]
@@ -744,6 +746,11 @@ def main(argv=None):
     )
 
     events = get_all_events(org_ids, api_key, date_from=print_on.isoformat())
+    events, skipped_openings = filter_attraction_events(events)
+    if skipped_openings:
+        print(
+            "{0} Öffnungszeit(en)/Attraktion(en) entfernt.".format(skipped_openings)
+        )
     events = select_upcoming_events(events, print_on)
     last_on = last_event_date(events, print_on)
     period_label = format_period_label(print_on, last_on)
