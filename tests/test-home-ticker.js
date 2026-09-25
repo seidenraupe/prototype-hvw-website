@@ -2,7 +2,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const { upcomingEvents, tickerLabel } = require('../js/main.js');
+const { upcomingEvents, tickerLabel, nextHeroIndex, HERO_SLIDER_MS } = require('../js/main.js');
 
 const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
 const ticker = html.slice(html.indexOf('class="hvw-ticker'), html.indexOf('</header>'));
@@ -52,4 +52,13 @@ const withOpeningHours = upcomingEvents(
 );
 assert.strictEqual(withOpeningHours.length, 1);
 assert.strictEqual(withOpeningHours[0].title, 'Käfele mit der Kuratorin der Ausstellung');
+
+const hero = html.slice(html.indexOf('data-hero-slider'), html.indexOf('hvw-hero__shade'));
+assert.strictEqual((hero.match(/<img/g) || []).length, 3, 'drei Herobilder');
+assert.ok(hero.includes('hero-textilfabrik.jpg'), 'Spinnerei');
+assert.ok(hero.includes('hero-schmiede.jpg'), 'Schmiede');
+assert.ok(hero.includes('hero-maschinenhalle.jpg'), 'Maschinenhalle');
+assert.strictEqual(HERO_SLIDER_MS, 10000);
+assert.strictEqual(nextHeroIndex(0, 3), 1);
+assert.strictEqual(nextHeroIndex(2, 3), 0);
 console.log('home ticker ok:', label);
