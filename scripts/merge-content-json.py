@@ -116,7 +116,6 @@ INITIAL_SEED_FIELD_IDS = {
     "mitmachen.intro",
     "mitmachen.anmeldung.lead",
     "sammlung.intro",
-    "sammlung.katalog.lead",
     "zitate.intro",
 }
 

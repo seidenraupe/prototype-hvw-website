@@ -1050,13 +1050,6 @@
       "rich": true,
       "multiline": true
     },
-    "sammlung.katalog.lead": {
-      "label": "Sammlung · Text unter Digitaler Katalog",
-      "page": "sammlung.html",
-      "max": 400,
-      "rich": true,
-      "multiline": true
-    },
     "sammlung.objekt.1.image": {
       "label": "Sammlung · Objekt 1 · Bild",
       "page": "sammlung.html",
