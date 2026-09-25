@@ -3,20 +3,6 @@
  * Event-Karten aus /home-events.json (Hostpoint-Cron, wie Coucou/MuS).
  */
 
-if (typeof document !== 'undefined') {
-  const start = () => {
-    initNav();
-    initStimmenRandom();
-    initHeroSlider();
-    loadHomeEvents();
-  };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start);
-  } else {
-    start();
-  }
-}
-
 const HERO_SLIDER_MS = 5000;
 
 function nextHeroIndex(current, count) {
@@ -394,6 +380,25 @@ function escapeHtml(value) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function startPage() {
+  initNav();
+  initStimmenRandom();
+  try {
+    initHeroSlider();
+  } catch (err) {
+    console.error(err);
+  }
+  loadHomeEvents();
+}
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startPage);
+  } else {
+    startPage();
+  }
 }
 
 if (typeof module !== 'undefined' && module.exports) {
