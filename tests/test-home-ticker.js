@@ -73,6 +73,12 @@ assert.strictEqual(HERO_SLIDER_MS, 5000);
 assert.strictEqual(nextHeroIndex(0, 5), 1);
 assert.strictEqual(nextHeroIndex(4, 5), 0);
 
+const mainSrc = fs.readFileSync(path.join(__dirname, '../js/main.js'), 'utf8');
+const sliderConst = mainSrc.indexOf('const HERO_SLIDER_MS');
+const pageStart = mainSrc.indexOf('function startPage');
+assert.ok(sliderConst >= 0 && pageStart > sliderConst, 'Seitenstart erst nach HERO_SLIDER_MS');
+assert.ok(mainSrc.indexOf('loadHomeEvents();') > mainSrc.indexOf('catch (err)'), 'Veranstaltungen laden auch wenn der Slider scheitert');
+
 const shuffled = shuffleHeroOrder(5, () => 0);
 assert.deepStrictEqual(shuffled.slice().sort((a, b) => a - b), [0, 1, 2, 3, 4]);
 assert.notDeepStrictEqual(shuffled, [0, 1, 2, 3, 4]);
