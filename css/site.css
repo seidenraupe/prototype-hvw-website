@@ -66,9 +66,23 @@ body {
 }
 
 .hvw-hero__media img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.hvw-hero__media img.is-active {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hvw-hero__media img {
+    transition: none;
+  }
 }
 
 .hvw-hero__shade {
