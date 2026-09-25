@@ -78,6 +78,7 @@ body {
   z-index: 2;
   max-width: min(28rem, 92vw);
   margin: 0;
+  text-align: right;
   padding: 0.5rem 0.75rem;
   font-size: 0.75rem;
   line-height: 1.35;
