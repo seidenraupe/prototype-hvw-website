@@ -53,8 +53,8 @@ if "hvw_image_filename" not in lib:
     raise SystemExit("lib.php muss den Upload-Dateinamen aus dem Slot bauen")
 if schema["fields"]["sammlung.intro"].get("max") != 400:
     raise SystemExit("sammlung.intro muss 400 Zeichen erlauben")
-if schema["fields"]["sammlung.katalog.lead"].get("max") != 400:
-    raise SystemExit("sammlung.katalog.lead muss 400 Zeichen erlauben")
+if "sammlung.katalog.lead" in schema["fields"] or "sammlung.katalog.lead" in sammlung:
+    raise SystemExit("Kulturerbe-Text gehört nicht mehr auf die Sammlungsseite")
 if "EDITORIAL_PREFIXES" not in merge or "sammlung.objekt." not in merge:
     raise SystemExit("Merge muss Sammlungsfelder als Redaktions-Inhalt behandeln")
 if "promoted_from_draft" not in merge:

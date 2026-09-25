@@ -17,7 +17,7 @@
   <meta property="og:title" content="Historischer Verein Winterthur">
   <meta property="og:description" content="Träger von Museum Schaffen, Museum Lindengut und Schloss Mörsburg. Veranstaltungen, Mitgliedschaft und Stadtgeschichte — seit 1874.">
   <meta property="og:url" content="https://www.hvwinterthur.ch/">
-  <meta property="og:image" content="images/hero-tram-remise-rieter-1900.jpg">
+  <meta property="og:image" content="images/hero-textilfabrik.jpg?v=3">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#1a1a1a">
   <link rel="icon" href="images/favicon.ico" sizes="any">
@@ -141,18 +141,43 @@
   <main id="main">
     <!-- Hero: Marke zuerst, eine Aussage, eine CTA-Gruppe, vollflächiges Bild -->
     <section class="hvw-hero" aria-labelledby="hero-brand">
-      <div class="hvw-hero__media">
+      <div class="hvw-hero__media" data-hero-slider>
+        <img
+          class="is-active"
+          src="images/hero-textilfabrik.jpg?v=3"
+          alt="Mitarbeiterin in der Spinnerei im Bühler-Areal, Winterthur-Seen, 12.07.1983. Foto: Wolfgang Sträuli, Winterthurer Bibliotheken, FotLb_006215"
+          data-credit="Wolfgang Sträuli, 12.07.1983, Winterthur-Seen|Bühler-Areal, Mitarbeiterin in der Spinnerei|Winterthurer Bibliotheken, FotLb_006215"
+          width="1920"
+          height="1080"
+          fetchpriority="high">
+        <img
+          src="images/hero-schmiede.jpg"
+          alt="Schmied hält ein glühendes Werkstück mit einer Zange"
+          width="1920"
+          height="1080"
+          aria-hidden="true">
+        <img
+          src="images/hero-maschinenhalle.jpg"
+          alt="Sulzer Winterthur, Januar 1967. Foto: Heinz Baumann, ETH-Bibliothek Zürich, Bildarchiv, Com_L16-0078-0003-0001"
+          data-credit="Heinz Baumann, Januar 1967, Winterthur|Sulzer Winterthur|ETH-Bibliothek Zürich, Bildarchiv, Com_L16-0078-0003-0001"
+          width="1920"
+          height="1080"
+          aria-hidden="true">
+        <img
+          src="images/hero-textilmaschine.jpg"
+          alt="Frau an Textilmaschinen vor einem Fenster"
+          width="1920"
+          height="1080"
+          aria-hidden="true">
         <img
           src="images/hero-tram-remise-rieter-1900.jpg"
-          alt="Tram mit Personal vor der Remise auf dem Rieterareal, um 1900"
+          alt="Tram mit Personal vor der Remise auf dem Rieterareal, um 1900. Bildarchiv Winterthur / winbib.ch"
+          data-credit="um 1900, Winterthur|Tram mit Personal vor der Remise auf dem Rieterareal|Bildarchiv Winterthur / winbib.ch"
           width="800"
           height="576"
-          fetchpriority="high">
+          aria-hidden="true">
       </div>
       <div class="hvw-hero__shade" aria-hidden="true"></div>
-      <p class="hvw-hero__caption">
-        Tram mit Personal vor der Remise auf dem Rieterareal (um 1900). Bildarchiv Winterthur / winbib.ch
-      </p>
       <div class="hvw-hero__content">
         <p id="hero-brand" class="mb-3 text-2xl font-semibold lowercase tracking-tight sm:text-3xl md:text-4xl">
           historischer verein winterthur
@@ -172,6 +197,11 @@
           </a>
         </div>
       </div>
+      <p class="hvw-hero__credit">
+        <span>Wolfgang Sträuli, 12.07.1983, Winterthur-Seen</span>
+        <span>Bühler-Areal, Mitarbeiterin in der Spinnerei</span>
+        <span>Winterthurer Bibliotheken, FotLb_006215</span>
+      </p>
     </section>
 
     <!-- Event-Karten: Mobile 1 · Tablet 2 · Desktop 3 -->
@@ -309,7 +339,7 @@
           Mitmachen
         </h2>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div class="flex flex-col border border-hvw-ink p-5 sm:p-6">
             <p class="text-sm font-semibold uppercase tracking-wide text-hvw-mute">Jugend · bis 25 J.</p>
             <p class="mt-2 text-3xl font-semibold">30 CHF</p>
@@ -339,16 +369,6 @@
               <li>Neujahrsblatt</li>
             </ul>
             <a href="mitmachen.html#anmeldeformular" class="mt-6 inline-flex min-h-12 items-center justify-center border border-hvw-ink font-semibold no-underline hover:bg-hvw-fog">Beitreten</a>
-          </div>
-          <div class="flex flex-col border border-hvw-ink bg-hvw-ink p-5 text-white sm:p-6">
-            <p class="text-sm font-semibold uppercase tracking-wide text-white/70">Freund:in Museum Schaffen</p>
-            <p class="mt-2 text-3xl font-semibold">ab 150 CHF</p>
-            <ul class="mt-4 flex-1 space-y-2 text-white/85">
-              <li>Alle Mitgliedervorteile</li>
-              <li>Exklusives Event</li>
-              <li>Förderung des Museums</li>
-            </ul>
-            <a href="mitmachen.html#anmeldeformular" class="mt-6 inline-flex min-h-12 items-center justify-center bg-white font-semibold text-hvw-ink no-underline hover:bg-hvw-fog">Beitreten</a>
           </div>
         </div>
       </div>

@@ -2,9 +2,21 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const { upcomingEvents, tickerLabel } = require('../js/main.js');
+const {
+  upcomingEvents,
+  tickerLabel,
+  nextHeroIndex,
+  shuffleHeroOrder,
+  heroCreditLines,
+  HERO_SLIDER_MS,
+} = require('../js/main.js');
 
 const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+const mitmachen = fs.readFileSync(path.join(__dirname, '../mitmachen.html'), 'utf8');
+assert.ok(!html.includes('Freund:in Museum Schaffen'), 'Titelseite ohne Freund:in Museum Schaffen');
+assert.ok(!mitmachen.includes('Freund:in Museum Schaffen'), 'Mitmachen ohne Freund:in Museum Schaffen');
+assert.ok(html.includes('lg:grid-cols-3'), 'Mitgliedschaft auf der Titelseite in drei Spalten');
+assert.ok(mitmachen.includes('id="jugend"') && mitmachen.includes('id="einzel"') && mitmachen.includes('id="paar"'), 'Jugend, Einzel und Paar bleiben');
 const ticker = html.slice(html.indexOf('class="hvw-ticker'), html.indexOf('</header>'));
 assert.ok(ticker.includes('hvw-ticker'), 'Ticker bleibt vorhanden');
 assert.ok(!ticker.includes('Mitgliedschaft'), 'alter Tickertext Mitgliedschaft');
@@ -52,4 +64,31 @@ const withOpeningHours = upcomingEvents(
 );
 assert.strictEqual(withOpeningHours.length, 1);
 assert.strictEqual(withOpeningHours[0].title, 'Käfele mit der Kuratorin der Ausstellung');
+
+const hero = html.slice(html.indexOf('data-hero-slider'), html.indexOf('hvw-hero__shade'));
+assert.strictEqual((hero.match(/<img/g) || []).length, 5, 'fünf Herobilder');
+assert.ok(hero.includes('hero-textilfabrik.jpg'), 'Spinnerei');
+assert.ok(hero.includes('hero-schmiede.jpg'), 'Schmiede');
+assert.ok(hero.includes('hero-maschinenhalle.jpg'), 'Maschinenhalle');
+assert.ok(hero.includes('hero-textilmaschine.jpg'), 'Textilmaschine');
+assert.ok(hero.includes('hero-tram-remise-rieter-1900.jpg'), 'Tram Rieterareal');
+assert.ok(hero.includes('Tram mit Personal vor der Remise auf dem Rieterareal'), 'Tram-Bildtitel');
+assert.ok(hero.includes('Heinz Baumann, Januar 1967, Winterthur'), 'Nachweis Maschinenhalle');
+assert.ok(hero.includes('Com_L16-0078-0003-0001'), 'Signatur Maschinenhalle');
+assert.strictEqual(HERO_SLIDER_MS, 5000);
+assert.strictEqual(nextHeroIndex(0, 5), 1);
+assert.strictEqual(nextHeroIndex(4, 5), 0);
+
+const mainSrc = fs.readFileSync(path.join(__dirname, '../js/main.js'), 'utf8');
+const sliderConst = mainSrc.indexOf('const HERO_SLIDER_MS');
+const pageStart = mainSrc.indexOf('function startPage');
+assert.ok(sliderConst >= 0 && pageStart > sliderConst, 'Seitenstart erst nach HERO_SLIDER_MS');
+assert.ok(mainSrc.indexOf('loadHomeEvents();') > mainSrc.indexOf('catch (err)'), 'Veranstaltungen laden auch wenn der Slider scheitert');
+
+const shuffled = shuffleHeroOrder(5, () => 0);
+assert.deepStrictEqual(shuffled.slice().sort((a, b) => a - b), [0, 1, 2, 3, 4]);
+assert.notDeepStrictEqual(shuffled, [0, 1, 2, 3, 4]);
+const creditSlide = { getAttribute: () => 'A| B |' };
+assert.deepStrictEqual(heroCreditLines(creditSlide), ['A', 'B']);
+assert.deepStrictEqual(heroCreditLines({ getAttribute: () => '' }), []);
 console.log('home ticker ok:', label);

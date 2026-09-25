@@ -3,12 +3,74 @@
  * Event-Karten aus /home-events.json (Hostpoint-Cron, wie Coucou/MuS).
  */
 
-if (typeof document !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', () => {
-    initNav();
-    initStimmenRandom();
-    loadHomeEvents();
-  });
+const HERO_SLIDER_MS = 5000;
+
+function nextHeroIndex(current, count) {
+  if (!count) return 0;
+  return (current + 1) % count;
+}
+
+function shuffleHeroOrder(count, random) {
+  const rand = typeof random === 'function' ? random : Math.random;
+  const order = [];
+  for (let i = 0; i < count; i += 1) order.push(i);
+  for (let i = order.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(rand() * (i + 1));
+    const swap = order[i];
+    order[i] = order[j];
+    order[j] = swap;
+  }
+  return order;
+}
+
+function heroCreditLines(slide) {
+  if (!slide) return [];
+  return String(slide.getAttribute('data-credit') || '')
+    .split('|')
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function initHeroSlider() {
+  const root = document.querySelector('[data-hero-slider]');
+  if (!root) return;
+  const slides = Array.prototype.slice.call(root.querySelectorAll('img'));
+  const credit = document.querySelector('.hvw-hero__credit');
+  if (slides.length < 2) return;
+
+  const order = shuffleHeroOrder(slides.length);
+  let step = 0;
+  const show = (nextStep) => {
+    step = nextStep;
+    const index = order[step];
+    slides.forEach((slide, i) => {
+      const active = i === index;
+      slide.classList.toggle('is-active', active);
+      if (active) {
+        slide.removeAttribute('aria-hidden');
+        slide.setAttribute('fetchpriority', 'high');
+      } else {
+        slide.setAttribute('aria-hidden', 'true');
+        slide.removeAttribute('fetchpriority');
+      }
+    });
+    if (credit) {
+      const lines = heroCreditLines(slides[index]);
+      credit.replaceChildren();
+      lines.forEach((line) => {
+        const span = document.createElement('span');
+        span.textContent = line;
+        credit.appendChild(span);
+      });
+      credit.hidden = lines.length === 0;
+    }
+  };
+
+  show(0);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  window.setInterval(() => {
+    show(nextHeroIndex(step, order.length));
+  }, HERO_SLIDER_MS);
 }
 
 function initNav() {
@@ -320,6 +382,34 @@ function escapeHtml(value) {
     .replace(/"/g, '&quot;');
 }
 
+function startPage() {
+  initNav();
+  initStimmenRandom();
+  try {
+    initHeroSlider();
+  } catch (err) {
+    console.error(err);
+  }
+  loadHomeEvents();
+}
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startPage);
+  } else {
+    startPage();
+  }
+}
+
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { upcomingEvents, tickerLabel, formatEventDate, isOpeningHoursListing };
+  module.exports = {
+    upcomingEvents,
+    tickerLabel,
+    formatEventDate,
+    isOpeningHoursListing,
+    nextHeroIndex,
+    shuffleHeroOrder,
+    heroCreditLines,
+    HERO_SLIDER_MS,
+  };
 }
