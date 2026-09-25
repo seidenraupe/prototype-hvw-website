@@ -89,4 +89,19 @@ if (strlen($normalized['sammlung.objekt.1.body']) !== 400) {
     exit(1);
 }
 
+$info = hvw_image_info('lindengut.bild.2.image');
+if (!$info || $info['prefix'] !== 'lindengut' || $info['slot'] !== 2) {
+    fwrite(STDERR, "Lindengut-Bildfeld nicht erkannt\n");
+    exit(1);
+}
+$generatedMuseum = hvw_image_filename($info);
+if (!preg_match('#^lindengut-2-[a-z0-9]+\.jpg$#', $generatedMuseum)) {
+    fwrite(STDERR, "Lindengut-Dateiname falsch: {$generatedMuseum}\n");
+    exit(1);
+}
+if (hvw_sanitize_image_path('data/uploads/' . $generatedMuseum) !== 'data/uploads/' . $generatedMuseum) {
+    fwrite(STDERR, "Lindengut-Upload-Pfad abgelehnt\n");
+    exit(1);
+}
+
 echo "image fields php ok\n";

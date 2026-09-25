@@ -296,6 +296,158 @@
       "rich": true,
       "multiline": true
     },
+    "lindengut.kicker": {
+      "label": "Lindengut · Kleine Überschrift",
+      "page": "lindengut.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "lindengut.title": {
+      "label": "Lindengut · Titel",
+      "page": "lindengut.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "lindengut.lead": {
+      "label": "Lindengut · Einleitung",
+      "page": "lindengut.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    },
+    "lindengut.body": {
+      "label": "Lindengut · Text",
+      "page": "lindengut.html",
+      "max": 1200,
+      "rich": true,
+      "multiline": true
+    },
+    "lindengut.bild.1.image": {
+      "label": "Lindengut · Bild 1",
+      "page": "lindengut.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "lindengut.bild.1.caption": {
+      "label": "Lindengut · Bild 1 Legende",
+      "page": "lindengut.html",
+      "max": 200,
+      "rich": true,
+      "multiline": true
+    },
+    "lindengut.bild.2.image": {
+      "label": "Lindengut · Bild 2",
+      "page": "lindengut.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "lindengut.bild.2.caption": {
+      "label": "Lindengut · Bild 2 Legende",
+      "page": "lindengut.html",
+      "max": 200,
+      "rich": true,
+      "multiline": true
+    },
+    "lindengut.bild.3.image": {
+      "label": "Lindengut · Bild 3",
+      "page": "lindengut.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "lindengut.bild.3.caption": {
+      "label": "Lindengut · Bild 3 Legende",
+      "page": "lindengut.html",
+      "max": 200,
+      "rich": true,
+      "multiline": true
+    },
+    "moersburg.kicker": {
+      "label": "Mörsburg · Kleine Überschrift",
+      "page": "moersburg.html",
+      "max": 40,
+      "rich": false,
+      "multiline": false
+    },
+    "moersburg.title": {
+      "label": "Mörsburg · Titel",
+      "page": "moersburg.html",
+      "max": 80,
+      "rich": false,
+      "multiline": false
+    },
+    "moersburg.lead": {
+      "label": "Mörsburg · Einleitung",
+      "page": "moersburg.html",
+      "max": 400,
+      "rich": true,
+      "multiline": true
+    },
+    "moersburg.body": {
+      "label": "Mörsburg · Text",
+      "page": "moersburg.html",
+      "max": 1200,
+      "rich": true,
+      "multiline": true
+    },
+    "moersburg.bild.1.image": {
+      "label": "Mörsburg · Bild 1",
+      "page": "moersburg.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "moersburg.bild.1.caption": {
+      "label": "Mörsburg · Bild 1 Legende",
+      "page": "moersburg.html",
+      "max": 200,
+      "rich": true,
+      "multiline": true
+    },
+    "moersburg.bild.2.image": {
+      "label": "Mörsburg · Bild 2",
+      "page": "moersburg.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "moersburg.bild.2.caption": {
+      "label": "Mörsburg · Bild 2 Legende",
+      "page": "moersburg.html",
+      "max": 200,
+      "rich": true,
+      "multiline": true
+    },
+    "moersburg.bild.3.image": {
+      "label": "Mörsburg · Bild 3",
+      "page": "moersburg.html",
+      "max": 180,
+      "rich": false,
+      "multiline": false,
+      "type": "image",
+      "optional": true
+    },
+    "moersburg.bild.3.caption": {
+      "label": "Mörsburg · Bild 3 Legende",
+      "page": "moersburg.html",
+      "max": 200,
+      "rich": true,
+      "multiline": true
+    },
     "agenda.intro": {
       "label": "Agenda · Einleitung",
       "page": "agenda.html",

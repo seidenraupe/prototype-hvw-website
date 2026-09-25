@@ -15,7 +15,7 @@ copy_dir() {
   cp -a "${src}/." "${dest}/"
 }
 
-for page in index.html agenda.html museen.html ueber-uns.html mitmachen.html \
+for page in index.html agenda.html museen.html lindengut.html moersburg.html ueber-uns.html mitmachen.html \
             publikationen.html sammlung.html zitate.html programm.html \
             impressum.html datenschutz.html; do
   cp "${ROOT}/${page}" "${OUT}/${page}"
