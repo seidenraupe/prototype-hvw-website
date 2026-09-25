@@ -39,7 +39,7 @@ GIT_WINS_FIELD_IDS = {
 }
 
 # Redaktionell gepflegte Karten: nie per INITIAL_SEED-Reset überschreiben.
-EDITORIAL_PREFIXES = ("sammlung.objekt.", "agenda.rueckblick.")
+EDITORIAL_PREFIXES = ("sammlung.objekt.", "agenda.rueckblick.", "lindengut.", "moersburg.")
 
 # Zu wenig Remote-Daten → kein Live-Reset aus Git (verhindert Datenverlust bei fehlendem rsync).
 MIN_REMOTE_FIELD_COUNT = 10

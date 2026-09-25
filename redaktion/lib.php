@@ -206,7 +206,13 @@ function hvw_sanitize_image_path(string $value): string
     if (preg_match('#^images/sammlung-(ausstellung|titelbild|house)\.jpg$#', $value)) {
         return $value;
     }
-    if (preg_match('#^data/uploads/(rueckblick|sammlung)-[1-6]-[a-z0-9]+\.(jpe?g|png|webp)$#', $value)) {
+    if (preg_match('#^images/placeholder-museum-(lindengut|moersburg|schaffen)\.svg$#', $value)) {
+        return $value;
+    }
+    if (preg_match('#^images/museen/(museum-lindengut|schloss-moersburg|museum-schaffen)\.jpg$#', $value)) {
+        return $value;
+    }
+    if (preg_match('#^data/uploads/(rueckblick|sammlung|lindengut|moersburg)-[1-6]-[a-z0-9]+\.(jpe?g|png|webp)$#', $value)) {
         return $value;
     }
     return '';
@@ -220,6 +226,9 @@ function hvw_image_info(string $id): ?array
     if (preg_match('/^sammlung\.objekt\.([1-6])\.image$/', $id, $m)) {
         return ['prefix' => 'sammlung', 'slot' => (int) $m[1]];
     }
+    if (preg_match('/^(lindengut|moersburg)\.bild\.([1-3])\.image$/', $id, $m)) {
+        return ['prefix' => $m[1], 'slot' => (int) $m[2]];
+    }
     return null;
 }
 
@@ -227,7 +236,7 @@ function hvw_image_filename(array $slotInfo): string
 {
     $prefix = (string) ($slotInfo['prefix'] ?? '');
     $slot = (int) ($slotInfo['slot'] ?? 0);
-    if (!preg_match('/^(rueckblick|sammlung)$/', $prefix) || $slot < 1 || $slot > 6) {
+    if (!preg_match('/^(rueckblick|sammlung|lindengut|moersburg)$/', $prefix) || $slot < 1 || $slot > 6) {
         return '';
     }
     return $prefix . '-' . $slot . '-' . bin2hex(random_bytes(4)) . '.jpg';
